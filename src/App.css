@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  min-height: 700vh;
+}
+
+#root{
+  height: 5000px;
 }
 
 .App-logo {
@@ -35,4 +40,46 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.O { background-color: white;}
+.org { background-color: lightblue;}
+.loc { background-color: yellowgreen;}
+.per { background-color: yellow;}
+.gpe { background-color: coral;}
+
+.token {
+  color: black;
+  padding-left: 5px;
+  padding-right: 5px;
+  border: 1px solid transparent;
+}
+
+.highlightsingle {
+  border: lightgray solid 1px;
+  border-radius: 3px;
+}
+
+.highlightstart {
+  border: 1px solid lightgray;
+  border-right-color: transparent;
+  border-radius: 3px 0 0 3px;
+}
+
+.highlighted {
+  border: 1px solid lightgray;
+  border-right-color: transparent;
+  border-left-color: transparent;
+}
+
+.highlightend {
+  border: 1px solid lightgray;
+  border-left-color: transparent;
+  border-radius: 0 3px 3px 0;
+}
+
+.nocopy{
+  -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
 }

@@ -1,0 +1,152 @@
+.pointer {
+    cursor: pointer;
+    /*margin-right: 3px;*/
+    display: inline-block;
+}
+
+.spacer {
+    height: 15px;
+}
+
+#spinner {
+    /*width: 100px;
+    height: 50px;*/
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-top: -150px;
+    margin-left: -250px;
+}
+
+.cons {
+    /*padding-top: 2px;*/
+    /*padding-bottom: 2px;*/
+    border-radius: 5px;
+}
+
+.token {
+    padding: 1px;
+    /*padding-left: 1px;*/
+    /*padding-right: 1px;*/
+    border: 1px solid transparent;
+}
+
+.bestlabel {
+    border: black 1px solid;
+    color: black;
+}
+
+.ignorelabel {
+    color: darkgray;
+    background-color: white;
+}
+
+.suggestion {
+    border-bottom: 5px solid DarkSlateBlue;
+}
+
+.tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: black;
+    text-align: center;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid lightgray;
+}
+
+.suffix {
+    color: lightgray;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+#legendcontainer {
+    padding: 7px;
+}
+
+.legend {
+    width: 10px;
+    height: 10px;
+    padding: 3px;
+    border-radius: 3px;
+}
+
+.text {
+    font-size: 12pt;
+    text-align: initial;
+}
+
+.nocopy{
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+}
+
+#text {
+    font-size: 12pt;
+}
+
+.popover{
+    max-width: 600px; /* Max Width of the popover (depending on the container!) */
+}
+
+#savebutton {
+    width: 100px;
+}
+
+#tagdescriptions {
+    margin: 10px;
+}
+
+#tagdescriptions span {
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.def {
+    font-style: italic;
+}
+
+body {
+    margin-top: 70px;
+}
+
+.emph {
+    font-weight: bold;
+}
+
+.highlightsingle {
+    border: lightgray solid 1px;
+    border-radius: 3px;
+}
+
+.highlightstart {
+    border: 1px solid lightgray;
+    border-right-color: transparent;
+    border-radius: 3px 0 0 3px;
+}
+
+.highlighted {
+    border: 1px solid lightgray;
+    border-right-color: transparent;
+    border-left-color: transparent;
+}
+
+.highlightend {
+    border: 1px solid lightgray;
+    border-left-color: transparent;
+    border-radius: 0 3px 3px 0;
+}
+
+/*.highlighted {*/
+    /*background-color: #fff2ac;*/
+/*}*/
+
+mark{
+    padding: 0;
+    background: transparent;
+    color: red;
+}
