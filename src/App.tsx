@@ -1,13 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button, Popover, Container, Row, Overlay } from 'react-bootstrap';
 
 class LabelButton extends React.Component<Props, State>{
+
   render() {
     return (
       <Button onClick={() => this.props.onClick()}
-        className={this.props.label}>{this.props.label}</Button>
+        className={["label-button", this.props.label].join(" ")}>{this.props.label}</Button>
     )
   }
 }
@@ -16,28 +17,51 @@ class Token extends React.Component<TokProps, State>{
 
   private myRef = React.createRef<any>()
 
-  constructor(props: TokProps) {
-    super(props);
-  }
-
-  handleClick(evt: any){
+  handleOver(evt: any){
     // if the left button is pressed
     if(evt.buttons === 1){
       this.props.mouseup()
     }
   }
 
+  handleDown(evt: any){
+    // console.log(evt.target.type) -> this will give type button
+
+    if(evt.button === 2){
+      // don't allow right click to open a menu
+      console.log("right click");
+      evt.preventDefault();
+      evt.stopPropagation();
+      evt.persist();      
+      return
+    }
+
+    
+    // only fire if you click on a token.
+    if(evt.target.classList.contains("token")){
+      this.props.mousedown()
+    }
+
+  }
+
   render() {
 
+    // TODO: can this be moved out to save time?
+    const label_set = ["per", "org", "loc", "gpe", "O"]
+    const label_button_list = label_set.map((label) => 
+      <LabelButton key={label} label={label} onClick={() => this.props.set_label(label)} />    
+    );
+
     return (
-      <span className={[this.props.label, "token", "nocopy", this.props.selected].join(" ")} 
-          onMouseDown={() => this.props.mousedown()}
+      <span>
+        <span className={[this.props.label, "token", "nocopy", this.props.selected].join(" ")}
+          onMouseDown={(evt) => this.handleDown(evt)}
           onMouseUp={() => this.props.mouseup()}
-          onMouseOver={(evt) => this.handleClick(evt)}
+          onMouseOver={(evt) => this.handleOver(evt)}
           ref={this.myRef}
         >
-        {this.props.form}
-      
+          {this.props.form}
+        </span>
         <Overlay
           show={this.props.show_popover}
           target={this.myRef.current}
@@ -45,18 +69,11 @@ class Token extends React.Component<TokProps, State>{
         >
           <Popover id="popover-contained">
             <Popover.Content>
-              <LabelButton label="per" onClick={() => null}/>
-              <LabelButton label="org" onClick={() => null}/>
-              <LabelButton label="loc" onClick={() => null}/>
-              <LabelButton label="gpe" onClick={() => null}/>
-              <LabelButton label="O" onClick={() => null}/>
+              {label_button_list}
             </Popover.Content>
           </Popover>
         </Overlay>
-
       </span>
-
-
 
     );
   }
@@ -123,11 +140,23 @@ class App extends React.Component<Props, State> {
 
   checkClearRange(evt: any){
     const tgt = evt.target;
-    if(tgt.classList.contains("token")){
+    console.log(tgt.type);
+    if(tgt.classList.contains("token") || tgt.classList.contains("label-button")){
       // do nothing?
     }else{
       this.updateRange(-1,-1);
     }
+  }
+
+  setLabel(label: string){
+    console.log(label);
+    // the problem is that this is (-1, -1) by the time we get here.
+    var newLabels = this.state.labels.slice();
+    for(var i = this.state.selected_range[0]; i <= this.state.selected_range[1]; i++){
+      newLabels[i] = label;
+    }
+    this.setState({labels: newLabels})
+    this.updateRange(-1,-1);
   }
 
   render() {
@@ -142,11 +171,12 @@ class App extends React.Component<Props, State> {
       <Token 
         key={index} 
         form={tok} 
-        label={this.state.labels[0]} 
+        label={this.state.labels[index]} 
         selected={this.selected_keyword(index)} 
         mousedown={() => this.tokenDown(index)}
         mouseup={() => this.tokenUp(index)}
-        show_popover={index == this.state.selected_range[1]}
+        show_popover={index === this.state.selected_range[1]}
+        set_label={(lab: string) => this.setLabel(lab)}
       />
     );
 
@@ -179,7 +209,8 @@ type TokProps = {
   selected: string,
   mousedown: any,
   mouseup: any,
-  show_popover: boolean
+  show_popover: boolean,
+  set_label: any
 };
 
 export default App;
