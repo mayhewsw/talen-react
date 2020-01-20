@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { Button, Popover, Container, Row, Overlay } from 'react-bootstrap';
 
+const axios = require('axios').default;
+
+
 class LabelButton extends React.Component<Props, State>{
 
   render() {
@@ -86,6 +89,16 @@ class App extends React.Component<Props, State> {
     // TODO: get these from the server.
     // TODO: create a system to have sentences also.
     const words = "these are some words , that form a long sentence .".split(" ");
+
+    axios.post('/getsentence', {
+        id: 0
+      })
+      .then(function (response: any) {
+        console.log(response);
+      })
+      .catch(function (error: any) {
+        console.log(error);
+    });
 
     this.state = {
       color: "white",
