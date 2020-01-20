@@ -4,7 +4,7 @@ import './App.css';
 import { Button, Popover, Container, Row, Overlay } from 'react-bootstrap';
 
 const axios = require('axios').default;
-
+axios.defaults.baseURL = "http://localhost:5000/";
 
 class LabelButton extends React.Component<Props, State>{
 
@@ -88,13 +88,15 @@ class App extends React.Component<Props, State> {
 
     // TODO: get these from the server.
     // TODO: create a system to have sentences also.
-    const words = "these are some words , that form a long sentence .".split(" ");
-
-    axios.post('/getsentence', {
+    var words = "this is a default sentence .".split(" ");
+    var self = this;
+    axios.post('/getsentence', 
+      {
         id: 0
       })
       .then(function (response: any) {
-        console.log(response);
+        words = response["data"].split(" ");
+        self.setWords(words);
       })
       .catch(function (error: any) {
         console.log(error);
@@ -107,6 +109,14 @@ class App extends React.Component<Props, State> {
       selected_range: [-1, -1],
       popover_index: -1
     };
+  }
+
+  setWords(words: Array<string>){
+    this.setState({
+      words: words,
+      labels: Array(words.length).fill("O"),
+      selected_range: [-1, -1],
+    });
   }
 
   updateColor(new_color: string) {
@@ -153,7 +163,6 @@ class App extends React.Component<Props, State> {
 
   checkClearRange(evt: any){
     const tgt = evt.target;
-    console.log(tgt.type);
     if(tgt.classList.contains("token") || tgt.classList.contains("label-button")){
       // do nothing?
     }else{
@@ -162,7 +171,6 @@ class App extends React.Component<Props, State> {
   }
 
   setLabel(label: string){
-    console.log(label);
     // the problem is that this is (-1, -1) by the time we get here.
     var newLabels = this.state.labels.slice();
     for(var i = this.state.selected_range[0]; i <= this.state.selected_range[1]; i++){
@@ -170,6 +178,21 @@ class App extends React.Component<Props, State> {
     }
     this.setState({labels: newLabels})
     this.updateRange(-1,-1);
+  }
+
+  sendLabels(){
+    var self = this;
+    axios.post('/setlabels', 
+      {
+        words: self.state.words,
+        labels: self.state.labels
+      })
+      .then(function (response: any) {
+        console.log(response);
+      })
+      .catch(function (error: any) {
+        console.log(error);
+    });
   }
 
   render() {
@@ -201,6 +224,9 @@ class App extends React.Component<Props, State> {
         </Row>
         <Row>
         <div>{tokenList}</div>
+        </Row>
+        <Row>
+          <Button onClick={() => this.sendLabels()}>Save</Button>
         </Row>
       </Container>
     );
