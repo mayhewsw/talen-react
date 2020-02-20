@@ -1,5 +1,8 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## References
+* For example of flask-login with React, see: [https://github.com/matt-sm/create-react-flask]()
+
 ## Available Scripts
 
 In the project directory, you can run:
