@@ -4,7 +4,9 @@ import {
     DocumentTypes,
     LOAD_DOCUMENT,
     SAVE_DOCUMENT,
-    CHANGE_FORM
+    SET_ERROR_MESSAGE,
+    CHANGE_FORM,
+    SET_AUTH
 } from '../utils/types'
 
 const initialState: State = {
@@ -37,33 +39,49 @@ export const rootReducer = (state = initialState, action: any) => {
     switch (action.type) {
       case CHANGE_FORM:
         return changeForm(state, action)
-    //   case SET_AUTH:
-    //     return setAuth(state, action)
+      case SET_AUTH:
+        return setAuth(state, action)
     //   case SENDING_REQUEST:
     //     return sendingRequest(state, action)
     //   case LOADING_AUTH:
     //     return loadingAuth(state, action)
-    //   case SET_ERROR_MESSAGE:
-    //     return setErrorMessage(state, action)
+      case SET_ERROR_MESSAGE:
+        return setErrorMessage(state, action)
     //   case SET_DATA:
     //     return setData(state, action)
       default:
         return state
     }
-  }
+}
   
-  const changeForm = (state: State, action: any) => {
-      console.log("in the reducer for changeForm")
-      console.log(action)
+const changeForm = (state: State, action: any) => {
+    console.log("in the reducer for changeForm")
+    console.log(action)
     return {
-      ...state,
-      formState: {
+        ...state,
+        formState: {
         ...state.formState,
         ...action.newState
-      }
+        }
     }
-  }
+}
 
+const setAuth = (state: State, action: any) => {
+    console.log(action);
+    return {
+        ...state,
+        loggedIn: action.newState,
+        userName: action.username,
+    }
+}
+
+const setErrorMessage = (state: State, action: any) => {
+    console.log(action);
+    return {
+        ...state,
+        errorMessage: action.message
+    }
+}
 
 // const rootReducer = combineReducers({
 //     homeReducer,

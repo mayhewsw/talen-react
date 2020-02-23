@@ -104,15 +104,14 @@ if __name__ == "__main__":
     # this needs to come after db???
     from models import User
 
-@login_manager.user_loader
-def load_user(user_id):
-    user_entry = User.get(user_id)
-    return User(*user_entry)
+    # @login_manager.user_loader
+    # def load_user(user_id):
+    #     user_entry = User.get(user_id)
+    #     return User(*user_entry)
 
+    login_manager.init_app(app)
+    app.register_blueprint(bp, url_prefix='/api')
 
-login_manager.init_app(app)
-app.register_blueprint(bp, url_prefix='/api')
+    #from app import views # noqa
 
-#from app import views # noqa
-
-app.run(debug=True)
+    app.run(debug=True)

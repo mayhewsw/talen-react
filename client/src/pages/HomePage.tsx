@@ -1,15 +1,11 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { Row } from 'react-bootstrap';
 
 const HomePage = () => (
-    <div>
+    <Row>
         <h1>Home Page</h1>
-        <nav>
-            <Link to="/">Home</Link>
-            <Link to="/login">Login</Link>
-            <Link to="/annotate">Annotate</Link>
-        </nav>
-    </div>
+    </Row>
   );
 
 export default HomePage;

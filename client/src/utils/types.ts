@@ -30,7 +30,12 @@ interface LoadDocumentAction {
 interface SaveDocumentAction {
   type: typeof SAVE_DOCUMENT
   docid: string
-  ataset: string
+  dataset: string
+}
+interface SetAuthAction {
+  type: typeof SET_AUTH
+  newState: boolean,
+  username: string | null,
 }
 
-export type DocumentTypes = LoadDocumentAction | SaveDocumentAction
+export type DocumentTypes = LoadDocumentAction | SaveDocumentAction | SetAuthAction

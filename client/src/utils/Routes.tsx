@@ -6,6 +6,8 @@ import Annotate from "../pages/Annotate";
 import PageNotFound from "../pages/PageNotFound";
 import { State } from "../utils/types"
 import { connect } from 'react-redux'
+import { Container } from 'react-bootstrap';
+import MainPanel from '../components/MainPanel';
 
 class Routes extends React.Component<Props> {
 
@@ -13,11 +15,11 @@ class Routes extends React.Component<Props> {
     const { loggedIn } = this.props
 
     return (
-      <>
-        { !loggedIn ? (
+      <MainPanel>
+        { loggedIn ? (
           <Switch>
             <Route exact={true} path="/" component={HomePage} />
-            <Route exact={true} path="/login" component={LoginPage} />
+            <Route exact={true} path="/login" component={HomePage} />
             <Route exact={true} path="/anno" component={Annotate} />
             <Route exact={false} path="/" component={PageNotFound} />
           </Switch>
@@ -25,8 +27,9 @@ class Routes extends React.Component<Props> {
           // TODO: consider passing the next URL here.
           <Route exact={false} path="/" component={LoginPage} />
         )}
-      </>
+    </MainPanel>
     );
+    
   }
 }
 
