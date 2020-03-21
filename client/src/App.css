@@ -3,6 +3,10 @@
   min-height: 700vh;
 }
 
+body {
+  padding-top: 80px;
+}
+
 #root{
   height: 5000px;
 }

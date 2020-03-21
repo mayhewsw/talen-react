@@ -6,13 +6,13 @@ import Annotate from "../pages/Annotate";
 import PageNotFound from "../pages/PageNotFound";
 import { State } from "../utils/types"
 import { connect } from 'react-redux'
-import { Container } from 'react-bootstrap';
 import MainPanel from '../components/MainPanel';
 
 class Routes extends React.Component<Props> {
 
   render() {
     const { loggedIn } = this.props
+    console.log(`logged in? ${loggedIn}`);
 
     return (
       <MainPanel>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Popover, Container, Row, Overlay } from 'react-bootstrap';
+import { Popover, Overlay } from 'react-bootstrap';
 import LabelButton from "./LabelButton";
 
 class Token extends React.Component<TokProps>{

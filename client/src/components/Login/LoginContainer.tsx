@@ -9,12 +9,10 @@ import { login, setErrorMessage } from '../../utils/login'
 class LoginContainer extends React.Component<Props> {
   componentDidMount() {
     this.props.clearErrors()
-    console.log(this.props)
   }
 
   render() {
     const { loggedIn, handleSubmit, currentlySending, formState, errorMessage } = this.props
-    console.log(formState)
 
     return (
       <div>

@@ -1,10 +1,10 @@
 import React from 'react'
-import ErrorView from '../ErrorView'
 import LoadingView from '../LoadingView'
 import Input from '../Input'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = (props: Props) => {
-  const { formState, handleSubmit, errorMessage, currentlySending } = props
+  const { formState, handleSubmit, currentlySending } = props
 
   const submitForm = (event: any) => {
     event.preventDefault()
@@ -12,13 +12,14 @@ const LoginForm = (props: Props) => {
   }
 
   return (
-    <form onSubmit={submitForm}>
+    <Form onSubmit={submitForm}>
       <Input type="text" name="email" model="email" label="Email:" />
       <Input type="password" name="password" model="password" label="Password:" />
-      <input type="submit" value="Submit" />
+      <Button variant="primary" type="submit">
+         Submit
+      </Button>
       <LoadingView currentlySending={currentlySending} />
-      {/* <ErrorView message={errorMessage} /> */}
-    </form>
+    </Form>
   )
 }
 
