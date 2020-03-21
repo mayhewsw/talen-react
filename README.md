@@ -7,9 +7,16 @@ This is a modern rewrite of [TALEN: a Tool for Annotation of Low-resource ENtiti
 * python 3.6+
 * flask
 
+The client-login was inspired by: https://github.com/cornflourblue/react-redux-registration-login-example
+
 ## Installation
 
 TODO: write this part.
+
+```bash
+$ cd client
+$ npm install
+```
 
 ## Running
 
