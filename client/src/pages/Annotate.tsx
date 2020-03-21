@@ -13,17 +13,17 @@ class Annotate extends React.Component<any, State> {
     // TODO: create a system to have sentences also.
     var words = "this is a default sentence .".split(" ");
     var self = this;
-    Axios.post('http://localhost:5000/getsentence', 
-      {
-        id: 0
-      })
-      .then(function (response: any) {
-        words = response["data"].split(" ");
-        self.setWords(words);
-      })
-      .catch(function (error: any) {
-        console.log(error);
-    });
+    // Axios.post('http://localhost:5000/getsentence', 
+    //   {
+    //     id: 0
+    //   })
+    //   .then(function (response: any) {
+    //     words = response["data"].split(" ");
+    //     self.setWords(words);
+    //   })
+    //   .catch(function (error: any) {
+    //     console.log(error);
+    // });
 
     this.state = {
       color: "white",

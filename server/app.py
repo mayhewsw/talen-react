@@ -94,7 +94,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.config.from_object(Config)
 Session(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 db = SQLAlchemy(app)
 
@@ -116,4 +116,7 @@ if __name__ == "__main__":
 
     #from app import views # noqa
 
-    app.run(debug=True)
+    # This value is host is required to make cookies work correctly.
+    # You need to set your hosts file correctly, for example:
+    #  127.0.0.1   localhost    dev.localhost
+    app.run(host="127.0.0.1", debug=True)

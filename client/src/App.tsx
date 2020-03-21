@@ -8,10 +8,14 @@ import './talen.css';
 import './App.css';
 
 class App extends React.Component<Props> {
+  
+  constructor(props: Props) {
+    super(props);
 
-  componentDidMount() {
+    // I think it is important to load the loggedIn thing before loading the app.
     this.props.loadUser()
   }
+
 
   render() {
     return (

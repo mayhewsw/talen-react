@@ -11,7 +11,7 @@ export const login = (username: string, password: string) => {
   return (dispatch: Dispatch) => {
     dispatch(sendingRequest(true))
     dispatch(setErrorMessage(''))
-    Axios.post('http://localhost:5000/api/login', { withCredentials: true, username, password })
+    Axios.post('http://127.0.0.1:5000/api/login', { withCredentials: true, username, password })
       .then(data => {
         console.log(data);
         console.log(username);
@@ -49,11 +49,11 @@ export const loadMe = () => {
   return (dispatch: Dispatch) => {
     // dispatch(loadingAuth(true))
     dispatch(setErrorMessage(''))
-    Axios.get('http://localhost:5000/api/me', {withCredentials: true})
+    Axios.get('http://127.0.0.1:5000/api/me', {withCredentials: true})
       .then((data: any) => {
         console.log(data);
         // dispatch(loadingAuth(false))
-        dispatch(setAuthState(data.isLoggedIn, "unknown?"))
+        dispatch(setAuthState(data.data.isLoggedIn, "unknown?"))
       })
       .catch(error => {
         // dispatch(loadingAuth(false))
@@ -65,7 +65,7 @@ export const logout = () => {
   return (dispatch: Dispatch) => {
     dispatch(sendingRequest(true))
     dispatch(setErrorMessage(''))
-    Axios.get('http://localhost:5000/api/logout')
+    Axios.get('http://127.0.0.1:5000/api/logout')
       .then((data: any) => {
         dispatch(sendingRequest(false))
         // TODO: there may be a problem with setting user to null if the logout failed
