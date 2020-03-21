@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import {
     State,
     DocumentTypes,
@@ -55,8 +54,6 @@ export const rootReducer = (state = initialState, action: any) => {
 }
   
 const changeForm = (state: State, action: any) => {
-    console.log("in the reducer for changeForm")
-    console.log(action)
     return {
         ...state,
         formState: {
@@ -67,7 +64,6 @@ const changeForm = (state: State, action: any) => {
 }
 
 const setAuth = (state: State, action: any) => {
-    console.log(action);
     return {
         ...state,
         loggedIn: action.newState,
@@ -76,7 +72,6 @@ const setAuth = (state: State, action: any) => {
 }
 
 const setErrorMessage = (state: State, action: any) => {
-    console.log(action);
     return {
         ...state,
         errorMessage: action.message

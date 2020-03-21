@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Popover, Container, Row, Overlay } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 class LabelButton extends React.Component<Props>{
 

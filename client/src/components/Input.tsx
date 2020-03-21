@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { changeForm } from '../utils/login'
 import { State } from '../utils/types'
+import { Form } from 'react-bootstrap'
 
 class Input extends React.Component<Props> {
   constructor(props: Props) {
@@ -12,8 +13,6 @@ class Input extends React.Component<Props> {
   changeInput(event: any) {
     const value = event.target.value
     const name = event.target.name
-    console.log(value)
-    console.log(name)
     this.props.handleChange({ [name]: value })
   }
 
@@ -25,10 +24,10 @@ class Input extends React.Component<Props> {
     const fsv = formState[model];
 
     return (
-      <label>
-        {label}
-        <input type={type} name={name} defaultValue={fsv} onChange={this.changeInput} />
-      </label>
+      <Form.Group>
+        <Form.Label>{label}</Form.Label>
+        <Form.Control type={type} name={name} defaultValue={fsv} onChange={this.changeInput} />
+      </Form.Group>
     )
   }
 }

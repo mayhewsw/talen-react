@@ -1,5 +1,6 @@
-from flask import request, jsonify, Blueprint
+from flask import request, jsonify, Blueprint, session
 from flask_login import login_required, login_user, current_user, logout_user
+import datetime
 
 bp = Blueprint('blueprint', __name__, template_folder='templates')
 
@@ -13,8 +14,8 @@ def login():
     from models import User
     json_payload = request.get_json()
     user: User = User.query.filter_by(username=json_payload['username']).first()
-    if (user and user.check_password(json_payload['password'])):  # not for prod
-            login_user(user)
+    if (user and user.check_password(json_payload['password'])):
+            login_user(user, remember=True, duration=datetime.timedelta(1))
             return jsonify(isLoggedIn=current_user.is_authenticated), 200
 
     return jsonify(authorization=False), 403
@@ -40,6 +41,11 @@ def protected():
 
 @bp.route("/me", methods=["GET"])
 def me():
+    print(session)
+    print(request.headers)
+    print(request)
+    print(current_user)
+    print(current_user.is_authenticated)
     return jsonify(isLoggedIn=current_user.is_authenticated)
 
 
