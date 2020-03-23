@@ -42,11 +42,15 @@ The client checks if the user is logged in by retrieving a variable from `localS
 
 What about sessions?
 
+Could we use flask_session with JWT tokens? I guess you could store stuff in the session that is keyed by the JWT token, or the user ID (probably that is a good idea).
+
+What kinds of things do authorized users want to do? Load documents, annotate, save, check personal stats. The next thing one might do is request a dataset, then request a document. Then, they will make changes to the document and save changes to file. There is some tension between annotations "living" in the javascript (in this case, React framework) and in the filesystem. As they are annotated, they will live in the state of page. But when you leave the page, you will save to disk (as in the Java version).
+
 ### What is flask-login used for?
 
 If you use flask-jwt, then you pass `authenticate` and `identity` functions. These could load a User object from a database, and check passwords, etc. This was formerly the job of flask-login. Similarly, eah library has a decorator that goes before functions that require a login. 
 
-One thing that I want is knowledge of the current user. Could this be stored in the session?
+One thing that I want is knowledge of the current user. Could this be stored in the session? Yes, you can use `current_identity` to get the User object. Where is this stored.
 
 The internet seems to suggest that flask-login and flask-jwt are separate methods, and that flask-jwt is used for mobile applications while flask-login is nice for web applications.
 
