@@ -6,9 +6,12 @@ import { history } from '../_helpers';
 import { alertActions } from '../_actions';
 import { PrivateRoute } from '../_components';
 import { LoginPage } from '../LoginPage';
+import { HomePage } from '../HomePage';
 import { DatasetPage } from '../DatasetPage';
 import { DocumentPage } from '../DocumentPage';
 import { RegisterPage } from '../RegisterPage';
+import MainPanel from '../components/MainPanel';
+import './App.css';
 
 class App extends React.Component {
     constructor(props) {
@@ -23,24 +26,22 @@ class App extends React.Component {
     render() {
         const { alert } = this.props;
         return (
-            <div className="jumbotron">
-                <div className="container">
-                    <div className="col-sm-8 col-sm-offset-2">
-                        {alert.message &&
-                            <div className={`alert ${alert.type}`}>{alert.message}</div>
-                        }
-                        <Router history={history}>
-                            <Switch>
-                                <PrivateRoute exact path="/" component={DatasetPage} />
-                                <PrivateRoute path="/dataset/:id" component={DocumentPage} />
-                                <Route path="/login" component={LoginPage} />
-                                <Route path="/register" component={RegisterPage} />
-                                <Redirect from="*" to="/" />
-                            </Switch>
-                        </Router>
-                    </div>
-                </div>
-            </div>
+            <Router history={history}>
+                <MainPanel>
+                    {alert.message &&
+                        <div className={`alert ${alert.type}`}>{alert.message}</div>
+                    }
+                    
+                    <Switch>
+                        <PrivateRoute exact path="/" component={HomePage} />
+                        <PrivateRoute exact path="/dataset/:id" component={DatasetPage} />
+                        <PrivateRoute exact path="/dataset/:id/:docid" component={DocumentPage} />
+                        <Route path="/login" component={LoginPage} />
+                        <Route path="/register" component={RegisterPage} />
+                        <Redirect from="*" to="/" />
+                    </Switch>
+                </MainPanel>
+            </Router>
         );
     }
 }

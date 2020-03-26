@@ -1,4 +1,3 @@
-import config from 'config';
 import { authHeader } from '../_helpers';
 
 export const dataService = {
@@ -11,7 +10,7 @@ function getDatasets() {
         headers: authHeader()
     };
 
-    return fetch(`${config.apiUrl}/datasetlist`, requestOptions)
+    return fetch(`http://localhost:5000/datasetlist`, requestOptions)
         .then(handleResponse)
         .then(data => {
             return data;

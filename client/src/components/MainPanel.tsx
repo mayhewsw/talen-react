@@ -21,11 +21,11 @@ class MainPanel extends React.Component<Props>{
             </Navbar.Collapse>
 
             <Navbar.Collapse className="justify-content-end">
-                {this.props.loggedIn ? 
+                {"" ? 
                     <>
                         <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text>
                         <Form inline> 
-                            <Button onClick={() => this.props.handleLogout()} variant="outline-success">Logout</Button> 
+                            <Button onClick={() => console.log("logout")} variant="outline-success">Logout</Button> 
                         </Form>
                     </>
                 : 
@@ -33,18 +33,10 @@ class MainPanel extends React.Component<Props>{
                 }
             </Navbar.Collapse>
 
-            
-
         </Navbar.Collapse>
         </Container>
         </Navbar>
         <Container>
-            { this.props.errorMessage.length > 0 ? 
-            <Row>
-                <Alert variant="danger">
-                    {this.props.errorMessage}
-                </Alert>
-            </Row> : null}
             {this.props.children}
         </Container>
         </div>
@@ -53,22 +45,15 @@ class MainPanel extends React.Component<Props>{
 }
 
 type Props = { 
-    errorMessage: string;
-    loggedIn: boolean;
     userName: string;
-    handleLogout: Function
-    clearErrors: Function
 };
 
 const mapStateToProps = (state: State) => ({
-    errorMessage: state.errorMessage,
-    loggedIn: state.loggedIn,
-    userName: state.userName
+    // TODO: this is not working!
+    userName: "dunno"
   })
 
   const mapDispatchToProps = (dispatch: Function) => ({
-    handleLogout: () => dispatch(logout()),
-    clearErrors: () => dispatch(setErrorMessage(''))
   })
   
   export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainPanel))

@@ -4,14 +4,15 @@ import { connect } from 'react-redux';
 
 import { dataActions, userActions } from '../_actions';
 
-class DatasetPage extends React.Component {
+// this page shows a list of datasets. If you click on a dataset, 
+// that takes you to a DatasetPage.
+class HomePage extends React.Component {
     componentDidMount() {
         this.props.getDatasets();
     }
 
     render() {
-        const { user, users, data } = this.props;
-        console.log(user);
+        const { user, data } = this.props;
         return (
             <div className="col-md-6 col-md-offset-3">
                 <h1>Hi {user.username}!</h1>
@@ -39,5 +40,5 @@ const actionCreators = {
     getDatasets: dataActions.getDatasets
 }
 
-const connectedDatasetPage = connect(mapState, actionCreators)(DatasetPage);
-export { connectedDatasetPage as DatasetPage };
+const connectedDatasetPage = connect(mapState, actionCreators)(HomePage);
+export { connectedDatasetPage as HomePage };
