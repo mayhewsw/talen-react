@@ -1,7 +1,10 @@
 import { authHeader } from '../_helpers';
 
 export const dataService = {
-    getDatasets
+    getDatasets,
+    saveDocument,
+    loadDocument,
+    getDocuments
 };
 
 function getDatasets() {
@@ -16,6 +19,49 @@ function getDatasets() {
             return data;
         });
 }
+
+function getDocuments(dataset) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(`http://localhost:5000/loaddataset?dataset=${dataset}`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            return data;
+        });
+}
+
+function saveDocument(data) {
+    console.log("in service");
+    console.log(data);
+    const requestOptions = {
+        headers: { ...authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+        method: 'POST'
+    };
+
+    return fetch(`http://localhost:5000/savedoc`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            return data;
+        });
+}
+
+function loadDocument(dataset, docid) {
+    const requestOptions = {
+        headers: authHeader(),
+        method: 'GET'
+    };
+
+    return fetch(`http://localhost:5000/loaddoc?docid=${docid}&dataset=${dataset}`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            return data;
+        });
+}
+
 
 function handleResponse(response) {
     return response.text().then(text => {

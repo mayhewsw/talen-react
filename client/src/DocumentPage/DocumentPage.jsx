@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import Annotate from '../pages/Annotate';
 
 class DocumentPage extends React.Component {
+
 
     render() {
         const { user, match } = this.props;
@@ -13,7 +15,7 @@ class DocumentPage extends React.Component {
             <div className="col-md-6 col-md-offset-3">
             <h1>{match.params.id} : {match.params.docid}</h1>
 
-                This page will have sentences for the purpose of annotating!
+                <Annotate dataset={match.params.id} docid={match.params.docid}/>
 
                 <p><Link to={`/dataset/${match.params.id}`}>Back to all docs...</Link>
                 </p>

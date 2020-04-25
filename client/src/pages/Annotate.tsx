@@ -5,33 +5,34 @@ import { Button, Container, Row } from 'react-bootstrap';
 import Token from "../components/Token";
 import Axios from "axios";
 
+import { dataService } from '../_services';
+
 class Annotate extends React.Component<any, State> {
   constructor(props: any) {
     super(props);
 
-    // TODO: get these from the server.
-    // TODO: create a system to have sentences also.
-    var words = "this is a default sentence .".split(" ");
-    var self = this;
-    // Axios.post('http://localhost:5000/getsentence', 
-    //   {
-    //     id: 0
-    //   })
-    //   .then(function (response: any) {
-    //     words = response["data"].split(" ");
-    //     self.setWords(words);
-    //   })
-    //   .catch(function (error: any) {
-    //     console.log(error);
-    // });
-
     this.state = {
       color: "white",
-      words: words,
-      labels: Array(words.length).fill("O"),
+      words: [],
+      labels: [],
       selected_range: [-1, -1],
       popover_index: -1
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props);
+    //var words = "this is a default sentence .".split(" ");
+    dataService.loadDocument(this.props.dataset, this.props.docid)
+      .then((res: any) => 
+        {console.log(res); 
+        this.setState({
+          words: res["sentences"][0],
+          labels: res["labels"][0],
+          selected_range: [-1, -1],
+          popover_index: -1
+        })}
+      );
   }
 
   setWords(words: Array<string>){
@@ -104,18 +105,15 @@ class Annotate extends React.Component<any, State> {
   }
 
   sendLabels(){
-    var self = this;
-    Axios.post('http://localhost:5000//setlabels', 
-      {
-        words: self.state.words,
-        labels: self.state.labels
-      })
-      .then(function (response: any) {
-        console.log(response);
-      })
-      .catch(function (error: any) {
-        console.log(error);
-    });
+    var data = {
+      docid: this.props.docid,
+      dataset: this.props.dataset,
+      sentences: [this.state.words],
+      labels: [this.state.labels]
+    }
+    console.log(data);
+    // TODO: this should be dataActions!!
+    dataService.saveDocument(data);
   }
 
   render() {
@@ -143,9 +141,6 @@ class Annotate extends React.Component<any, State> {
       <Container style={{ backgroundColor: this.state.color }} 
           onMouseUp={(evt: any) => this.checkClearRange(evt)}>
         <Row>
-          <h1>Annotations!</h1>
-        </Row>
-        <Row>
         <div>{tokenList}</div>
         </Row>
         <Row>
@@ -154,6 +149,11 @@ class Annotate extends React.Component<any, State> {
       </Container>
     );
   }
+}
+
+type Props = {
+  state: State,
+
 }
 
 type State = {
