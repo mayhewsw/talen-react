@@ -1,55 +1,48 @@
-from flask import request, jsonify, Blueprint, session
-from flask_login import login_required, login_user, current_user, logout_user
-import datetime
+from flask import request, jsonify, Blueprint
+from flask_jwt import jwt_required, current_identity
 
 bp = Blueprint('blueprint', __name__, template_folder='templates')
 
-@bp.route("/", methods=["GET"])
-def index():
-    return jsonify(message="Hello World!"), 200
-
-@bp.route("/login", methods=["POST"])
-def login():
-    print("logging in")
-    from models import User
-    json_payload = request.get_json()
-    user: User = User.query.filter_by(username=json_payload['username']).first()
-    if (user and user.check_password(json_payload['password'])):
-            login_user(user, remember=True, duration=datetime.timedelta(1))
-            return jsonify(isLoggedIn=current_user.is_authenticated), 200
-
-    return jsonify(authorization=False), 403
-
-@bp.route('/getsentence', methods=['GET', 'POST'])
-def getsentence():
-    return "this is a tokenized sentence , and it came from the server !"
-
-@bp.route('/setlabels', methods=['POST'])
-def setlabels():
-    data = request.get_json()
-    words = data["words"]
-    labels = data["labels"]
-    print(words)
-    print(labels)
-    return "OK"
-
-@bp.route("/protected", methods=["GET"])
-@login_required
+@bp.route('/users/me')
+@jwt_required()
 def protected():
-    return jsonify(message="Hello Protected World!"), 200
+    return current_identity
 
+@bp.route('/datasetlist')
+@jwt_required()
+def datasetlist():
+    # TODO: load dataset
+    datasetIDs = {"datasetIDs" : ["CoNLL", "English_EWT", "OntoNotes"]}
+    return jsonify(datasetIDs)
 
-@bp.route("/me", methods=["GET"])
-def me():
-    print(session)
-    print(request.headers)
-    print(request)
-    print(current_user)
-    print(current_user.is_authenticated)
-    return jsonify(isLoggedIn=current_user.is_authenticated)
+@bp.route('/loaddataset')
+@jwt_required()
+def loaddataset():
+    data = request.get_json()
+    datasetID = data["datasetID"]
+    # TODO: load dataset
+    dataset = {"docids" : ["doc1", "doc2", "doc3"], 
+            "datasetID" : datasetID}
+    return jsonify(dataset)
 
+@bp.route('/loaddoc')
+@jwt_required()
+def loaddoc():
+    data = request.get_json()
+    docid = data["docid"]
+    dataset = data["dataset"]
+    # TODO: in a different world, this should also have a bunch of metadata associated with it, like at least doc name and annotations.
+    doc = {"sentences" : [["This is the first sentence.", "This is the second sentence."]],
+        "docid" : docid, "dataset" : dataset }
+    return jsonify(doc)
 
-@bp.route("/logout", methods=["GET"])
-def logout():
-    logout_user()
-    return jsonify(isLoggedIn=current_user.is_authenticated)
+@bp.route('/savedoc', methods=["POST"])
+@jwt_required()
+def savedoc():
+    json_payload = request.get_json()
+    # TODO: important that the doc that comes back is the same as the doc up above. Because it will be saved to file.
+    doc = json_payload["doc"] 
+    print("beep boop saving doc to file...")
+    print(doc)
+    print(current_identity)
+    return 200

@@ -11,5 +11,4 @@ class Config(object):
 
     SESSION_TYPE = 'filesystem'
 
-    REMEMBER_COOKIE_NAME = "swm_test_remember"
-    REMEMBER_COOKIE_DOMAIN = "127.0.0.1"
+    JWT_AUTH_URL_RULE = "/users/authenticate"
