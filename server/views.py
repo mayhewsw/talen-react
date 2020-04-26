@@ -41,20 +41,22 @@ def loaddoc():
     with open(path) as f:
         doc = json.load(f)
 
-    # # TODO: in a different world, this should also have a bunch of metadata associated with it, like at least doc name and annotations.
-    # doc = {
-    #     "sentences" : ["John eats ham .".split(), "She loves Paris .".split()],
-    #     "labels" : [["PER", "O", "O", "O"], ["O", "O", "LOC", "O"]],
-    #     "docid" : docid,
-    #     "dataset" : dataset 
-    # }
+    foldername = doc["dataset"] + "-anno-" + current_identity.username
+    path = os.path.join("data-anno", foldername, docid)
+    if os.path.exists(path):
+        with open(path) as f:
+            anno_doc = json.load(f)
+    
+        # TODO: ideally, here we compare the tokens, etc. etc.
+        # but for now we just overwrite the labels.
+        doc["labels"] = anno_doc["labels"]
+
     return jsonify(doc)
 
 @bp.route('/savedoc', methods=["POST"])
 @jwt_required()
 def savedoc():
     json_payload = request.get_json()
-    print(json_payload)
     # TODO: important that the doc that comes back is the same as the doc up above. Because it will be saved to file.
     doc = {
         "sentences":json_payload["sentences"],
@@ -62,17 +64,14 @@ def savedoc():
         "docid" : json_payload["docid"],
         "dataset" : json_payload["dataset"]
     }
-    print("beep boop saving doc to file...")
-    print(doc)
-    print(current_identity)
 
     foldername = doc["dataset"] + "-anno-" + current_identity.username
-    outpath = os.path.join("data", foldername, doc["docid"])
+    outpath = os.path.join("data-anno", foldername, doc["docid"])
     
-    if not os.path.exists(os.path.join("data", foldername)):
-        os.mkdir(os.path.join("data", foldername))
+    if not os.path.exists(os.path.join("data-anno", foldername)):
+        os.mkdir(os.path.join("data-anno", foldername))
     
     with open(outpath, "w") as out:
-        json.dump(doc, out)
+        json.dump(doc, out, sort_keys=True, indent=2)
     
     return jsonify(200)
