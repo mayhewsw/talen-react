@@ -101,11 +101,30 @@ class Annotate extends React.Component<any, State> {
   }
 
   setLabel(label: string){
+    var first = this.state.selected_range[0];
+    var last = this.state.selected_range[this.state.selected_range.length-1]
+
+    // then we switch them!
+    if (first > last){
+      const tmp = last;
+      last = first;
+      first = tmp;
+    }
+
     // the problem is that this is (-1, -1) by the time we get here.
     var newLabels = this.state.labels.slice();
-    for(var i = this.state.selected_range[0]; i <= this.state.selected_range[1]; i++){
-      newLabels[this.state.selected_sentence][i] = label;
+    for(var i = first; i <= last; i++){
+      var pref = "";
+      if(label !== "O"){
+        if(i == first){
+          pref = "B-";
+        }else{
+          pref = "I-";
+        }
+      }
+      newLabels[this.state.selected_sentence][i] = pref + label;
     }
+
     this.setState({labels: newLabels})
     this.updateRange(-1,-1,-1);
   }

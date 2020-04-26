@@ -1,1 +1,1 @@
-{"sentences": [["John", "is", "a", "first", "doc", "."], ["There", "are", "two", "sentences", "here", "."]], "labels": [["per", "O", "O", "O", "O", "O"],["O", "O", "O", "O", "O", "O"]], "docid": "doc1", "dataset": "dummy"}
+{"sentences": [["John", "is", "a", "first", "doc", "."], ["There", "are", "two", "sentences", "here", "."]], "labels": [["B-PER", "O", "O", "O", "O", "O"],["O", "O", "O", "O", "O", "O"]], "docid": "doc1", "dataset": "dummy"}

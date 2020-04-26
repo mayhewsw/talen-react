@@ -36,14 +36,14 @@ class Token extends React.Component<TokProps>{
     render() {
   
       // TODO: can this be moved out to save time?
-      const label_set = ["per", "org", "loc", "gpe", "O"]
+      const label_set = ["PER", "ORG", "LOC", "GPE", "O"]
       const label_button_list = label_set.map((label) => 
         <LabelButton key={label} label={label} onClick={() => this.props.set_label(label)} />    
       );
   
       return (
         <span>
-          <span className={[this.props.label, "token", "nocopy", this.props.selected].join(" ")}
+          <span className={[this.props.label.split("-").pop(), "token", "nocopy", this.props.selected].join(" ")}
             onMouseDown={(evt) => this.handleDown(evt)}
             onMouseUp={() => this.props.mouseup()}
             onMouseOver={(evt) => this.handleOver(evt)}

@@ -47,10 +47,10 @@ body {
 }
 
 .O { background-color: white;}
-.org { background-color: lightblue;}
-.loc { background-color: yellowgreen;}
-.per { background-color: yellow;}
-.gpe { background-color: coral;}
+.ORG { background-color: lightblue;}
+.LOC { background-color: yellowgreen;}
+.PER { background-color: yellow;}
+.GPE { background-color: coral;}
 
 .token {
   color: black;
