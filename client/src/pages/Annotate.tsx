@@ -13,8 +13,9 @@ class Annotate extends React.Component<any, State> {
 
     this.state = {
       color: "white",
-      words: [],
-      labels: [],
+      words: [[]],
+      labels: [[]],
+      selected_sentence: -1,
       selected_range: [-1, -1],
       popover_index: -1
     };
@@ -27,29 +28,34 @@ class Annotate extends React.Component<any, State> {
       .then((res: any) => 
         {console.log(res); 
         this.setState({
-          words: res["sentences"][0],
-          labels: res["labels"][0],
+          words: res["sentences"],
+          labels: res["labels"],
+          selected_sentence: -1,
           selected_range: [-1, -1],
           popover_index: -1
         })}
       );
   }
 
-  setWords(words: Array<string>){
-    this.setState({
-      words: words,
-      labels: Array(words.length).fill("O"),
-      selected_range: [-1, -1],
-    });
-  }
+  // setWords(words: Array<string>){
+  //   this.setState({
+  //     words: [words],
+  //     labels: Array(words.length).fill("O"),
+  //     selected_range: [-1, -1],
+  //   });
+  // }
 
   updateColor(new_color: string) {
     this.setState({ color: new_color })
   }
 
-  selected_keyword(i: number){
+  selected_keyword(sent_index: number, i: number){
     var first = this.state.selected_range[0];
     var last = this.state.selected_range[this.state.selected_range.length-1]
+
+    if (this.state.selected_sentence !== sent_index){
+      return ""
+    }
 
     // this could happen if you are dragging backwards.
     // then we switch them!
@@ -73,16 +79,16 @@ class Annotate extends React.Component<any, State> {
     return "";
   }
 
-  updateRange(start: number, end: number){
-    this.setState({selected_range : [start, end]})
+  updateRange(sent_index: number, start: number, end: number){
+    this.setState({selected_range : [start, end], selected_sentence: sent_index})
   }
 
-  tokenUp(index: number){
-    this.updateRange(this.state.selected_range[0], index)
+  tokenUp(sent_index: number, index: number){
+    this.updateRange(sent_index, this.state.selected_range[0], index)
   }
 
-  tokenDown(index: number){
-    this.updateRange(index, index)
+  tokenDown(sent_index: number, index: number){
+    this.updateRange(sent_index, index, index)
   }
 
   checkClearRange(evt: any){
@@ -90,7 +96,7 @@ class Annotate extends React.Component<any, State> {
     if(tgt.classList.contains("token") || tgt.classList.contains("label-button")){
       // do nothing?
     }else{
-      this.updateRange(-1,-1);
+      this.updateRange(-1,-1,-1);
     }
   }
 
@@ -98,18 +104,18 @@ class Annotate extends React.Component<any, State> {
     // the problem is that this is (-1, -1) by the time we get here.
     var newLabels = this.state.labels.slice();
     for(var i = this.state.selected_range[0]; i <= this.state.selected_range[1]; i++){
-      newLabels[i] = label;
+      newLabels[this.state.selected_sentence][i] = label;
     }
     this.setState({labels: newLabels})
-    this.updateRange(-1,-1);
+    this.updateRange(-1,-1,-1);
   }
 
   sendLabels(){
     var data = {
       docid: this.props.docid,
       dataset: this.props.dataset,
-      sentences: [this.state.words],
-      labels: [this.state.labels]
+      sentences: this.state.words,
+      labels: this.state.labels
     }
     console.log(data);
     // TODO: this should be dataActions!!
@@ -124,19 +130,23 @@ class Annotate extends React.Component<any, State> {
     // if mousedown OUTSIDE a token, then clear the range. 
     // if mouseup on a token, that becomes end of the range. 
 
-    const tokenList = this.state.words.map((tok, index) =>
-      <Token 
-        key={index} 
-        form={tok} 
-        label={this.state.labels[index]} 
-        selected={this.selected_keyword(index)} 
-        mousedown={() => this.tokenDown(index)}
-        mouseup={() => this.tokenUp(index)}
-        show_popover={index === this.state.selected_range[1]}
-        set_label={(lab: string) => this.setLabel(lab)}
-      />
+    const tokenList = this.state.words.map((sent, sent_index) =>
+      <div key={sent_index}>
+        {sent.map((tok, index) =>
+          <Token 
+            key={index} 
+            form={tok} 
+            label={this.state.labels[sent_index][index]} 
+            selected={this.selected_keyword(sent_index, index)} 
+            mousedown={() => this.tokenDown(sent_index, index)}
+            mouseup={() => this.tokenUp(sent_index, index)}
+            show_popover={index === this.state.selected_range[1] && sent_index == this.state.selected_sentence}
+            set_label={(lab: string) => this.setLabel(lab)}
+          />
+        )}
+      </div>
     );
-
+    
     return (
       <Container style={{ backgroundColor: this.state.color }} 
           onMouseUp={(evt: any) => this.checkClearRange(evt)}>
@@ -158,8 +168,9 @@ type Props = {
 
 type State = {
   color: string,
-  words: Array<string>,
-  labels: Array<string>,
+  words: Array<Array<string>>,
+  labels: Array<Array<string>>,
+  selected_sentence: number,
   selected_range: Array<number>,
   popover_index: number
 };

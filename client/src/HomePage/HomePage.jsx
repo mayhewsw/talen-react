@@ -17,7 +17,7 @@ class HomePage extends React.Component {
             <div className="col-md-6 col-md-offset-3">
                 <h1>Hi {user.username}!</h1>
                 <ul>
-                {data.items && data.items.datasetIDs.map(
+                {data.items && data.items.datasetIDs && data.items.datasetIDs.map(
                     (id, index) => <li key={index}><Link to={`/dataset/${id}`}>{id}</Link></li>)
                 }
                 </ul>

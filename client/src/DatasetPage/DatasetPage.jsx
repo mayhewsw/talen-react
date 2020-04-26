@@ -22,7 +22,7 @@ class DatasetPage extends React.Component {
                 Yo what up! This dataset is called {match.params.id}. These are documents below here:
 
                 <ul> 
-                {data.items && data.items.documentIDs.map(
+                {data.items && data.items.documentIDs && data.items.documentIDs.map(
                     (id, index) => <li key={index}><Link to={`/dataset/${match.params.id}/${id}`}>{id}</Link></li>)
                 }
                 </ul>
