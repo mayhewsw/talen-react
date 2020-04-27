@@ -3,6 +3,7 @@ from flask_jwt import JWT, jwt_required
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
+
 from views import bp
 
 app = Flask(__name__)
