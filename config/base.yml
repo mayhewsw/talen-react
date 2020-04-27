@@ -1,0 +1,6 @@
+cities:
+  - Bratislava
+  - Kosice
+  - Trnava
+
+DATABASE_FILE: app.db
