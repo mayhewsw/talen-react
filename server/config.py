@@ -5,6 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 CONFIG_BASE_FILE = os.path.join(basedir, "../config/base.yml")
 DATASET_CONFIG_FILE_PATH = os.path.join(basedir, "../config/datasets")
 
+
 class Config(object):
 
     if os.path.exists(CONFIG_BASE_FILE):
@@ -13,13 +14,7 @@ class Config(object):
     else:
         print(f"File not found: {CONFIG_BASE_FILE}")
 
-    config_fnames = filter(lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH))
-
     dataset_configs = {}
-    for fname in config_fnames:
-        with open(os.path.join(DATASET_CONFIG_FILE_PATH, fname)) as f:
-            cfg = yaml.load(f, Loader=yaml.Loader)
-            dataset_configs[cfg["name"]] = cfg
 
     # Some other stuff that doesn't really fit into a config file
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \

@@ -15,6 +15,7 @@ class Annotate extends React.Component<any, State> {
       color: "white",
       words: [[]],
       labels: [[]],
+      path: "",
       selected_sentence: -1,
       selected_range: [-1, -1],
       popover_index: -1
@@ -30,6 +31,7 @@ class Annotate extends React.Component<any, State> {
         this.setState({
           words: res["sentences"],
           labels: res["labels"],
+          path: res["path"],
           selected_sentence: -1,
           selected_range: [-1, -1],
           popover_index: -1
@@ -134,7 +136,8 @@ class Annotate extends React.Component<any, State> {
       docid: this.props.docid,
       dataset: this.props.dataset,
       sentences: this.state.words,
-      labels: this.state.labels
+      labels: this.state.labels,
+      path: this.state.path
     }
     console.log(data);
     // TODO: this should be dataActions!!
@@ -189,6 +192,7 @@ type State = {
   color: string,
   words: Array<Array<string>>,
   labels: Array<Array<string>>,
+  path: string,
   selected_sentence: number,
   selected_range: Array<number>,
   popover_index: number

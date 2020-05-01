@@ -1,4 +1,3 @@
-import os
 import json
 
 class JsonReader:
@@ -10,6 +9,6 @@ class JsonReader:
         return doc
 
     @staticmethod
-    def write_doc(doc, path):
+    def write_doc(doc: dict, path: str):
         with open(path, "w") as out:
             json.dump(doc, out, sort_keys=True, indent=2)

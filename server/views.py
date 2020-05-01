@@ -1,9 +1,10 @@
 from flask import request, jsonify, Blueprint
 from flask_jwt import jwt_required, current_identity
 import json
-from config import Config
+from config import Config, DATASET_CONFIG_FILE_PATH
 import os
 import importlib
+import yaml
 
 bp = Blueprint('blueprint', __name__, template_folder='templates')
 
@@ -12,22 +13,35 @@ bp = Blueprint('blueprint', __name__, template_folder='templates')
 def protected():
     return current_identity
 
+
 @bp.route('/datasetlist')
 @jwt_required()
 def datasetlist():
-    keys = sorted(Config.dataset_configs.keys())
-    datasetIDs = {"datasetIDs" : keys}
+    # we want to reload this every time.
+    config_fnames = filter(lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH))
+
+    dataset_configs = {}
+    for fname in config_fnames:
+        with open(os.path.join(DATASET_CONFIG_FILE_PATH, fname)) as f:
+            cfg = yaml.load(f, Loader=yaml.Loader)
+            dataset_configs[cfg["name"]] = cfg
+
+    Config.dataset_configs = dataset_configs
+
+    keys = sorted(dataset_configs.keys())
+    datasetIDs = {"datasetIDs": keys}
     return jsonify(datasetIDs)
+
 
 @bp.route('/loaddataset')
 @jwt_required()
 def loaddataset():
     datasetID = request.args.get('dataset')
 
-    files = os.listdir(Config.dataset_configs[datasetID]["path"])
+    files = sorted(os.listdir(Config.dataset_configs[datasetID]["path"]))
 
-    dataset = {"documentIDs" : files, 
-               "datasetID" : datasetID}
+    dataset = {"documentIDs": files,
+               "datasetID": datasetID}
 
     return jsonify(dataset)
 
@@ -43,8 +57,6 @@ def get_reader(dataset):
 def loaddoc():
     docid = request.args.get('docid')
     dataset = request.args.get('dataset')
-
-    print(dataset, docid)
 
     cfg = Config.dataset_configs[dataset]
 
@@ -75,7 +87,8 @@ def savedoc():
         "sentences": json_payload["sentences"],
         "labels": json_payload["labels"],
         "docid": json_payload["docid"],
-        "dataset": json_payload["dataset"]
+        "dataset": json_payload["dataset"],
+        "path" : json_payload["path"]
     }
 
     datapath = Config.dataset_configs[doc["dataset"]]["path"]

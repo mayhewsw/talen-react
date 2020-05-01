@@ -1,0 +1,3 @@
+name: UD_English-EWT-train
+path: data/en_ewt-ud-train
+reader: ud_reader.UDReader
