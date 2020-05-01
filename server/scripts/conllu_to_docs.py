@@ -1,10 +1,14 @@
 from io import open
 from conllu import parse_tree_incr
 import os
+import sys
 
-path_to_udfile = "/Users/stephen/IdeaProjects/UD_English-EWT/en_ewt-ud-train.conllu"
+if len(sys.argv) != 3:
+    print("Usage: python conllu_to_docs.py UD-conllu-file.conllu output_folder/")
 
-outpath = "data/en_ewt-ud-train"
+path_to_udfile = sys.argv[1]
+
+outpath = sys.argv[2]
 if not os.path.exists(outpath):
     os.mkdir(outpath)
 
@@ -29,4 +33,4 @@ with open(path_to_udfile, "r", encoding="utf-8") as data_file:
         # write the current sentence
         outfile.write(sentence.serialize())
 
-print(f"Wrote out {numdocs} docs")
+print(f"Wrote out {numdocs} docs to {outpath}")

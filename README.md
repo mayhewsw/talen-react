@@ -34,6 +34,19 @@ $ cd client
 $ npm start
 ```
 
+## Annotating Universal Dependencies
+
+One of the motivators for writing this software was to annotate Universal Dependencies with NER tags. 
+
+To get going with annotation, do the following:
+
+```bash
+$ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
+$ python scripts/conllu_to_docs.py UD_English-EWT/en_ewt-ud-train.conllu data/en_ewt-ud-train/
+``` 
+
+Make sure that `UD_English.yml` is set correctly, and you're good to go!
+ 
 ## Authorization and Sessions
 
 This uses JWT for user authentication. The client asks the server for a JWT by giving a username and password. If this succeeds, the token is stored in the browser (`localStorage`) until it expires (5 minutes is the default). All further requests to the server require knowledge of the JWT.
