@@ -1,9 +1,8 @@
 import React from 'react';
 
 //import './Annotate.css';
-import { Button, Container, Row } from 'react-bootstrap';
+import { Button, Row, Col } from 'react-bootstrap';
 import Token from "../components/Token";
-import Axios from "axios";
 
 import { dataService } from '../_services';
 
@@ -16,10 +15,14 @@ class Annotate extends React.Component<any, State> {
       words: [[]],
       labels: [[]],
       path: "",
+      mouseIsDown: false,
       selected_sentence: -1,
       selected_range: [-1, -1],
       popover_index: -1
     };
+
+    this.rowMouseDown = this.rowMouseDown.bind(this);
+    this.rowMouseUp = this.rowMouseUp.bind(this);
   }
 
   componentDidMount() {
@@ -90,7 +93,7 @@ class Annotate extends React.Component<any, State> {
   }
 
   tokenDown(sent_index: number, index: number){
-    this.updateRange(sent_index, index, index)
+    this.updateRange(sent_index, index, index)    
   }
 
   checkClearRange(evt: any){
@@ -103,6 +106,8 @@ class Annotate extends React.Component<any, State> {
   }
 
   setLabel(label: string){
+    console.log(this.state.selected_range);
+
     var first = this.state.selected_range[0];
     var last = this.state.selected_range[this.state.selected_range.length-1]
 
@@ -118,7 +123,7 @@ class Annotate extends React.Component<any, State> {
     for(var i = first; i <= last; i++){
       var pref = "";
       if(label !== "O"){
-        if(i == first){
+        if(i === first){
           pref = "B-";
         }else{
           pref = "I-";
@@ -144,16 +149,27 @@ class Annotate extends React.Component<any, State> {
     dataService.saveDocument(data);
   }
 
-  render() {
+  rowMouseDown(evt: any){
+    this.setState({mouseIsDown: true})
+  }
 
+  rowMouseUp(evt: any){
+    this.setState({mouseIsDown: false})
+    console.log("row up")
+    this.checkClearRange(evt);
+  }
+  
+  render() {
+    //console.log(this.state.mouseIsDown)
     // logic for updating the range. 
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
     // if mousedown OUTSIDE a token, then clear the range. 
     // if mouseup on a token, that becomes end of the range. 
+    
 
     const tokenList = this.state.words.map((sent, sent_index) =>
-      <div key={sent_index}>
+      <div className="sentence" key={sent_index}>
         {sent.map((tok, index) =>
           <Token 
             key={index} 
@@ -162,7 +178,7 @@ class Annotate extends React.Component<any, State> {
             selected={this.selected_keyword(sent_index, index)} 
             mousedown={() => this.tokenDown(sent_index, index)}
             mouseup={() => this.tokenUp(sent_index, index)}
-            show_popover={index === this.state.selected_range[1] && sent_index == this.state.selected_sentence}
+            show_popover={!this.state.mouseIsDown && index === this.state.selected_range[1] && sent_index === this.state.selected_sentence}
             set_label={(lab: string) => this.setLabel(lab)}
           />
         )}
@@ -170,15 +186,18 @@ class Annotate extends React.Component<any, State> {
     );
     
     return (
-      <Container style={{ backgroundColor: this.state.color }} 
-          onMouseUp={(evt: any) => this.checkClearRange(evt)}>
-        <Row>
-        <div>{tokenList}</div>
-        </Row>
-        <Row>
+      <Row className="document" style={{ backgroundColor: this.state.color }} 
+          //onMouseDown={this.rowMouseDown}
+          //onMouseUp={this.rowMouseUp}
+          onMouseUp={(evt: any) => this.checkClearRange(evt)}
+          >
+        <Col md={10}>
+          {tokenList}
+        </Col>
+        <Col md={2}>
           <Button onClick={() => this.sendLabels()}>Save</Button>
-        </Row>
-      </Container>
+        </Col>
+      </Row>
     );
   }
 }
@@ -195,6 +214,7 @@ type State = {
   path: string,
   selected_sentence: number,
   selected_range: Array<number>,
+  mouseIsDown: boolean,
   popover_index: number
 };
 

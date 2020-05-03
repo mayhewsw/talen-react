@@ -12,25 +12,43 @@ class Token extends React.Component<TokProps>{
         this.props.mouseup()
       }
     }
+
+    componentDidMount(){
+      document.addEventListener('contextmenu', this._handleContextMenu);
+    }
   
+    _handleContextMenu(event: any){
+      event.preventDefault();
+    }
+
     handleDown(evt: any){
       // console.log(evt.target.type) -> this will give type button
   
       if(evt.button === 2){
         // don't allow right click to open a menu
-        console.log("right click");
-        evt.preventDefault();
-        evt.stopPropagation();
-        evt.persist();      
-        return
+        console.log("right click down");    
+        //return
       }
-  
-      
+        
       // only fire if you click on a token.
       if(evt.target.classList.contains("token")){
         this.props.mousedown()
       }
   
+    }
+
+    handleUp(evt: any){
+      if(evt.button === 2){
+        // don't allow right click to open a menu
+        console.log("right click up");
+        this.props.set_label("O")    
+        return
+      }
+
+      // only fire if you click on a token.
+      //if(evt.target.classList.contains("token")){
+        this.props.mouseup()
+      //}
     }
   
     render() {
@@ -42,27 +60,30 @@ class Token extends React.Component<TokProps>{
       );
   
       return (
-        <span>
+        <>
           <span className={[this.props.label.split("-").pop(), "token", "nocopy", this.props.selected].join(" ")}
             onMouseDown={(evt) => this.handleDown(evt)}
-            onMouseUp={() => this.props.mouseup()}
+            onMouseUp={(evt) => this.handleUp(evt)}
             onMouseOver={(evt) => this.handleOver(evt)}
             ref={this.myRef}
           >
             {this.props.form}
           </span>
+          {/*  this whitespace is needed to get correct line breaks! */}
+          {' '} 
           <Overlay
             show={this.props.show_popover}
             target={this.myRef.current}
             placement={"bottom"}
+            transition={false}
           >
-            <Popover id="popover-contained">
+            <Popover id="popover-container">
               <Popover.Content>
                 {label_button_list}
               </Popover.Content>
             </Popover>
           </Overlay>
-        </span>
+        </>
   
       );
     }

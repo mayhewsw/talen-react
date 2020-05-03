@@ -1,8 +1,8 @@
 import React from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { dataActions, userActions } from '../_actions';
+import { dataActions } from '../_actions';
 
 // this page shows a list of datasets. If you click on a dataset, 
 // that takes you to a DatasetPage.

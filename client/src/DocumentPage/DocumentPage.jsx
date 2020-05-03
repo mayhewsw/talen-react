@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Annotate from '../pages/Annotate';
 
@@ -7,13 +7,14 @@ class DocumentPage extends React.Component {
 
 
     render() {
-        const { user, match } = this.props;
+        const { match } = this.props;
         console.log(match.params.id);
         console.log(match.params.docid);
 
         return (
-            <div className="col-md-6 col-md-offset-3">
-            <h1>{match.params.id} : {match.params.docid}</h1>
+            <div className="col-md-12">
+            <h1>{match.params.id}</h1>
+            <h2>{match.params.docid}</h2>
 
                 <Annotate dataset={match.params.id} docid={match.params.docid}/>
 

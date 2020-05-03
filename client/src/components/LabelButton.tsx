@@ -6,6 +6,7 @@ class LabelButton extends React.Component<Props>{
     render() {
       return (
         <Button onClick={() => this.props.onClick()}
+          bsPrefix="custom-btn"
           className={["label-button", this.props.label].join(" ")}>{this.props.label}</Button>
       )
     }

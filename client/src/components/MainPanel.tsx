@@ -1,9 +1,8 @@
 import React from 'react';
-import { Button, Container, Row, Navbar, Nav, NavDropdown, Form, Alert } from 'react-bootstrap';
+import { Button, Container, Navbar, Form } from 'react-bootstrap';
 import { State } from '../utils/types';
 import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
-import { logout, setErrorMessage } from '../utils/login'
 
 class MainPanel extends React.Component<Props>{
 

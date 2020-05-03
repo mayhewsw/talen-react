@@ -52,10 +52,16 @@ body {
 .PER { background-color: yellow;}
 .GPE { background-color: coral;}
 
+.custom-btn {
+  border: 0px;
+  border-radius: 3px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+
 .token {
   color: black;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-right: 1px;
   border: 1px solid transparent;
 }
 
