@@ -1,9 +1,9 @@
 import React from 'react';
 
 //import './Annotate.css';
-import { Button, Row, Col } from 'react-bootstrap';
-import Token from "../components/Token";
-
+import { Button, Row, Col, Card, ListGroup, Badge } from 'react-bootstrap';
+import Sentence from "../components/Sentence";
+import { Link } from 'react-router-dom';
 import { dataService } from '../_services';
 
 class Annotate extends React.Component<any, State> {
@@ -158,6 +158,10 @@ class Annotate extends React.Component<any, State> {
     console.log("row up")
     this.checkClearRange(evt);
   }
+
+  showPopoverFunc(sent_index: number, index: number){
+    return !this.state.mouseIsDown && index === this.state.selected_range[1] && sent_index === this.state.selected_sentence
+  }
   
   render() {
     //console.log(this.state.mouseIsDown)
@@ -168,22 +172,8 @@ class Annotate extends React.Component<any, State> {
     // if mouseup on a token, that becomes end of the range. 
     
 
-    const tokenList = this.state.words.map((sent, sent_index) =>
-      <div className="sentence" key={sent_index}>
-        {sent.map((tok, index) =>
-          <Token 
-            key={index} 
-            form={tok} 
-            label={this.state.labels[sent_index][index]} 
-            selected={this.selected_keyword(sent_index, index)} 
-            mousedown={() => this.tokenDown(sent_index, index)}
-            mouseup={() => this.tokenUp(sent_index, index)}
-            show_popover={!this.state.mouseIsDown && index === this.state.selected_range[1] && sent_index === this.state.selected_sentence}
-            set_label={(lab: string) => this.setLabel(lab)}
-          />
-        )}
-      </div>
-    );
+    // const tokenList = 
+    
     
     return (
       <Row className="document" style={{ backgroundColor: this.state.color }} 
@@ -192,10 +182,26 @@ class Annotate extends React.Component<any, State> {
           onMouseUp={(evt: any) => this.checkClearRange(evt)}
           >
         <Col md={10}>
-          {tokenList}
+          <Card>
+            <ListGroup variant="flush">
+
+          {this.state.words.map((sent, sent_index) =>
+            <ListGroup.Item key={"lgi-" + sent_index}>
+              <Sentence key={sent_index} index={sent_index} sent={sent} 
+              labels={this.state.labels[sent_index]}  
+              selected={(index: number) => this.selected_keyword(sent_index, index)} 
+              tokmousedown={(index: number) => this.tokenDown(sent_index, index)}
+              tokmouseup={(index: number) => this.tokenUp(sent_index, index)}
+              show_popover={(index: number) => this.showPopoverFunc(sent_index, index)}
+              set_label={(lab: string) => this.setLabel(lab)}
+              />
+              </ListGroup.Item>)}
+            </ListGroup>
+          </Card>
         </Col>
         <Col md={2}>
           <Button onClick={() => this.sendLabels()}>Save</Button>
+          <p><Link to={this.props.uplink}>Back to all docs...</Link></p>
         </Col>
       </Row>
     );

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Annotate from '../pages/Annotate';
 
@@ -16,10 +15,8 @@ class DocumentPage extends React.Component {
             <h1>{match.params.id}</h1>
             <h2>{match.params.docid}</h2>
 
-                <Annotate dataset={match.params.id} docid={match.params.docid}/>
+                <Annotate dataset={match.params.id} docid={match.params.docid} uplink={`/dataset/${match.params.id}`} />
 
-                <p><Link to={`/dataset/${match.params.id}`}>Back to all docs...</Link>
-                </p>
             </div>
         );
     }
