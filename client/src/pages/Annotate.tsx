@@ -106,7 +106,7 @@ class Annotate extends React.Component<any, State> {
   }
 
   setLabel(label: string){
-    console.log(this.state.selected_range);
+    console.log("set label: " + label)
 
     var first = this.state.selected_range[0];
     var last = this.state.selected_range[this.state.selected_range.length-1]
@@ -144,18 +144,18 @@ class Annotate extends React.Component<any, State> {
       labels: this.state.labels,
       path: this.state.path
     }
-    console.log(data);
     // TODO: this should be dataActions!!
     dataService.saveDocument(data);
   }
 
   rowMouseDown(evt: any){
-    this.setState({mouseIsDown: true})
+    if(evt.target.tagName !== "BUTTON"){
+      this.setState({mouseIsDown: true})
+    }
   }
 
   rowMouseUp(evt: any){
     this.setState({mouseIsDown: false})
-    console.log("row up")
     this.checkClearRange(evt);
   }
 
@@ -170,16 +170,11 @@ class Annotate extends React.Component<any, State> {
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
     // if mousedown OUTSIDE a token, then clear the range. 
     // if mouseup on a token, that becomes end of the range. 
-    
-
-    // const tokenList = 
-    
-    
     return (
       <Row className="document" style={{ backgroundColor: this.state.color }} 
-          //onMouseDown={this.rowMouseDown}
-          //onMouseUp={this.rowMouseUp}
-          onMouseUp={(evt: any) => this.checkClearRange(evt)}
+          onMouseDown={this.rowMouseDown}
+          onMouseUp={this.rowMouseUp}
+          //onMouseUp={(evt: any) => this.checkClearRange(evt)}
           >
         <Col md={10}>
           <Card>
