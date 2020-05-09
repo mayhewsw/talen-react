@@ -46,7 +46,7 @@ body {
   }
 }
 
-.O { background-color: white;}
+.O { background-color: transparent;}
 .ORG { background-color: lightblue;}
 .LOC { background-color: yellowgreen;}
 .PER { background-color: yellow;}
@@ -57,6 +57,17 @@ body {
   border-radius: 3px;
   padding: 5px 10px;
   text-transform: uppercase;
+}
+
+.sentence:nth-child(even) {background: #F8F8F8}
+.sentence:nth-child(odd) {background: #FFF}
+
+.sentence {
+  padding-bottom: 5px;
+}
+
+.sentence-badge {
+  margin-right: 7px;
 }
 
 .token {

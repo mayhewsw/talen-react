@@ -183,10 +183,8 @@ class Annotate extends React.Component<any, State> {
           >
         <Col md={10}>
           <Card>
-            <ListGroup variant="flush">
-
+          <Card.Body>
           {this.state.words.map((sent, sent_index) =>
-            <ListGroup.Item key={"lgi-" + sent_index}>
               <Sentence key={sent_index} index={sent_index} sent={sent} 
               labels={this.state.labels[sent_index]}  
               selected={(index: number) => this.selected_keyword(sent_index, index)} 
@@ -195,8 +193,8 @@ class Annotate extends React.Component<any, State> {
               show_popover={(index: number) => this.showPopoverFunc(sent_index, index)}
               set_label={(lab: string) => this.setLabel(lab)}
               />
-              </ListGroup.Item>)}
-            </ListGroup>
+              )}
+          </Card.Body>
           </Card>
         </Col>
         <Col md={2}>

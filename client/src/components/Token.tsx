@@ -61,7 +61,7 @@ class Token extends React.Component<TokProps>{
   
       return (
         <>
-          <span className={[this.props.label.split("-").pop(), "token", "nocopy", this.props.selected].join(" ")}
+          <span className={["token", this.props.label.split("-").pop(), "nocopy", this.props.selected].join(" ")}
             onMouseDown={(evt) => this.handleDown(evt)}
             onMouseUp={(evt) => this.handleUp(evt)}
             onMouseOver={(evt) => this.handleOver(evt)}
