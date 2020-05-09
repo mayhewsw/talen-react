@@ -70,7 +70,12 @@ class Token extends React.Component<TokProps>{
             {this.props.form}
           </span>
           {/*  this whitespace is needed to get correct line breaks! */}
-          {' '} 
+          {this.props.label !== "O" && this.props.next_token_is_entity ? 
+            <span className={["spacer", this.props.label.split("-").pop()].join(" ")}>
+              {' '}
+            </span> 
+            : 
+            ' '} 
           <Overlay
             show={this.props.show_popover}
             target={this.myRef.current}
@@ -98,5 +103,6 @@ type TokProps = {
     mousedown: any,
     mouseup: any,
     show_popover: boolean,
-    set_label: any
+    set_label: any,
+    next_token_is_entity: boolean
   };

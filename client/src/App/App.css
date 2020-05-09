@@ -76,6 +76,11 @@ body {
   border: 1px solid transparent;
 }
 
+.spacer {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
 .highlightsingle {
   border: lightgray solid 1px;
   border-radius: 3px;
