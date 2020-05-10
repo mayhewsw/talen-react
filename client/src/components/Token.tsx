@@ -75,7 +75,9 @@ class Token extends React.Component<TokProps>{
               {' '}
             </span> 
             : 
-            ' '} 
+            <span className={["spacer", this.props.selected === "highlightstart" || this.props.selected === "highlighted" ? "highlighted" : ""].join(" ")}>
+            {' '}
+          </span> } 
           <Overlay
             show={this.props.show_popover}
             target={this.myRef.current}

@@ -64,6 +64,7 @@ body {
 
 .sentence {
   padding-bottom: 5px;
+  line-height: 1.8;
 }
 
 .sentence-badge {
@@ -72,13 +73,15 @@ body {
 
 .token {
   color: black;
-  padding-right: 1px;
+  /* padding-right: 1px; */
+  padding: 2px 0px 2px 0;
   border: 1px solid transparent;
 }
 
 .spacer {
-  border-top: 1px solid transparent;
-  border-bottom: 1px solid transparent;
+  border: 1px solid transparent;
+  /* border-bottom: 1px solid transparent; */
+  padding: 2px 0px 2px 0;
 }
 
 .highlightsingle {
@@ -87,20 +90,31 @@ body {
 }
 
 .highlightstart {
-  border: 1px solid lightgray;
-  border-right-color: transparent;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  border-left: 1px solid lightgray;
+  border-right: 0px solid transparent;
+  padding-right: 1px;
   border-radius: 3px 0 0 3px;
 }
 
 .highlighted {
-  border: 1px solid lightgray;
-  border-right-color: transparent;
-  border-left-color: transparent;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  border-left: 0px solid transparent;
+  border-right: 0px solid transparent;
+  padding-left: 1px;
+  padding-right: 1px;
+  /* border-right-color: transparent; */
+  /* border-left-color: transparent; */
 }
 
 .highlightend {
-  border: 1px solid lightgray;
-  border-left-color: transparent;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+  border-left: 0px solid transparent;
+  padding-left: 1px;
+  border-right: 1px solid lightgray;
   border-radius: 0 3px 3px 0;
 }
 
