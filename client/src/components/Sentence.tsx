@@ -13,6 +13,7 @@ class Sentence extends React.Component<SentProps>{
                 key={index} 
                 form={tok} 
                 label={this.props.labels[index]} 
+                next_token_is_entity={index == this.props.sent.length-1 ? false : this.props.labels[index+1] !== "O"}
                 selected={this.props.selected(index)}
                 mousedown={() => this.props.tokmousedown(index)}
                 mouseup={() => this.props.tokmouseup(index)}
