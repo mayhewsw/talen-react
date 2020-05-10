@@ -1,7 +1,7 @@
 import React from 'react';
 
 //import './Annotate.css';
-import { Button, Row, Col, Card, ListGroup, Badge } from 'react-bootstrap';
+import { Button, Row, Col, Card } from 'react-bootstrap';
 import Sentence from "../components/Sentence";
 import { Link } from 'react-router-dom';
 import { dataService } from '../_services';
@@ -30,7 +30,7 @@ class Annotate extends React.Component<any, State> {
     //var words = "this is a default sentence .".split(" ");
     dataService.loadDocument(this.props.dataset, this.props.docid)
       .then((res: any) => 
-        {console.log(res); 
+        { 
         this.setState({
           words: res["sentences"],
           labels: res["labels"],
@@ -118,7 +118,6 @@ class Annotate extends React.Component<any, State> {
       first = tmp;
     }
 
-    // the problem is that this is (-1, -1) by the time we get here.
     var newLabels = this.state.labels.slice();
     for(var i = first; i <= last; i++){
       var pref = "";
@@ -128,10 +127,19 @@ class Annotate extends React.Component<any, State> {
         }else{
           pref = "I-";
         }
+      }else{
+        // assumes that all spans start with B-
+        // if i+1 is I-, then set i+1 to B-
+        var next = newLabels[this.state.selected_sentence][i+1];
+        if(next.startsWith("I-")){
+          // change the I- to a B-
+          newLabels[this.state.selected_sentence][i+1] = "B-" + next.split("-").pop();
+        }
       }
       newLabels[this.state.selected_sentence][i] = pref + label;
     }
 
+    // TODO: consider having a single state update here?
     this.setState({labels: newLabels})
     this.updateRange(-1,-1,-1);
   }

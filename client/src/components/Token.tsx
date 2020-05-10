@@ -34,7 +34,7 @@ class Token extends React.Component<TokProps>{
       if(evt.target.classList.contains("token")){
         this.props.mousedown()
       }
-  
+
     }
 
     handleUp(evt: any){
