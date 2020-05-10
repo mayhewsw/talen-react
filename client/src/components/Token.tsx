@@ -59,6 +59,15 @@ class Token extends React.Component<TokProps>{
         <LabelButton key={label} label={label} onClick={() => this.props.set_label(label)} />    
       );
   
+      var spacer_list = ["spacer"];
+      if(this.props.label !== "O" && this.props.next_token_is_entity){
+        spacer_list.push(this.props.label.split("-").pop() || "");
+      }
+
+      if(this.props.selected === "highlightstart" || this.props.selected === "highlighted"){
+        spacer_list.push("highlighted");
+      }
+
       return (
         <>
           <span className={["token", this.props.label.split("-").pop(), "nocopy", this.props.selected].join(" ")}
@@ -70,14 +79,9 @@ class Token extends React.Component<TokProps>{
             {this.props.form}
           </span>
           {/*  this whitespace is needed to get correct line breaks! */}
-          {this.props.label !== "O" && this.props.next_token_is_entity ? 
-            <span className={["spacer", this.props.label.split("-").pop()].join(" ")}>
+            <span className={spacer_list.join(" ")}>
               {' '}
             </span> 
-            : 
-            <span className={["spacer", this.props.selected === "highlightstart" || this.props.selected === "highlighted" ? "highlighted" : ""].join(" ")}>
-            {' '}
-          </span> } 
           <Overlay
             show={this.props.show_popover}
             target={this.myRef.current}
