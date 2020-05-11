@@ -1,7 +1,7 @@
 import React from 'react';
 
 //import './Annotate.css';
-import { Button, Row, Col, Card } from 'react-bootstrap';
+import { Button, ButtonGroup, Row, Col, Card } from 'react-bootstrap';
 import Sentence from "../components/Sentence";
 import { Link, withRouter } from 'react-router-dom';
 import { dataService } from '../_services';
@@ -191,9 +191,6 @@ class Annotate extends React.Component<any, State> {
   }
   
   render() {
-    console.log(this.state.prevDoc)
-    console.log(this.state.nextDoc)
-
     // logic for updating the range. 
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
@@ -224,8 +221,10 @@ class Annotate extends React.Component<any, State> {
         <Col md={2}>
           <Button onClick={() => this.sendLabels()}>Save</Button>
           <p><Link to={this.props.uplink}>Back to all docs...</Link></p>
-          {this.state.prevDoc && <p><a href={`/dataset/${this.props.dataset}/${this.state.prevDoc}`}>Previous</a></p>}
-          {this.state.nextDoc && <p><a href={`/dataset/${this.props.dataset}/${this.state.nextDoc}`}>Next</a></p>}
+          <ButtonGroup>
+            {this.state.prevDoc && <Button variant="outline-primary" href={`/dataset/${this.props.dataset}/${this.state.prevDoc}`}>Previous</Button>}
+            {this.state.nextDoc && <Button variant="outline-primary" href={`/dataset/${this.props.dataset}/${this.state.nextDoc}`}>Next</Button>}
+          </ButtonGroup>
           {this.state.status && <p>{this.state.status}</p>}
         </Col>
       </Row>
