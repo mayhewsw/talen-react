@@ -3,10 +3,11 @@ import React from 'react';
 //import './Annotate.css';
 import { Button, Row, Col, Card } from 'react-bootstrap';
 import Sentence from "../components/Sentence";
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { dataService } from '../_services';
 
 class Annotate extends React.Component<any, State> {
+
   constructor(props: any) {
     super(props);
 
@@ -18,7 +19,10 @@ class Annotate extends React.Component<any, State> {
       mouseIsDown: false,
       selected_sentence: -1,
       selected_range: [-1, -1],
-      popover_index: -1
+      popover_index: -1,
+      prevDoc: "",
+      nextDoc: "",
+      status: ""
     };
 
     this.rowMouseDown = this.rowMouseDown.bind(this);
@@ -26,8 +30,7 @@ class Annotate extends React.Component<any, State> {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    //var words = "this is a default sentence .".split(" ");
+
     dataService.loadDocument(this.props.dataset, this.props.docid)
       .then((res: any) => 
         { 
@@ -40,6 +43,22 @@ class Annotate extends React.Component<any, State> {
           popover_index: -1
         })}
       );
+
+    dataService.getDocuments(this.props.dataset)
+      .then((res: any) => {
+        var curr_ind = res["documentIDs"].indexOf(this.props.docid);
+        var prevDoc = res["documentIDs"][curr_ind-1];
+        var nextDoc = res["documentIDs"][curr_ind+1];
+
+
+        this.setState({
+          prevDoc: prevDoc,
+          nextDoc: nextDoc,
+          status: `${curr_ind+1}/${res["documentIDs"].length}`
+        })
+
+      });
+
   }
 
   // setWords(words: Array<string>){
@@ -172,7 +191,9 @@ class Annotate extends React.Component<any, State> {
   }
   
   render() {
-    //console.log(this.state.mouseIsDown)
+    console.log(this.state.prevDoc)
+    console.log(this.state.nextDoc)
+
     // logic for updating the range. 
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
@@ -203,6 +224,9 @@ class Annotate extends React.Component<any, State> {
         <Col md={2}>
           <Button onClick={() => this.sendLabels()}>Save</Button>
           <p><Link to={this.props.uplink}>Back to all docs...</Link></p>
+          {this.state.prevDoc && <p><a href={`/dataset/${this.props.dataset}/${this.state.prevDoc}`}>Previous</a></p>}
+          {this.state.nextDoc && <p><a href={`/dataset/${this.props.dataset}/${this.state.nextDoc}`}>Next</a></p>}
+          {this.state.status && <p>{this.state.status}</p>}
         </Col>
       </Row>
     );
@@ -211,7 +235,6 @@ class Annotate extends React.Component<any, State> {
 
 type Props = {
   state: State,
-
 }
 
 type State = {
@@ -222,8 +245,11 @@ type State = {
   selected_sentence: number,
   selected_range: Array<number>,
   mouseIsDown: boolean,
-  popover_index: number
+  popover_index: number,
+  prevDoc: string,
+  nextDoc: string,
+  status: string
 };
 
 
-export default Annotate;
+export default withRouter(Annotate);

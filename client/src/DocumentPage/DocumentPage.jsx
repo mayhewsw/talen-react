@@ -14,7 +14,7 @@ class DocumentPage extends React.Component {
             <div className="col-md-12">
             <h1>{match.params.id}</h1>
             <h2>{match.params.docid}</h2>
-
+                
                 <Annotate dataset={match.params.id} docid={match.params.docid} uplink={`/dataset/${match.params.id}`} />
 
             </div>
