@@ -124,6 +124,24 @@ class Annotate extends React.Component<any, State> {
     }
   }
 
+  // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
+  // CSA is continuous sub array
+  find_csa(arr: any, subarr: any, from_index: number) {
+    var i = from_index >>> 0,
+        sl = subarr.length,
+        l = arr.length + 1 - sl;
+
+    var inds = [];
+
+    loop: for (; i<l; i++) {
+        for (var j=0; j<sl; j++)
+            if (arr[i+j] !== subarr[j])
+                continue loop;
+        inds.push(i)
+    }
+    return inds;
+}
+
   setLabel(label: string){
     console.log("set label: " + label)
 
@@ -137,26 +155,45 @@ class Annotate extends React.Component<any, State> {
       first = tmp;
     }
 
-    var newLabels = this.state.labels.slice();
-    for(var i = first; i <= last; i++){
-      var pref = "";
-      if(label !== "O"){
-        if(i === first){
-          pref = "B-";
-        }else{
-          pref = "I-";
-        }
-      }else{
-        // assumes that all spans start with B-
-        // if i+1 is I-, then set i+1 to B-
-        var next = newLabels[this.state.selected_sentence][i+1];
-        if(next.startsWith("I-")){
-          // change the I- to a B-
-          newLabels[this.state.selected_sentence][i+1] = "B-" + next.split("-").pop();
-        }
-      }
-      newLabels[this.state.selected_sentence][i] = pref + label;
+    // get the string associated with this range
+    var word_slice = this.state.words[this.state.selected_sentence].slice(first, last+1);
+
+    var phrase_locations: number[][] = [];
+
+    for(var j=0; j < this.state.words.length; j++){
+      var inds = this.find_csa(this.state.words[j], word_slice, 0);
+      inds.forEach(ind => phrase_locations.push([j, ind, ind + word_slice.length-1]))
     }
+
+    var newLabels = this.state.labels.slice();
+
+    phrase_locations.forEach(tuple => {
+      //console.log(tuple);
+      var phrase_sent = tuple[0];
+      var phrase_start = tuple[1];
+      var phrase_end = tuple[2];
+
+      for(var i = phrase_start; i <= phrase_end; i++){
+        var pref = "";
+        if(label !== "O"){
+          if(i === first){
+            pref = "B-";
+          }else{
+            pref = "I-";
+          }
+        }else{
+          // assumes that all spans start with B-
+          // if i+1 is I-, then set i+1 to B-
+          var next = newLabels[phrase_sent][i+1];
+          if(next.startsWith("I-")){
+            // change the I- to a B-
+            newLabels[phrase_sent][i+1] = "B-" + next.split("-").pop();
+          }
+        }
+        newLabels[phrase_sent][i] = pref + label;
+      }
+
+    });
 
     // TODO: consider having a single state update here?
     this.setState({labels: newLabels})
