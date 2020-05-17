@@ -17,16 +17,15 @@ class Annotate extends React.Component<any, State> {
       labels: [[]],
       path: "",
       mouseIsDown: false,
-      selected_sentence: -1,
-      selected_range: [-1, -1],
-      popover_index: -1,
+      // selected_sentence: -1,
+      // selected_range: [-1, -1],
+      // popover_index: -1,
       prevDoc: "",
       nextDoc: "",
-      status: ""
+      status: "",
+      activeSent: -1
     };
 
-    this.rowMouseDown = this.rowMouseDown.bind(this);
-    this.rowMouseUp = this.rowMouseUp.bind(this);
   }
 
   componentDidMount() {
@@ -38,9 +37,9 @@ class Annotate extends React.Component<any, State> {
           words: res["sentences"],
           labels: res["labels"],
           path: res["path"],
-          selected_sentence: -1,
-          selected_range: [-1, -1],
-          popover_index: -1
+          // selected_sentence: -1,
+          // selected_range: [-1, -1],
+          // popover_index: -1
         })}
       );
 
@@ -73,56 +72,9 @@ class Annotate extends React.Component<any, State> {
     this.setState({ color: new_color })
   }
 
-  selected_keyword(sent_index: number, i: number){
-    var first = this.state.selected_range[0];
-    var last = this.state.selected_range[this.state.selected_range.length-1]
 
-    if (this.state.selected_sentence !== sent_index){
-      return ""
-    }
 
-    // this could happen if you are dragging backwards.
-    // then we switch them!
-    if (first > last){
-      const tmp = last;
-      last = first;
-      first = tmp;
-    }
 
-    if(first === last && first === i){
-      return "highlightsingle";
-    }
-    if(i === first){
-      return "highlightstart";
-    }else if(i === last){
-      return "highlightend";
-    }else if(i > first && i < last){
-      return "highlighted";
-    }
-
-    return "";
-  }
-
-  updateRange(sent_index: number, start: number, end: number){
-    this.setState({selected_range : [start, end], selected_sentence: sent_index})
-  }
-
-  tokenUp(sent_index: number, index: number){
-    this.updateRange(sent_index, this.state.selected_range[0], index)
-  }
-
-  tokenDown(sent_index: number, index: number){
-    this.updateRange(sent_index, index, index)    
-  }
-
-  checkClearRange(evt: any){
-    const tgt = evt.target;
-    if(tgt.classList.contains("token") || tgt.classList.contains("label-button")){
-      // do nothing?
-    }else{
-      this.updateRange(-1,-1,-1);
-    }
-  }
 
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
   // CSA is continuous sub array
@@ -142,11 +94,11 @@ class Annotate extends React.Component<any, State> {
     return inds;
 }
 
-  setLabel(label: string){
+  setLabel(label: string, first: number, last: number, sent_index: number){
     console.log("set label: " + label)
 
-    var first = this.state.selected_range[0];
-    var last = this.state.selected_range[this.state.selected_range.length-1]
+    // var first = this.state.selected_range[0];
+    // var last = this.state.selected_range[this.state.selected_range.length-1]
 
     // then we switch them!
     if (first > last){
@@ -156,7 +108,7 @@ class Annotate extends React.Component<any, State> {
     }
 
     // get the string associated with this range
-    var word_slice = this.state.words[this.state.selected_sentence].slice(first, last+1);
+    var word_slice = this.state.words[sent_index].slice(first, last+1);
 
     var phrase_locations: number[][] = [];
 
@@ -196,8 +148,7 @@ class Annotate extends React.Component<any, State> {
     });
 
     // TODO: consider having a single state update here?
-    this.setState({labels: newLabels})
-    this.updateRange(-1,-1,-1);
+    this.setState({labels: newLabels, activeSent: -1})
   }
 
   sendLabels(){
@@ -212,20 +163,11 @@ class Annotate extends React.Component<any, State> {
     dataService.saveDocument(data);
   }
 
-  rowMouseDown(evt: any){
-    if(evt.target.tagName !== "BUTTON"){
-      this.setState({mouseIsDown: true})
-    }
+  setFocus(sent_index: number){
+    console.log(`sentence ${sent_index} wants focus now!`);
+    this.setState({activeSent: sent_index})
   }
 
-  rowMouseUp(evt: any){
-    this.setState({mouseIsDown: false})
-    this.checkClearRange(evt);
-  }
-
-  showPopoverFunc(sent_index: number, index: number){
-    return !this.state.mouseIsDown && index === this.state.selected_range[1] && sent_index === this.state.selected_sentence
-  }
   
   render() {
     // logic for updating the range. 
@@ -235,8 +177,8 @@ class Annotate extends React.Component<any, State> {
     // if mouseup on a token, that becomes end of the range. 
     return (
       <Row className="document" style={{ backgroundColor: this.state.color }} 
-          onMouseDown={this.rowMouseDown}
-          onMouseUp={this.rowMouseUp}
+          // onMouseDown={this.rowMouseDown}
+          // onMouseUp={this.rowMouseUp}
           //onMouseUp={(evt: any) => this.checkClearRange(evt)}
           >
         <Col md={10}>
@@ -244,12 +186,10 @@ class Annotate extends React.Component<any, State> {
           <Card.Body>
           {this.state.words.map((sent, sent_index) =>
               <Sentence key={sent_index} index={sent_index} sent={sent} 
-              labels={this.state.labels[sent_index]}  
-              selected={(index: number) => this.selected_keyword(sent_index, index)} 
-              tokmousedown={(index: number) => this.tokenDown(sent_index, index)}
-              tokmouseup={(index: number) => this.tokenUp(sent_index, index)}
-              show_popover={(index: number) => this.showPopoverFunc(sent_index, index)}
-              set_label={(lab: string) => this.setLabel(lab)}
+              labels={this.state.labels[sent_index]}
+              setFocus={(ind: number) => this.setFocus(ind)}
+              isActive={sent_index == this.state.activeSent}
+              set_label={(lab: string, first: number, last: number) => this.setLabel(lab, first, last, sent_index)}
               />
               )}
           </Card.Body>
@@ -269,22 +209,19 @@ class Annotate extends React.Component<any, State> {
   }
 }
 
-type Props = {
-  state: State,
-}
-
 type State = {
   color: string,
   words: Array<Array<string>>,
   labels: Array<Array<string>>,
   path: string,
-  selected_sentence: number,
-  selected_range: Array<number>,
+  // selected_sentence: number,
+  // selected_range: Array<number>,
   mouseIsDown: boolean,
-  popover_index: number,
+  // popover_index: number,
   prevDoc: string,
   nextDoc: string,
-  status: string
+  status: string,
+  activeSent: number
 };
 
 
