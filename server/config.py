@@ -25,4 +25,4 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or b'_5#y2L"F4Qhhh8z\n\xec]/'
     SESSION_TYPE = 'filesystem'
     JWT_AUTH_URL_RULE = "/users/authenticate"
-    JWT_EXPIRATION_DELTA = timedelta(seconds=3000)  # 50 minutes
+    JWT_EXPIRATION_DELTA = timedelta(seconds=5)  # 1 minute, for testing.

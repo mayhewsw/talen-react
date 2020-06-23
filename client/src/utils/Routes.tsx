@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Route, Switch } from 'react-router-dom';
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
-import Annotate from "../pages/Annotate";
+import { Annotate } from "../pages/Annotate";
 import PageNotFound from "../pages/PageNotFound";
 import { State } from "../utils/types"
 import { connect } from 'react-redux'

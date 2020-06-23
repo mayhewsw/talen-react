@@ -1,12 +1,14 @@
 import React from 'react';
-
+import { cloneDeep } from "lodash"
 //import './Annotate.css';
 import { Button, ButtonGroup, Row, Col, Card } from 'react-bootstrap';
 import Sentence from "../components/Sentence";
 import { Link, withRouter } from 'react-router-dom';
-import { dataService } from '../_services';
 import { history } from '../_helpers';
 import { IoIosSave, IoMdCheckmarkCircleOutline, IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { connect } from 'react-redux';
+
+import { dataActions } from '../_actions';
 
 class Annotate extends React.Component<any, State> {
 
@@ -14,39 +16,16 @@ class Annotate extends React.Component<any, State> {
     super(props);
 
     this.state = {
-      color: "white",
-      words: [[]],
-      labels: [[]],
-      path: "",
-      mouseIsDown: false,
-      // selected_sentence: -1,
-      // selected_range: [-1, -1],
-      // popover_index: -1,
-      prevDoc: "",
-      nextDoc: "",
-      status: "",
       activeSent: -1,
       isSaved: true
     };
+    // console.log(this.state)
 
   }
 
   componentDidMount() {
     this.loadAll(this.props.dataset, this.props.docid)
   }
-
-  // setWords(words: Array<string>){
-  //   this.setState({
-  //     words: [words],
-  //     labels: Array(words.length).fill("O"),
-  //     selected_range: [-1, -1],
-  //   });
-  // }
-
-  updateColor(new_color: string) {
-    this.setState({ color: new_color })
-  }
-
 
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
   // CSA is continuous sub array
@@ -70,8 +49,8 @@ class Annotate extends React.Component<any, State> {
     this.setState({isSaved: false})
     console.log("set label: " + label)
 
-    // var first = this.state.selected_range[0];
-    // var last = this.state.selected_range[this.state.selected_range.length-1]
+
+    console.log(this.props.data.labels[0]);
 
     // then we switch them!
     if (first > last){
@@ -83,16 +62,17 @@ class Annotate extends React.Component<any, State> {
     //TODO: make sure everything is lower case!
 
     // get the string associated with this range
-    var word_slice = this.state.words[sent_index].slice(first, last+1);
+    var word_slice = this.props.data.words[sent_index].slice(first, last+1);
 
     var phrase_locations: number[][] = [];
 
-    for(var j=0; j < this.state.words.length; j++){
-      var inds = this.find_csa(this.state.words[j], word_slice, 0);
+    for(var j=0; j < this.props.data.words.length; j++){
+      var inds = this.find_csa(this.props.data.words[j], word_slice, 0);
       inds.forEach(ind => phrase_locations.push([j, ind, ind + word_slice.length-1]))
     }
 
-    var newLabels = this.state.labels.slice();
+    // I don't want to modify the state variable!
+    var newLabels = cloneDeep(this.props.data.labels);
 
     phrase_locations.forEach(tuple => {
       //console.log(tuple);
@@ -103,7 +83,7 @@ class Annotate extends React.Component<any, State> {
       for(var i = phrase_start; i <= phrase_end; i++){
         var pref = "";
         if(label !== "O"){
-          if(i === first){
+          if(i === phrase_start){
             pref = "B-";
           }else{
             pref = "I-";
@@ -122,8 +102,11 @@ class Annotate extends React.Component<any, State> {
 
     });
 
-    // TODO: consider having a single state update here?
-    this.setState({labels: newLabels, activeSent: -1})
+    console.log(this.props.data.labels[0]);
+
+    this.props.setLabels(newLabels);
+    // TODO: update labels here!
+    this.setState({activeSent: -1})
   }
 
   sendLabels(){
@@ -131,12 +114,11 @@ class Annotate extends React.Component<any, State> {
     var data = {
       docid: this.props.docid,
       dataset: this.props.dataset,
-      sentences: this.state.words,
-      labels: this.state.labels,
-      path: this.state.path
+      sentences: this.props.data.words,
+      labels: this.props.data.labels,
+      path: this.props.data.path
     }
-    // TODO: this should be dataActions!!
-    dataService.saveDocument(data);
+    this.props.saveDocument(data);
   }
 
   setFocus(sent_index: number){
@@ -145,30 +127,9 @@ class Annotate extends React.Component<any, State> {
   }
 
   loadAll(dataset: string, docId: string){
-    dataService.loadDocument(dataset, docId)
-    .then((res: any) => 
-      { 
-      this.setState({
-        words: res["sentences"],
-        labels: res["labels"],
-        path: res["path"],
-      })}
-    );
-
-  dataService.getDocuments(dataset)
-    .then((res: any) => {
-      var curr_ind = res["documentIDs"].indexOf(docId);
-      var prevDoc = res["documentIDs"][curr_ind-1];
-      var nextDoc = res["documentIDs"][curr_ind+1];
-
-      this.setState({
-        prevDoc: prevDoc,
-        nextDoc: nextDoc,
-        status: `${curr_ind+1}/${res["documentIDs"].length}`
-      })
-    });
+    this.props.loadDocument(dataset, docId);
+    this.props.loadStatus(dataset, docId);
   }
-
 
   buttonPush(dataset: string, newDoc: string){
 
@@ -190,19 +151,15 @@ class Annotate extends React.Component<any, State> {
     // if mousedown OUTSIDE a token, then clear the range. 
     // if mouseup on a token, that becomes end of the range. 
     return (
-      <Row className="document" style={{ backgroundColor: this.state.color }} 
-          // onMouseDown={this.rowMouseDown}
-          // onMouseUp={this.rowMouseUp}
-          //onMouseUp={(evt: any) => this.checkClearRange(evt)}
-          >
+      <Row className="document" >
         <Col md={9}>
           <Card>
           <Card.Body>
-          {this.state.words.map((sent, sent_index) =>
+          {this.props.data.words && this.props.data.words.map((sent: string[], sent_index: number) =>
               <Sentence key={sent_index} index={sent_index} sent={sent} 
-              labels={this.state.labels[sent_index]}
+              labels={this.props.data.labels[sent_index]}
               setFocus={(ind: number) => this.setFocus(ind)}
-              isActive={sent_index == this.state.activeSent}
+              isActive={sent_index === this.state.activeSent}
               set_label={(lab: string, first: number, last: number) => this.setLabel(lab, first, last, sent_index)}
               />
               )}
@@ -216,10 +173,10 @@ class Annotate extends React.Component<any, State> {
           <Button variant="outline-danger" onClick={() => this.sendLabels()}><><IoIosSave /> Save</></Button>}
           <p><Link to={this.props.uplink}>Back to all docs...</Link></p>
           <ButtonGroup>
-            {this.state.prevDoc && <Button variant="outline-primary" onClick={() => this.buttonPush(this.props.dataset, this.state.prevDoc)}><IoIosArrowBack /> Previous</Button>}
-            {this.state.nextDoc && <Button variant="outline-primary" onClick={() => this.buttonPush(this.props.dataset, this.state.nextDoc)}>Next <IoIosArrowForward /></Button>}
+            {this.props.data.prevDoc && <Button variant="outline-primary" onClick={() => this.buttonPush(this.props.dataset, this.props.data.prevDoc)}><IoIosArrowBack /> Previous</Button>}
+            {this.props.data.nextDoc && <Button variant="outline-primary" onClick={() => this.buttonPush(this.props.dataset, this.props.data.nextDoc)}>Next <IoIosArrowForward /></Button>}
           </ButtonGroup>
-          {this.state.status && <p>{this.state.status}</p>}
+          {this.props.data.status && <p>{this.props.data.status}</p>}
         </Col>
       </Row>
     );
@@ -228,19 +185,20 @@ class Annotate extends React.Component<any, State> {
 
 type State = {
   isSaved: boolean;
-  color: string,
-  words: Array<Array<string>>,
-  labels: Array<Array<string>>,
-  path: string,
-  // selected_sentence: number,
-  // selected_range: Array<number>,
-  mouseIsDown: boolean,
-  // popover_index: number,
-  prevDoc: string,
-  nextDoc: string,
-  status: string,
   activeSent: number
 };
 
+function mapState(state: any) {
+  const { data } = state;
+  return { data };
+}
 
-export default withRouter(Annotate);
+const actionCreators = {
+  saveDocument: dataActions.saveDocument,
+  loadDocument: dataActions.loadDocument,
+  loadStatus: dataActions.loadStatus,
+  setLabels: dataActions.setLabels
+}
+
+const connectedAnnotate = connect(mapState, actionCreators)(withRouter(Annotate));
+export { connectedAnnotate as Annotate}
