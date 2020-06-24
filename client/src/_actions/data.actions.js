@@ -28,8 +28,8 @@ function getDatasets() {
         dataService.getDatasets()
             .then(
                 data => { 
-                    console.log(data)
-                    dispatch(success(data))
+                    console.log(data);
+                    dispatch(success(data));
                 },
                 error => {
                     redirectToLogin(dispatch, error);
