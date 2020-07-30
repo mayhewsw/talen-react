@@ -38,9 +38,16 @@ def datasetlist():
 def loaddataset():
     datasetID = request.args.get('dataset')
 
-    files = sorted(os.listdir(Config.dataset_configs[datasetID]["path"]))
+    cfg = Config.dataset_configs[datasetID]
+    datapath = cfg["path"]
+
+    files = sorted(os.listdir(datapath))
+
+    annotated_datapath = datapath + "-anno-" + current_identity.username
+    annotated_files = sorted(os.listdir(annotated_datapath))
 
     dataset = {"documentIDs": files,
+               "annotatedDocumentIDs" : annotated_files,
                "datasetID": datasetID}
 
     return jsonify(dataset)
