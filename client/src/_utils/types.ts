@@ -13,8 +13,6 @@ export interface State {
 
 export const LOAD_DOCUMENT = 'LOAD_DOCUMENT'
 export const SAVE_DOCUMENT = 'SAVE_DOCUMENT'
-
-
 export const CHANGE_FORM = 'CHANGE_FORM'
 export const SET_AUTH = 'SET_AUTH'
 export const SENDING_REQUEST = 'SENDING_REQUEST'
