@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Container, Navbar, Form } from 'react-bootstrap';
-import { State } from '../utils/types';
+import { State } from '../_utils/types';
 import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
 
@@ -52,8 +52,9 @@ const mapStateToProps = (state: State) => ({
     userName: "dunno"
   })
 
-  const mapDispatchToProps = (dispatch: Function) => ({
-  })
-  
-  export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MainPanel))
+const mapDispatchToProps = (dispatch: Function) => ({
+})
+
+const connectedMainPanel =  withRouter(connect(mapStateToProps, mapDispatchToProps)(MainPanel));
+export { connectedMainPanel as MainPanel }
   

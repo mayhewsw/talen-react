@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Annotate } from '../pages/Annotate';
+import { Annotate } from '../_components/Annotate';
 
 
 class DocumentPage extends React.Component {

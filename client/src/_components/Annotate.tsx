@@ -2,7 +2,7 @@ import React from 'react';
 import { cloneDeep } from "lodash"
 //import './Annotate.css';
 import { Button, ButtonGroup, Row, Col, Card } from 'react-bootstrap';
-import Sentence from "../components/Sentence";
+import Sentence from "./Sentence";
 import { Link, withRouter } from 'react-router-dom';
 import { history } from '../_helpers';
 import { IoIosSave, IoMdCheckmarkCircleOutline, IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
@@ -19,8 +19,6 @@ class Annotate extends React.Component<any, State> {
       activeSent: -1,
       isSaved: true
     };
-    // console.log(this.state)
-
   }
 
   componentDidMount() {
@@ -30,14 +28,14 @@ class Annotate extends React.Component<any, State> {
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
   // CSA is continuous sub array
   find_csa(arr: any, subarr: any, from_index: number) {
-    var i = from_index >>> 0,
+    let i = from_index >>> 0,
         sl = subarr.length,
         l = arr.length + 1 - sl;
 
-    var inds = [];
+    let inds = [];
 
     loop: for (; i<l; i++) {
-        for (var j=0; j<sl; j++)
+        for (let j=0; j<sl; j++)
             if (arr[i+j] !== subarr[j])
                 continue loop;
         inds.push(i)
@@ -48,10 +46,7 @@ class Annotate extends React.Component<any, State> {
   setLabel(label: string, first: number, last: number, sent_index: number){
     this.setState({isSaved: false})
     console.log("set label: " + label)
-
-
-    console.log(this.props.data.labels[0]);
-
+    
     // then we switch them!
     if (first > last){
       const tmp = last;
@@ -66,7 +61,7 @@ class Annotate extends React.Component<any, State> {
 
     var phrase_locations: number[][] = [];
 
-    for(var j=0; j < this.props.data.words.length; j++){
+    for(let j=0; j < this.props.data.words.length; j++){
       var inds = this.find_csa(this.props.data.words[j], word_slice, 0);
       inds.forEach(ind => phrase_locations.push([j, ind, ind + word_slice.length-1]))
     }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { changeForm } from '../utils/login'
-import { State } from '../utils/types'
+import { changeForm } from '../_utils/login'
+import { State } from '../_utils/types'
 import { Form } from 'react-bootstrap'
 
 class Input extends React.Component<Props> {
