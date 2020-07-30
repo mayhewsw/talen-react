@@ -21,7 +21,7 @@ class DatasetPage extends React.Component {
             <div className="col-md-12">
             <h1>{match.params.id}</h1>
 
-            {data.items && <p>There are {data.items.documentIDs.length} documents. Of these, {data.items.annotatedDocumentIDs.length} have been annotated (marked in green).</p>}
+            {data.items && data.items.documentIDs && data.items.annotatedDocumentIDs && <p>There are {data.items.documentIDs.length} documents. Of these, {data.items.annotatedDocumentIDs.length} have been annotated (marked in green).</p>}
                 <ListGroup>
                 {data.items && data.items.documentIDs && data.items.documentIDs.map(
                     (id, index) => <ListGroup.Item key={index} variant={data.items.annotatedDocumentIDs.indexOf(id) > -1 ? "success" : null}><Link to={`/dataset/${match.params.id}/${id}`}>{id}</Link></ListGroup.Item>)
