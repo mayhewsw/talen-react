@@ -9,6 +9,7 @@ export interface State {
     [key: string]: number | string,
    }
   errorMessage: string
+  // TODOO: include AlertState here somehow?
 }
 
 export const LOAD_DOCUMENT = 'LOAD_DOCUMENT'

@@ -6,10 +6,6 @@ import { history } from '../_helpers';
 import { alertActions } from '../_actions';
 import { PrivateRoute, MainPanel } from '../_components';
 import { LoginPage, HomePage, DatasetPage, DocumentPage, RegisterPage } from '../_pages';
-// import { HomePage } from '../HomePage';
-// import { DatasetPage } from '../DatasetPage';
-// import { DocumentPage } from '../DocumentPage';
-// import { RegisterPage } from '../RegisterPage';
 import './App.css';
 
 class App extends React.Component {

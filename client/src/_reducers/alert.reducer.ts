@@ -1,16 +1,16 @@
 import { MessageTypes, ALERT_SUCCESS, ALERT_ERROR, ALERT_CLEAR } from '../_utils/types';
 
-interface MessageState {
+interface AlertState {
   type: string
   message: string
 }
 
-const initialState: MessageState = {
+const initialState: AlertState = {
   type: "",
   message: ""
 }
 
-export function alert(state = initialState, action: MessageTypes): MessageState {
+export function alert(state = initialState, action: MessageTypes): AlertState {
   switch (action.type) {
     case ALERT_SUCCESS:
       return {
