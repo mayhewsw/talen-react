@@ -1,4 +1,5 @@
-import { dataConstants } from '../_constants';
+import { GETDATASETS_SUCCESS, GETDOCS_SUCCESS, LOADSTATUS, LOADDOC_SUCCESS, SETLABELS, SAVEDOC_SUCCESS } from '../_utils/types';
+
 import { dataService } from '../_services';
 import { alertActions } from './';
 import { history } from '../_helpers';
@@ -37,7 +38,7 @@ function getDatasets() {
             );
     };
 
-    function success(data) { return { type: dataConstants.GETDATASETS_SUCCESS, data }}
+    function success(data) { return { type: GETDATASETS_SUCCESS, data }}
 }
 
 function loadStatus(dataset, docId) {
@@ -55,7 +56,7 @@ function loadStatus(dataset, docId) {
             );
     };
 
-    function success(data) { return { type: dataConstants.LOADSTATUS, data, docId }}
+    function success(data) { return { type: LOADSTATUS, data, docId }}
 }
 
 function getDocuments(dataset) {
@@ -73,12 +74,12 @@ function getDocuments(dataset) {
             );
     };
 
-    function success(data) { return { type: dataConstants.GETDOCS_SUCCESS, data }}
+    function success(data) { return { type: GETDOCS_SUCCESS, data }}
 }
 
 function setLabels(newLabels){
     return { 
-        type: dataConstants.SETLABELS, 
+        type: SETLABELS, 
         newLabels
     }
 }
@@ -98,7 +99,7 @@ function loadDocument(dataset, docid) {
             );
     };
 
-    function success(data) { return { type: dataConstants.LOADDOC_SUCCESS, data }}
+    function success(data) { return { type: LOADDOC_SUCCESS, data }}
 }
 
 function saveDocument(data) {
@@ -117,5 +118,5 @@ function saveDocument(data) {
             );
     };
 
-    function success(data) { return { type: dataConstants.SAVEDOC_SUCCESS, data }}
+    function success(data) { return { type: SAVEDOC_SUCCESS, data }}
 }

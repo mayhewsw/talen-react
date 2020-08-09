@@ -1,21 +1,37 @@
-import { dataConstants } from '../_constants';
+import { DataTypes, GETDATASETS_SUCCESS, GETDOCS_SUCCESS, LOADSTATUS, LOADDOC_SUCCESS, SETLABELS } from '../_utils/types';
 
-export function data(state = {}, action) {
+interface DataState {
+  items: any[]
+  prevDoc?: any
+  nextDoc?: any
+  status?: string
+  words: string[][],
+  labels: string[][],
+  path: string
+}
+
+const initialState: DataState = {
+  items: [],
+  prevDoc: "",
+  nextDoc: "",
+  status: "",
+  words: [[]],
+  labels: [[]],
+  path: ""
+}
+
+export function data(state = initialState, action: DataTypes): DataState {
   switch (action.type) {
-    case dataConstants.GETDATASETS_SUCCESS:
-      return {
+    case GETDATASETS_SUCCESS:
+      return {...state,
         items: action.data
       };
-    case dataConstants.GETALL_SUCCESS:
-      return {
-        items: action.data
-      };
-    case dataConstants.GETDOCS_SUCCESS:
+    case GETDOCS_SUCCESS:
       return {
         ...state,
         items: action.data
       }
-    case dataConstants.LOADSTATUS:
+    case LOADSTATUS:
       var curr_ind = action.data["documentIDs"].indexOf(action.docId);
       var prevDoc = action.data["documentIDs"][curr_ind-1];
       var nextDoc = action.data["documentIDs"][curr_ind+1];
@@ -24,14 +40,14 @@ export function data(state = {}, action) {
         nextDoc: nextDoc,
         status: `${curr_ind+1}/${action.data["documentIDs"].length}`
       };
-    case dataConstants.LOADDOC_SUCCESS:
+    case LOADDOC_SUCCESS:
       return {
         ...state,
         words: action.data["sentences"],
         labels: action.data["labels"],
         path: action.data["path"],
       };
-    case dataConstants.SETLABELS:
+    case SETLABELS:
       return {
         ...state,
         labels: action.newLabels,
