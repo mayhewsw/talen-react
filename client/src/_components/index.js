@@ -1,2 +1,2 @@
-export * from './PrivateRoute';
-export * from './MainPanel';
+export * from "./PrivateRoute";
+export * from "./MainPanel";

@@ -1,54 +1,59 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { changeForm } from '../_utils/login'
-import { State } from '../_utils/types'
-import { Form } from 'react-bootstrap'
+import React from "react";
+import { connect } from "react-redux";
+import { changeForm } from "../_utils/login";
+import { State } from "../_utils/types";
+import { Form } from "react-bootstrap";
 
 class Input extends React.Component<Props> {
   constructor(props: Props) {
-    super(props)
-    this.changeInput = this.changeInput.bind(this)
+    super(props);
+    this.changeInput = this.changeInput.bind(this);
   }
 
   changeInput(event: any) {
-    const value = event.target.value
-    const name = event.target.name
-    this.props.handleChange({ [name]: value })
+    const value = event.target.value;
+    const name = event.target.name;
+    this.props.handleChange({ [name]: value });
   }
 
   render() {
-    const { label, type, name, model, formState } = this.props
+    const { label, type, name, model, formState } = this.props;
 
-    console.log(formState)
+    console.log(formState);
 
     const fsv = formState[model];
 
     return (
       <Form.Group>
         <Form.Label>{label}</Form.Label>
-        <Form.Control type={type} name={name} defaultValue={fsv} onChange={this.changeInput} />
+        <Form.Control
+          type={type}
+          name={name}
+          defaultValue={fsv}
+          onChange={this.changeInput}
+        />
       </Form.Group>
-    )
+    );
   }
 }
 
-type Props = { 
-  label: string
-  type: string
-  name: string
-  model: string
+type Props = {
+  label: string;
+  type: string;
+  name: string;
+  model: string;
   formState: {
-    [key: string]: number | string,
-   }
-  handleChange: Function
+    [key: string]: number | string;
+  };
+  handleChange: Function;
 };
 
 const mapStateToProps = (state: State) => ({
-  formState: state.formState
-})
+  formState: state.formState,
+});
 
 const mapDispatchToProps = (dispatch: Function) => ({
-  handleChange: (values: any) => dispatch(changeForm(values))
-})
+  handleChange: (values: any) => dispatch(changeForm(values)),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Input)
+export default connect(mapStateToProps, mapDispatchToProps)(Input);

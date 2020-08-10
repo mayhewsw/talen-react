@@ -1,20 +1,23 @@
-import React from 'react';
-import { Button } from 'react-bootstrap';
+import React from "react";
+import { Button } from "react-bootstrap";
 
-class LabelButton extends React.Component<Props>{
-
-    render() {
-      return (
-        <Button onClick={() => this.props.onClick()}
-          bsPrefix="custom-btn"
-          className={["label-button", this.props.label].join(" ")}>{this.props.label}</Button>
-      )
-    }
+class LabelButton extends React.Component<Props> {
+  render() {
+    return (
+      <Button
+        onClick={() => this.props.onClick()}
+        bsPrefix="custom-btn"
+        className={["label-button", this.props.label].join(" ")}
+      >
+        {this.props.label}
+      </Button>
+    );
+  }
 }
 
 export default LabelButton;
 
-type Props = { 
-    label: string, 
-    onClick: Function 
+type Props = {
+  label: string;
+  onClick: Function;
 };
