@@ -178,11 +178,13 @@ class Annotate extends React.Component<any, State> {
   }
 }
 
+// TODO: move this state into the main state?
 type State = {
   isSaved: boolean;
   activeSent: number
 };
 
+// TODO: fix this any...
 function mapState(state: any) {
   const { data } = state;
   return { data };

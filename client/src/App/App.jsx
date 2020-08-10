@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { history } from '../_helpers';
 import { alertActions } from '../_actions';
-import { PrivateRoute, MainPanel } from '../_components';
+import { PrivateRoute } from '../_components';
 import { LoginPage, HomePage, DatasetPage, DocumentPage, RegisterPage } from '../_pages';
 import './App.css';
 
@@ -22,7 +22,6 @@ class App extends React.Component {
         const { alert } = this.props;
         return (
             <Router history={history}>
-                <MainPanel>
                     {alert.message &&
                         <div className={`alert ${alert.type}`}>{alert.message}</div>
                     }
@@ -35,7 +34,6 @@ class App extends React.Component {
                         <Route path="/register" component={RegisterPage} />
                         <Redirect from="*" to="/" />
                     </Switch>
-                </MainPanel>
             </Router>
         );
     }

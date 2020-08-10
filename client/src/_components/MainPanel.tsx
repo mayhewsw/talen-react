@@ -2,11 +2,12 @@ import React from 'react';
 import { Button, Container, Navbar, Form } from 'react-bootstrap';
 import { State } from '../_utils/types';
 import { connect } from 'react-redux'
-import { withRouter, Link } from 'react-router-dom'
+import { withRouter, Link, RouteComponentProps } from 'react-router-dom'
 
-class MainPanel extends React.Component<Props>{
-
+class MainPanel extends React.Component<MatchProps>{
+    
     render() {
+
       return (
         <div>
         <Navbar bg="light" expand="lg" fixed="top">
@@ -16,13 +17,15 @@ class MainPanel extends React.Component<Props>{
         <Navbar.Collapse id="basic-navbar-nav">
             <Navbar.Collapse className="mr-auto">
                 <Navbar.Text className="px-2"><Link to="/">Home</Link></Navbar.Text>
-                <Navbar.Text className="px-2"><Link to="/anno">Annotate</Link></Navbar.Text>                
+                <Navbar.Text className="px-2"><Link to={`/dataset/${this.props.match.params.id}`}>{this.props.match.params.id}</Link></Navbar.Text>
+                <Navbar.Text className="px-2">{this.props.match.params.docid}</Navbar.Text>
+                
             </Navbar.Collapse>
 
             <Navbar.Collapse className="justify-content-end">
                 {"" ? 
                     <>
-                        <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text>
+                        {/* <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text> */}
                         <Form inline> 
                             <Button onClick={() => console.log("logout")} variant="outline-success">Logout</Button> 
                         </Form>
@@ -43,13 +46,18 @@ class MainPanel extends React.Component<Props>{
     }
 }
 
-type Props = { 
-    userName: string;
-};
+interface MatchProps extends RouteComponentProps<MatchParams> {
+    // userName: string;
+}
+
+interface MatchParams {
+    id: string;
+    docid: string;
+}
 
 const mapStateToProps = (state: State) => ({
     // TODO: this is not working!
-    userName: "dunno"
+    // userName: "dunno"
   })
 
 const mapDispatchToProps = (dispatch: Function) => ({
