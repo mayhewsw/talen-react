@@ -17,10 +17,7 @@ class DocumentPage extends React.Component<MatchProps> {
             dataset={match.params.id}
             docid={match.params.docid}
             uplink={`/dataset/${match.params.id}`}
-          />
-        </div>
-      </MainPanel>
-    );
+          /></div></MainPanel>);
   }
 }
 
