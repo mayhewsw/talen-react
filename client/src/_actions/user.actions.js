@@ -1,7 +1,21 @@
-import { userConstants } from "../_constants";
 import { userService } from "../_services";
 import { alertActions } from "./";
 import { history } from "../_helpers";
+import {
+  LOGIN_FAILURE,
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGOUT,
+  REGISTER_FAILURE,
+  REGISTER_SUCCESS,
+  REGISTER_REQUEST,
+  GETALL_FAILURE,
+  GETALL_REQUEST,
+  GETALL_SUCCESS,
+  DELETE_FAILURE,
+  DELETE_REQUEST,
+  DELETE_SUCCESS,
+} from "../_utils/types";
 
 export const userActions = {
   login,
@@ -28,19 +42,19 @@ function login(username, password) {
   };
 
   function request(user) {
-    return { type: userConstants.LOGIN_REQUEST, user };
+    return { type: LOGIN_REQUEST, user };
   }
   function success(user) {
-    return { type: userConstants.LOGIN_SUCCESS, user };
+    return { type: LOGIN_SUCCESS, user };
   }
   function failure(error) {
-    return { type: userConstants.LOGIN_FAILURE, error };
+    return { type: LOGIN_FAILURE, error };
   }
 }
 
 function logout() {
   userService.logout();
-  return { type: userConstants.LOGOUT };
+  return { type: LOGOUT };
 }
 
 function register(user) {
@@ -61,13 +75,13 @@ function register(user) {
   };
 
   function request(user) {
-    return { type: userConstants.REGISTER_REQUEST, user };
+    return { type: REGISTER_REQUEST, user };
   }
   function success(user) {
-    return { type: userConstants.REGISTER_SUCCESS, user };
+    return { type: REGISTER_SUCCESS, user };
   }
   function failure(error) {
-    return { type: userConstants.REGISTER_FAILURE, error };
+    return { type: REGISTER_FAILURE, error };
   }
 }
 
@@ -82,13 +96,13 @@ function getAll() {
   };
 
   function request() {
-    return { type: userConstants.GETALL_REQUEST };
+    return { type: GETALL_REQUEST };
   }
   function success(users) {
-    return { type: userConstants.GETALL_SUCCESS, users };
+    return { type: GETALL_SUCCESS, users };
   }
   function failure(error) {
-    return { type: userConstants.GETALL_FAILURE, error };
+    return { type: GETALL_FAILURE, error };
   }
 }
 
@@ -104,12 +118,12 @@ function _delete(id) {
   };
 
   function request(id) {
-    return { type: userConstants.DELETE_REQUEST, id };
+    return { type: DELETE_REQUEST, id };
   }
   function success(id) {
-    return { type: userConstants.DELETE_SUCCESS, id };
+    return { type: DELETE_SUCCESS, id };
   }
   function failure(id, error) {
-    return { type: userConstants.DELETE_FAILURE, id, error };
+    return { type: DELETE_FAILURE, id, error };
   }
 }

@@ -11,7 +11,7 @@ class DocumentPage extends React.Component<MatchProps> {
     return (
       <MainPanel>
         <div className="col-md-12">
-          <h2>{match.params.docid}</h2>
+          {/* <h2>{match.params.docid}</h2> */}
 
           <Annotate
             dataset={match.params.id}

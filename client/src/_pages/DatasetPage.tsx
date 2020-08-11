@@ -20,7 +20,7 @@ class DatasetPage extends React.Component<MatchProps> {
     return (
       <MainPanel>
         <div className="col-md-12">
-          <h1>{match.params.id}</h1>
+          {/* <h1>{match.params.id}</h1> */}
 
           {data.items &&
             data.items.documentIDs &&

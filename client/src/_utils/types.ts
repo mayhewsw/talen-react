@@ -21,6 +21,28 @@ export const SENDING_REQUEST = "SENDING_REQUEST";
 export const LOADING_AUTH = "LOADING_AUTH";
 export const SET_ERROR_MESSAGE = "SET_ERROR_MESSAGE";
 export const SET_DATA = "SET_DATA";
+export const ALERT_SUCCESS = "ALERT_SUCCESS";
+export const ALERT_ERROR = "ALERT_ERROR";
+export const ALERT_CLEAR = "ALERT_CLEAR";
+export const REGISTER_REQUEST = "DATA_REGISTER_REQUEST";
+export const REGISTER_SUCCESS = "DATA_REGISTER_SUCCESS";
+export const REGISTER_FAILURE = "DATA_REGISTER_FAILURE";
+export const LOGIN_REQUEST = "DATA_LOGIN_REQUEST";
+export const LOGIN_SUCCESS = "DATA_LOGIN_SUCCESS";
+export const LOGIN_FAILURE = "DATA_LOGIN_FAILURE";
+export const LOGOUT = "DATA_LOGOUT";
+export const GETALL_REQUEST = "DATA_GETALL_REQUEST";
+export const GETALL_SUCCESS = "DATA_GETALL_SUCCESS";
+export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
+export const GETDATASETS_SUCCESS = "GETDATASETS_SUCCESS";
+export const GETDOCS_SUCCESS = "GETDOCS_SUCCESS";
+export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
+export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
+export const LOADSTATUS = "LOADSTATUS";
+export const SETLABELS = "SETLABELS";
+export const DELETE_REQUEST = "DATA_DELETE_REQUEST";
+export const DELETE_SUCCESS = "DATA_DELETE_SUCCESS";
+export const DELETE_FAILURE = "DATA_DELETE_FAILURE";
 
 interface LoadDocumentAction {
   type: typeof LOAD_DOCUMENT;
@@ -38,10 +60,6 @@ interface SetAuthAction {
   username: string | null;
 }
 
-export const ALERT_SUCCESS = "ALERT_SUCCESS";
-export const ALERT_ERROR = "ALERT_ERROR";
-export const ALERT_CLEAR = "ALERT_CLEAR";
-
 interface SuccessAction {
   type: typeof ALERT_SUCCESS;
   message: string;
@@ -53,26 +71,6 @@ interface ErrorAction {
 interface ClearAction {
   type: typeof ALERT_CLEAR;
 }
-
-export const REGISTER_REQUEST = "DATA_REGISTER_REQUEST";
-export const REGISTER_SUCCESS = "DATA_REGISTER_SUCCESS";
-export const REGISTER_FAILURE = "DATA_REGISTER_FAILURE";
-export const LOGIN_REQUEST = "DATA_LOGIN_REQUEST";
-export const LOGIN_SUCCESS = "DATA_LOGIN_SUCCESS";
-export const LOGIN_FAILURE = "DATA_LOGIN_FAILURE";
-export const LOGOUT = "DATA_LOGOUT";
-export const GETALL_REQUEST = "DATA_GETALL_REQUEST";
-//GETALL_SUCCESS = 'DATA_GETALL_SUCCESS',
-export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
-export const GETDATASETS_SUCCESS = "GETDATASETS_SUCCESS";
-export const GETDOCS_SUCCESS = "GETDOCS_SUCCESS";
-export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
-export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
-export const LOADSTATUS = "LOADSTATUS";
-export const SETLABELS = "SETLABELS";
-export const DELETE_REQUEST = "DATA_DELETE_REQUEST";
-export const DELETE_SUCCESS = "DATA_DELETE_SUCCESS";
-export const DELETE_FAILURE = "DATA_DELETE_FAILURE";
 
 interface GetDatasetsAction {
   type: typeof GETDATASETS_SUCCESS;
@@ -106,6 +104,29 @@ interface SetLabelsAction {
   newLabels: any[];
 }
 
+interface LoginRequestAction {
+  type: typeof LOGIN_REQUEST;
+  user: string;
+}
+
+interface LoginSuccessAction {
+  type: typeof LOGIN_SUCCESS;
+  user: string;
+}
+
+interface LoginFailureAction {
+  type: typeof LOGIN_FAILURE;
+}
+
+interface LogoutAction {
+  type: typeof LOGOUT;
+}
+
+export type AuthTypes =
+  | LoginRequestAction
+  | LoginSuccessAction
+  | LoginFailureAction
+  | LogoutAction;
 export type DataTypes =
   | GetDatasetsAction
   | GetDocsAction
