@@ -3,6 +3,7 @@ import { Button, Container, Navbar, Form } from "react-bootstrap";
 import { State } from "../_utils/types";
 import { connect } from "react-redux";
 import { withRouter, Link, RouteComponentProps } from "react-router-dom";
+import { userActions } from "../_actions";
 
 class MainPanel extends React.Component<MatchProps> {
   render() {
@@ -66,7 +67,8 @@ interface MatchParams {
 
 const mapStateToProps = (state: State) => ({
   // TODO: this is not working!
-  // userName: "dunno"
+  loggedIn: state.authentication.loggedIn,
+  //   userName: state.user.username
 });
 
 const mapDispatchToProps = (dispatch: Function) => ({});

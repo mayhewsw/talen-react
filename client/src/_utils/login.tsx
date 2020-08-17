@@ -5,29 +5,32 @@ import {
   SET_ERROR_MESSAGE,
 } from "./types";
 import { Dispatch } from "redux";
+
+// this is only here so it doesn't complain about empty modules
+// pretty sure this file can be deleted
 import Axios from "axios";
 
-export const login = (username: string, password: string) => {
-  return (dispatch: Dispatch) => {
-    dispatch(sendingRequest(true));
-    dispatch(setErrorMessage(""));
-    Axios.post("http://127.0.0.1:5000/api/login", {
-      withCredentials: true,
-      username,
-      password,
-    })
-      .then((data) => {
-        console.log(data);
-        console.log(username);
-        dispatch(sendingRequest(false));
-        dispatch(setAuthState(true, username));
-      })
-      .catch((error) => {
-        dispatch(sendingRequest(false));
-        dispatch(setErrorMessage("Login failed"));
-      });
-  };
-};
+// export const login = (username: string, password: string) => {
+//   return (dispatch: Dispatch) => {
+//     dispatch(sendingRequest(true));
+//     dispatch(setErrorMessage(""));
+//     Axios.post("http://127.0.0.1:5000/api/login", {
+//       withCredentials: true,
+//       username,
+//       password,
+//     })
+//       .then((data) => {
+//         console.log(data);
+//         console.log(username);
+//         dispatch(sendingRequest(false));
+//         dispatch(setAuthState(true, username));
+//       })
+//       .catch((error) => {
+//         dispatch(sendingRequest(false));
+//         dispatch(setErrorMessage("Login failed"));
+//       });
+//   };
+// };
 
 // export const loadData = (path, name) => {
 //   return dispatch => {
@@ -49,55 +52,55 @@ export const login = (username: string, password: string) => {
 //   }
 // }
 
-export const loadMe = () => {
-  return (dispatch: Dispatch) => {
-    // dispatch(loadingAuth(true))
-    dispatch(setErrorMessage(""));
-    Axios.get("http://127.0.0.1:5000/api/me", { withCredentials: true })
-      .then((data: any) => {
-        console.log(data);
-        // dispatch(loadingAuth(false))
-        dispatch(setAuthState(data.data.isLoggedIn, "unknown?"));
-      })
-      .catch((error) => {
-        // dispatch(loadingAuth(false))
-      });
-  };
-};
+// export const loadMe = () => {
+//   return (dispatch: Dispatch) => {
+//     // dispatch(loadingAuth(true))
+//     dispatch(setErrorMessage(""));
+//     Axios.get("http://127.0.0.1:5000/api/me", { withCredentials: true })
+//       .then((data: any) => {
+//         console.log(data);
+//         // dispatch(loadingAuth(false))
+//         dispatch(setAuthState(data.data.isLoggedIn, "unknown?"));
+//       })
+//       .catch((error) => {
+//         // dispatch(loadingAuth(false))
+//       });
+//   };
+// };
 
-export const logout = () => {
-  return (dispatch: Dispatch) => {
-    dispatch(sendingRequest(true));
-    dispatch(setErrorMessage(""));
-    Axios.get("http://127.0.0.1:5000/api/logout")
-      .then((data: any) => {
-        dispatch(sendingRequest(false));
-        // TODO: there may be a problem with setting user to null if the logout failed
-        dispatch(setAuthState(data.isLoggedIn, null));
-      })
-      .catch((error) => {
-        dispatch(sendingRequest(false));
-        dispatch(setErrorMessage("Error logging out"));
-      });
-  };
-};
+// export const logout = () => {
+//   return (dispatch: Dispatch) => {
+//     dispatch(sendingRequest(true));
+//     dispatch(setErrorMessage(""));
+//     Axios.get("http://127.0.0.1:5000/api/logout")
+//       .then((data: any) => {
+//         dispatch(sendingRequest(false));
+//         // TODO: there may be a problem with setting user to null if the logout failed
+//         dispatch(setAuthState(data.isLoggedIn, null));
+//       })
+//       .catch((error) => {
+//         dispatch(sendingRequest(false));
+//         dispatch(setErrorMessage("Error logging out"));
+//       });
+//   };
+// };
 
-export const setErrorMessage = (message: string) => {
-  return { type: SET_ERROR_MESSAGE, message };
-};
+// export const setErrorMessage = (message: string) => {
+//   return { type: SET_ERROR_MESSAGE, message };
+// };
 
-export const changeForm = (newState: any) => {
+export const changeForm = (newState: string) => {
   console.log("inside login/changeForm");
   return { type: CHANGE_FORM, newState };
 };
 
-const setAuthState = (newState: boolean, username: string | null) => {
-  return { type: SET_AUTH, newState, username };
-};
+// const setAuthState = (newState: boolean, username: string | null) => {
+//   return { type: SET_AUTH, newState, username };
+// };
 
-const sendingRequest = (sending: boolean) => {
-  return { type: SENDING_REQUEST, sending };
-};
+// const sendingRequest = (sending: boolean) => {
+//   return { type: SENDING_REQUEST, sending };
+// };
 
 // const loadingAuth = (sending: boolean) => {
 //   return { type: LOADING_AUTH, sending }

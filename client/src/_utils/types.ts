@@ -1,16 +1,42 @@
-export interface State {
+export interface User {
+  username: string;
+  access_token: string;
+}
+
+export interface AuthState {
   loggedIn: boolean;
-  userName: string;
-  dataset: string;
-  currentDocument: string;
-  currentDocumentIsSaved: boolean;
-  currentlySending: boolean;
+  loggingIn: boolean;
+  user: User;
+}
+
+export interface DataState {
+  items: any[];
+  prevDoc?: any;
+  nextDoc?: any;
+  status?: string;
+  words: string[][];
+  labels: string[][];
+  path: string;
+}
+
+export interface UtilState {
   formState: {
     [key: string]: number | string;
   };
+}
+
+export interface State {
+  authentication: AuthState;
+  // loggedIn: boolean;
+  // userName: string;
+  // dataset: string;
+  // currentDocument: string;
+  // currentDocumentIsSaved: boolean;
+  // currentlySending: boolean;
+  util: UtilState;
   errorMessage: string;
+  data: DataState;
   // TODO: include AlertState here somehow?
-  // TODO: include DataState also?
 }
 
 export const LOAD_DOCUMENT = "LOAD_DOCUMENT";
@@ -43,6 +69,11 @@ export const SETLABELS = "SETLABELS";
 export const DELETE_REQUEST = "DATA_DELETE_REQUEST";
 export const DELETE_SUCCESS = "DATA_DELETE_SUCCESS";
 export const DELETE_FAILURE = "DATA_DELETE_FAILURE";
+
+interface ChangeFormAction {
+  type: typeof CHANGE_FORM;
+  newState: any; // FIXME: any
+}
 
 interface LoadDocumentAction {
   type: typeof LOAD_DOCUMENT;
@@ -106,12 +137,12 @@ interface SetLabelsAction {
 
 interface LoginRequestAction {
   type: typeof LOGIN_REQUEST;
-  user: string;
+  user: User;
 }
 
 interface LoginSuccessAction {
   type: typeof LOGIN_SUCCESS;
-  user: string;
+  user: User;
 }
 
 interface LoginFailureAction {
@@ -133,6 +164,7 @@ export type DataTypes =
   | LoadStatusAction
   | LoadDocsAction
   | SetLabelsAction;
+export type UtilTypes = ChangeFormAction;
 export type MessageTypes = SuccessAction | ErrorAction | ClearAction;
 export type DocumentTypes =
   | LoadDocumentAction

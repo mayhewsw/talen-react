@@ -1,22 +1,26 @@
 import {
   AuthTypes,
+  AuthState,
   LOGIN_FAILURE,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
   LOGOUT,
 } from "../_utils/types";
 
-interface AuthState {
-  loggedIn: boolean;
-  loggingIn: boolean;
-  user: string;
-}
-
 let user = JSON.parse(localStorage.getItem("user") || "{}");
 const initialState = {
   loggedIn: false,
   user: user,
   loggingIn: false,
+};
+
+const emptyState = {
+  loggedIn: false,
+  loggingIn: false,
+  user: {
+    username: "",
+    access_token: "",
+  },
 };
 
 export function authentication(
@@ -37,9 +41,9 @@ export function authentication(
         user: action.user,
       };
     case LOGIN_FAILURE:
-      return state;
+      return emptyState;
     case LOGOUT:
-      return state;
+      return emptyState;
     default:
       return state;
   }

@@ -1,21 +1,12 @@
 import {
   DataTypes,
+  DataState,
   GETDATASETS_SUCCESS,
   GETDOCS_SUCCESS,
   LOADSTATUS,
   LOADDOC_SUCCESS,
   SETLABELS,
 } from "../_utils/types";
-
-interface DataState {
-  items: any[];
-  prevDoc?: any;
-  nextDoc?: any;
-  status?: string;
-  words: string[][];
-  labels: string[][];
-  path: string;
-}
 
 const initialState: DataState = {
   items: [],

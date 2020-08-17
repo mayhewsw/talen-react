@@ -49,11 +49,13 @@ type Props = {
 };
 
 const mapStateToProps = (state: State) => ({
-  formState: state.formState,
+  formState: state.util.formState,
 });
 
 const mapDispatchToProps = (dispatch: Function) => ({
   handleChange: (values: any) => dispatch(changeForm(values)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Input);
+const connectedInput = connect(mapStateToProps, mapDispatchToProps)(Input);
+
+export { connectedInput as Input };
