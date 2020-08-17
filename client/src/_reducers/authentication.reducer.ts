@@ -7,9 +7,10 @@ import {
   LOGOUT,
 } from "../_utils/types";
 
+//'username':'', 'access_token': ''
 let user = JSON.parse(localStorage.getItem("user") || "{}");
 const initialState = {
-  loggedIn: false,
+  loggedIn: false, // TODO: how to tell if someone is logged in or not? Answer: it might not matter... all of that is handled on the backend. If that's the case, then we can delete loggedIn and loggingIn here.
   user: user,
   loggingIn: false,
 };

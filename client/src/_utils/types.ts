@@ -27,12 +27,6 @@ export interface UtilState {
 
 export interface State {
   authentication: AuthState;
-  // loggedIn: boolean;
-  // userName: string;
-  // dataset: string;
-  // currentDocument: string;
-  // currentDocumentIsSaved: boolean;
-  // currentlySending: boolean;
   util: UtilState;
   errorMessage: string;
   data: DataState;

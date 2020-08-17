@@ -11,7 +11,7 @@ class LoginPage extends React.Component<Props, State> {
 
     // reset login status
     // what???
-    // this.props.logout();
+    this.props.logout();
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -25,7 +25,7 @@ class LoginPage extends React.Component<Props, State> {
 
   render() {
     return (
-      <MainPanel>
+      <MainPanel hideLoginButton={true}>
         <div className="col-md-6 col-md-offset-3">
           <h2>Login</h2>
 

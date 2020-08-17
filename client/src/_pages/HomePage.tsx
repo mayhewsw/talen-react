@@ -26,10 +26,6 @@ class HomePage extends React.Component<MatchProps> {
                 </li>
               ))}
           </ul>
-
-          <p>
-            <Link to="/login">Logout</Link>
-          </p>
         </div>
       </MainPanel>
     );

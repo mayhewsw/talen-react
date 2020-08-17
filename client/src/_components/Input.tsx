@@ -1,8 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { changeForm } from "../_utils/login";
+import { changeForm } from "../_actions";
 import { State } from "../_utils/types";
 import { Form } from "react-bootstrap";
+
+// TODO: who wrote this code? Where did I get it from?????
 
 class Input extends React.Component<Props> {
   constructor(props: Props) {
@@ -18,8 +20,6 @@ class Input extends React.Component<Props> {
 
   render() {
     const { label, type, name, model, formState } = this.props;
-
-    console.log(formState);
 
     const fsv = formState[model];
 

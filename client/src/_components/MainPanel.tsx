@@ -1,12 +1,12 @@
 import React from "react";
-import { Button, Container, Navbar, Form } from "react-bootstrap";
+import { Container, Navbar } from "react-bootstrap";
 import { State } from "../_utils/types";
 import { connect } from "react-redux";
 import { withRouter, Link, RouteComponentProps } from "react-router-dom";
-import { userActions } from "../_actions";
 
 class MainPanel extends React.Component<MatchProps> {
   render() {
+    console.log(this.props.hideLoginButton);
     return (
       <div>
         <Navbar bg="light" expand="lg" fixed="top">
@@ -28,25 +28,22 @@ class MainPanel extends React.Component<MatchProps> {
                 </Navbar.Text>
               </Navbar.Collapse>
 
-              <Navbar.Collapse className="justify-content-end">
-                {"" ? (
-                  <>
-                    {/* <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text> */}
-                    <Form inline>
-                      <Button
-                        onClick={() => console.log("logout")}
-                        variant="outline-success"
-                      >
-                        Logout
-                      </Button>
-                    </Form>
-                  </>
-                ) : (
-                  <Navbar.Text>
-                    <Link to="/login">Login</Link>
-                  </Navbar.Text>
-                )}
-              </Navbar.Collapse>
+              {this.props.hideLoginButton ? null : (
+                <>
+                  <Navbar.Collapse className="justify-content-end">
+                    {this.props.userName ? (
+                      <>
+                        <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text>
+                        <Link to="/login">Logout</Link>
+                      </>
+                    ) : (
+                      <Navbar.Text>
+                        <Link to="/login">Login</Link>
+                      </Navbar.Text>
+                    )}
+                  </Navbar.Collapse>
+                </>
+              )}
             </Navbar.Collapse>
           </Container>
         </Navbar>
@@ -57,7 +54,8 @@ class MainPanel extends React.Component<MatchProps> {
 }
 
 interface MatchProps extends RouteComponentProps<MatchParams> {
-  // userName: string;
+  userName: string;
+  hideLoginButton?: boolean;
 }
 
 interface MatchParams {
@@ -67,8 +65,8 @@ interface MatchParams {
 
 const mapStateToProps = (state: State) => ({
   // TODO: this is not working!
-  loggedIn: state.authentication.loggedIn,
-  //   userName: state.user.username
+  // loggedIn: state.authentication.loggedIn,
+  userName: state.authentication.user.username,
 });
 
 const mapDispatchToProps = (dispatch: Function) => ({});
