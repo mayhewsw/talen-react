@@ -27,6 +27,11 @@ export interface UtilState {
 
 export interface State {
   authentication: AuthState;
+  // loggedIn: boolean;
+  // userName: string;
+  // dataset: string;
+
+  // currentlySending: boolean;
   util: UtilState;
   errorMessage: string;
   data: DataState;
@@ -141,6 +146,7 @@ interface LoginSuccessAction {
 
 interface LoginFailureAction {
   type: typeof LOGIN_FAILURE;
+  error: string;
 }
 
 interface LogoutAction {

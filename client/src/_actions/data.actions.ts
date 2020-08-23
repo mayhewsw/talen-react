@@ -5,11 +5,14 @@ import {
   LOADDOC_SUCCESS,
   SETLABELS,
   SAVEDOC_SUCCESS,
+  MessageTypes,
+  DataTypes,
 } from "../_utils/types";
 
 import { dataService } from "../_services";
-import { alertActions } from "./";
+import { alertActions } from ".";
 import { history } from "../_helpers";
+import { Dispatch } from "react";
 
 export const dataActions = {
   getDatasets,
@@ -20,112 +23,112 @@ export const dataActions = {
   setLabels,
 };
 
-function redirectToLogin(dispatch, error_text) {
+function redirectToLogin(dispatch: Dispatch<MessageTypes>, error_text: string) {
   // Who decides on this text? Wouldn't it be better if we used an authorization code? 401
   if (error_text === "UNAUTHORIZED") {
     dispatch(alertActions.error("Logged out! Redirecting to login page..."));
     setTimeout(() => {
       history.push("/login");
-    }, 2000);
+    }, 500);
   } else {
     dispatch(alertActions.error(error_text.toString()));
   }
 }
 
 function getDatasets() {
-  return (dispatch) => {
+  return (dispatch: Dispatch<any>) => {
     dataService.getDatasets().then(
-      (data) => {
+      (data: any[]) => {
         console.log(data);
         dispatch(success(data));
       },
-      (error) => {
+      (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
 
-  function success(data) {
+  function success(data: any[]) {
     return { type: GETDATASETS_SUCCESS, data };
   }
 }
 
-function loadStatus(dataset, docId) {
-  return (dispatch) => {
+function loadStatus(dataset: string, docId: string) {
+  return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
-      (data) => {
+      (data: any) => {
         console.log(data);
         dispatch(success(data));
       },
-      (error) => {
+      (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
 
-  function success(data) {
+  function success(data: any) {
     return { type: LOADSTATUS, data, docId };
   }
 }
 
-function getDocuments(dataset) {
-  return (dispatch) => {
+function getDocuments(dataset: string) {
+  return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
-      (data) => {
+      (data: any) => {
         console.log(data);
         dispatch(success(data));
       },
-      (error) => {
+      (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
 
-  function success(data) {
+  function success(data: any[]) {
     return { type: GETDOCS_SUCCESS, data };
   }
 }
 
-function setLabels(newLabels) {
+function setLabels(newLabels: any[]) {
   return {
     type: SETLABELS,
     newLabels,
   };
 }
 
-function loadDocument(dataset, docid) {
-  return (dispatch) => {
+function loadDocument(dataset: string, docid: string) {
+  return (dispatch: Dispatch<any>) => {
     dataService.loadDocument(dataset, docid).then(
-      (data) => {
+      (data: any) => {
         console.log(data);
         dispatch(success(data));
       },
-      (error) => {
+      (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
 
-  function success(data) {
+  function success(data: any) {
     return { type: LOADDOC_SUCCESS, data };
   }
 }
 
-function saveDocument(data) {
-  return (dispatch) => {
+function saveDocument(data: any) {
+  return (dispatch: Dispatch<any>) => {
     dataService.saveDocument(data).then(
-      (data) => {
+      (data: any) => {
         console.log(data);
         dispatch(success(data));
       },
-      (error) => {
+      (error: any) => {
         console.log(error);
         redirectToLogin(dispatch, error);
       }
     );
   };
 
-  function success(data) {
+  function success(data: any) {
     return { type: SAVEDOC_SUCCESS, data };
   }
 }

@@ -1,5 +1,5 @@
 import { userService } from "../_services";
-import { alertActions } from "./";
+import { alertActions } from ".";
 import { history } from "../_helpers";
 import {
   LOGIN_FAILURE,
@@ -9,6 +9,7 @@ import {
   REGISTER_FAILURE,
   REGISTER_SUCCESS,
   REGISTER_REQUEST,
+  User,
   // GETALL_FAILURE,
   // GETALL_REQUEST,
   // GETALL_SUCCESS,
@@ -25,9 +26,9 @@ export const userActions = {
   // delete: _delete,
 };
 
-function login(username, password) {
-  return (dispatch) => {
-    dispatch(request({ username }));
+function login(username: string, password: string) {
+  return (dispatch: any) => {
+    dispatch(request({ username: username, access_token: "?" }));
 
     userService.login(username, password).then(
       (user) => {
@@ -41,31 +42,31 @@ function login(username, password) {
     );
   };
 
-  function request(user) {
+  function request(user: User) {
     return { type: LOGIN_REQUEST, user };
   }
-  function success(user) {
+  function success(user: User) {
     return { type: LOGIN_SUCCESS, user };
   }
-  function failure(error) {
+  function failure(error: string) {
     return { type: LOGIN_FAILURE, error };
   }
 }
 
 function logout() {
-  return (dispatch) => {
+  return (dispatch: any) => {
     userService.logout();
     dispatch({ type: LOGOUT });
   };
 }
 
-function register(user) {
-  return (dispatch) => {
+function register(user: User) {
+  return (dispatch: any) => {
     dispatch(request(user));
 
     userService.register(user).then(
       (user) => {
-        dispatch(success());
+        dispatch(success(user));
         history.push("/login");
         dispatch(alertActions.success("Registration successful"));
       },
@@ -76,13 +77,13 @@ function register(user) {
     );
   };
 
-  function request(user) {
+  function request(user: User) {
     return { type: REGISTER_REQUEST, user };
   }
-  function success(user) {
+  function success(user: User) {
     return { type: REGISTER_SUCCESS, user };
   }
-  function failure(error) {
+  function failure(error: User) {
     return { type: REGISTER_FAILURE, error };
   }
 }
