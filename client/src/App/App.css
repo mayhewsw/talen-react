@@ -7,7 +7,7 @@ body {
   padding-top: 80px;
 }
 
-#root{
+#root {
   height: 500px;
 }
 
@@ -46,11 +46,41 @@ body {
   }
 }
 
-.O { background-color: transparent;}
-.ORG { background-color: lightblue;}
-.LOC { background-color: yellowgreen;}
-.PER { background-color: yellow;}
-.GPE { background-color: coral;}
+.label {
+  padding: 5px 0px 5px 0px;
+}
+
+.labelstart {
+  border-radius: 3px 0 0 3px;
+  /* padding-left: 2px; */
+}
+
+.labelend {
+  border-radius: 0 3px 3px 0;
+  /* padding-right: 2px; */
+}
+
+.labelsingle {
+  border-radius: 3px;
+  /* padding-right: 2px; */
+  /* padding-left: 2px; */
+}
+
+.O {
+  background-color: transparent;
+}
+.ORG {
+  background-color: lightblue;
+}
+.LOC {
+  background-color: yellowgreen;
+}
+.PER {
+  background-color: yellow;
+}
+.GPE {
+  background-color: coral;
+}
 
 .custom-btn {
   border: 0px;
@@ -59,8 +89,12 @@ body {
   text-transform: uppercase;
 }
 
-.sentence:nth-child(even) {background: #F8F8F8}
-.sentence:nth-child(odd) {background: #FFF}
+.sentence:nth-child(even) {
+  background: #f8f8f8;
+}
+.sentence:nth-child(odd) {
+  background: #fff;
+}
 
 .sentence {
   padding-bottom: 5px;
@@ -74,19 +108,21 @@ body {
 .token {
   color: black;
   /* padding-right: 1px; */
-  padding: 2px 0px 2px 0;
+  /* padding: 2px 0px 2px 0; */
   border: 1px solid transparent;
 }
 
 .spacer {
   border: 1px solid transparent;
   /* border-bottom: 1px solid transparent; */
-  padding: 2px 0px 2px 0;
+  /* padding: 2px 0px 2px 0; */
 }
 
 .highlightsingle {
   border: lightgray solid 1px;
   border-radius: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .highlightstart {
@@ -95,6 +131,8 @@ body {
   border-left: 1px solid lightgray;
   border-right: 0px solid transparent;
   padding-right: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 3px 0 0 3px;
 }
 
@@ -105,6 +143,8 @@ body {
   border-right: 0px solid transparent;
   padding-left: 1px;
   padding-right: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   /* border-right-color: transparent; */
   /* border-left-color: transparent; */
 }
@@ -114,14 +154,16 @@ body {
   border-bottom: 1px solid lightgray;
   border-left: 0px solid transparent;
   padding-left: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-right: 1px solid lightgray;
   border-radius: 0 3px 3px 0;
 }
 
-.nocopy{
-  -webkit-user-select: none;  /* Chrome all / Safari all */
-  -moz-user-select: none;     /* Firefox all */
-  -ms-user-select: none;      /* IE 10+ */
+.nocopy {
+  -webkit-user-select: none; /* Chrome all / Safari all */
+  -moz-user-select: none; /* Firefox all */
+  -ms-user-select: none; /* IE 10+ */
 }
 
 .annotateddoc {
