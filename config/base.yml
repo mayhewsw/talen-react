@@ -4,3 +4,5 @@ cities:
   - Trnava
 
 DATABASE_FILE: app.db
+
+SERVE_STATIC: true

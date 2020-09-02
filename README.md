@@ -3,9 +3,10 @@
 This is a modern rewrite of [TALEN: a Tool for Annotation of Low-resource ENtities](https://github.com/cogcomp/talen).
 
 ## Requirements
-* npm
-* python 3.6+
-* flask
+
+- npm
+- python 3.6+
+- flask
 
 The client-login was inspired by: https://github.com/cornflourblue/react-redux-registration-login-example
 
@@ -21,10 +22,11 @@ $ npm install
 ## Running
 
 You will need to start the python server:
+
 ```bash
 $ cd server
 $ python init_db.py  # only the first time
-$ python server.py
+$ python app.py
 ```
 
 And you will need to start the npm server:
@@ -34,19 +36,37 @@ $ cd client
 $ npm start
 ```
 
+## Serving Static
+
+When you are ready to productionize, it can be much faster and more convenient to compile the react code into static files and serve alongside the flask app. To do this, run (in `client/`):
+
+```bash
+$ cd client
+$ npm run build
+```
+
+This will create a folder called `client/build` containing static files. Then, in `config/base.yml`, change `SERVE_STATIC` to `true`, and start the backend server.
+
+```bash
+$ cd server
+$ python app.py
+```
+
+Then visit, `localhost:5000/index.html`.
+
 ## Annotating Universal Dependencies
 
-One of the motivators for writing this software was to annotate Universal Dependencies with NER tags. 
+One of the motivators for writing this software was to annotate Universal Dependencies with NER tags.
 
 To get going with annotation, do the following:
 
 ```bash
 $ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
 $ python scripts/conllu_to_docs.py UD_English-EWT/en_ewt-ud-train.conllu data/en_ewt-ud-train/
-``` 
+```
 
 Make sure that `UD_English.yml` is set correctly, and you're good to go!
- 
+
 ## Authorization and Sessions
 
 This uses JWT for user authentication. The client asks the server for a JWT by giving a username and password. If this succeeds, the token is stored in the browser (`localStorage`) until it expires (5 minutes is the default). All further requests to the server require knowledge of the JWT.
@@ -61,7 +81,7 @@ What kinds of things do authorized users want to do? Load documents, annotate, s
 
 ### What is flask-login used for?
 
-If you use flask-jwt, then you pass `authenticate` and `identity` functions. These could load a User object from a database, and check passwords, etc. This was formerly the job of flask-login. Similarly, eah library has a decorator that goes before functions that require a login. 
+If you use flask-jwt, then you pass `authenticate` and `identity` functions. These could load a User object from a database, and check passwords, etc. This was formerly the job of flask-login. Similarly, eah library has a decorator that goes before functions that require a login.
 
 One thing that I want is knowledge of the current user. Could this be stored in the session? Yes, you can use `current_identity` to get the User object. Where is this stored.
 
@@ -71,7 +91,7 @@ Oon eproblem with flask-login is that it doesn't stay logged in between page rel
 
 What happens is that the `App.tsx` makes a `GET` call to `/api/me` via `/utils/login.tsx`. The only identifying information is in `withCredentials: True` in the `Axios` call. This should return whether or not the current user is logged in.
 
-My guess is that when you log in, using the `/api/login` route, some cookie is set (is it specific to a particular host? For example, a browser or an application). Then when you hit the `/api/me` route, it checks that cookie. 
+My guess is that when you log in, using the `/api/login` route, some cookie is set (is it specific to a particular host? For example, a browser or an application). Then when you hit the `/api/me` route, it checks that cookie.
 
 Perhaps the issue is a cross-domain issue. Consider setting the `REMEMBER_COOKIE_DOMAIN` to `*`
 
@@ -92,4 +112,4 @@ If you use this in your research paper, please cite us!
 }
 ```
 
-Read the paper here: [http://cogcomp.org/papers/MayhewRo18.pdf](http://cogcomp.org/papers/MayhewRo18.pdf) 
+Read the paper here: [http://cogcomp.org/papers/MayhewRo18.pdf](http://cogcomp.org/papers/MayhewRo18.pdf)

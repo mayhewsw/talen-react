@@ -5,7 +5,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 CONFIG_BASE_FILE = os.path.join(basedir, "../config/base.yml")
 DATASET_CONFIG_FILE_PATH = os.path.join(basedir, "../config/datasets")
-
+BUILD_DIR = os.path.join(basedir, "../client/build")
 
 class Config(object):
 
@@ -26,3 +26,5 @@ class Config(object):
     SESSION_TYPE = 'filesystem'
     JWT_AUTH_URL_RULE = "/users/authenticate"
     JWT_EXPIRATION_DELTA = timedelta(seconds=3000)  # 1 minute, for testing.
+
+    SERVE_STATIC = config_data["SERVE_STATIC"]

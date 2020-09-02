@@ -2,11 +2,15 @@ from flask import Flask, jsonify, request
 from flask_jwt import JWT, jwt_required
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from config import Config
+from config import Config, BUILD_DIR
 
 from views import bp
 
-app = Flask(__name__)
+if Config.SERVE_STATIC:
+    # in order for this to work, you need to run npm react-scripts build in the client folder.
+    app = Flask(__name__, static_folder=BUILD_DIR, static_url_path='/')
+else:
+    app = Flask(__name__)
 app.debug = True
 app.config.from_object(Config)
 db = SQLAlchemy(app)
