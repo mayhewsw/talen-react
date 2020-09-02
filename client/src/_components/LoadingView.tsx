@@ -1,6 +1,6 @@
 import React from "react";
 
-const LoadingView = (props) => {
+const LoadingView = (props: any) => {
   return props.currentlySending ? <div> Loading... </div> : null;
 };
 

@@ -112,6 +112,19 @@ interface GetDocsAction {
   data: any[];
 }
 
+interface RegisterRequestAction {
+  type: typeof REGISTER_REQUEST;
+  registering: boolean;
+}
+
+interface RegisterSuccessAction {
+  type: typeof REGISTER_SUCCESS;
+}
+
+interface RegisterFailureAction {
+  type: typeof REGISTER_FAILURE;
+}
+
 interface LoadStatusAction {
   type: typeof LOADSTATUS;
   data: {
@@ -153,6 +166,10 @@ interface LogoutAction {
   type: typeof LOGOUT;
 }
 
+export type RegistrationTypes =
+  | RegisterRequestAction
+  | RegisterSuccessAction
+  | RegisterFailureAction;
 export type AuthTypes =
   | LoginRequestAction
   | LoginSuccessAction
