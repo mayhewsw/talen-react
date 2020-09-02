@@ -52,6 +52,7 @@ function getDatasets() {
   }
 }
 
+// this is super weird right? why load documents just to get a status...
 function loadStatus(dataset: string, docId: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(

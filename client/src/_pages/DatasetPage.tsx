@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { MainPanel } from "../_components";
 import { dataActions } from "../_actions";
+import { Badge } from "react-bootstrap";
 
 // This shows you all the documents in a given dataset.
 class DatasetPage extends React.Component<MatchProps> {
@@ -43,6 +44,17 @@ class DatasetPage extends React.Component<MatchProps> {
                       : undefined
                   }
                 >
+                  <Badge
+                    className="sentence-badge"
+                    key={"badge-" + index}
+                    variant={
+                      data.items.annotatedDocumentIDs.indexOf(id) > -1
+                        ? "success"
+                        : "light"
+                    }
+                  >
+                    {index + 1}
+                  </Badge>
                   <Link to={`/dataset/${match.params.id}/${id}`}>{id}</Link>
                 </ListGroup.Item>
               ))}
