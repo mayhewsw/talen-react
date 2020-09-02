@@ -108,7 +108,9 @@ class Token extends React.Component<TokProps> {
           transition={false}
         >
           <Popover id="popover-container">
-            <Popover.Content>{label_button_list}</Popover.Content>
+            <Popover.Content>
+              <div className="label-box">{label_button_list}</div>
+            </Popover.Content>
           </Popover>
         </Overlay>
       </>

@@ -50,6 +50,15 @@ body {
   padding: 5px 0px 5px 0px;
 }
 
+.label-box {
+  justify-content: center;
+  align-content: flex-start;
+}
+
+.label-button {
+  margin: 4px;
+}
+
 .labelstart {
   border-radius: 3px 0 0 3px;
   /* padding-left: 2px; */

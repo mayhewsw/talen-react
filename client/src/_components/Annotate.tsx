@@ -186,9 +186,9 @@ class Annotate extends React.Component<any, State> {
               </>
             </Button>
           )}
-          <p>
-            <Link to={this.props.uplink}>Back to all docs...</Link>
-          </p>
+          <p></p>
+          {this.props.data.status && <p>{this.props.data.status}</p>}
+          <p></p>
           <ButtonGroup>
             {this.props.data.prevDoc && (
               <Button
@@ -211,7 +211,12 @@ class Annotate extends React.Component<any, State> {
               </Button>
             )}
           </ButtonGroup>
-          {this.props.data.status && <p>{this.props.data.status}</p>}
+          <p></p>
+          <ButtonGroup>
+            <Link to={`${this.props.uplink}`}>
+              <Button variant="outline-secondary">Back to all docs...</Button>
+            </Link>
+          </ButtonGroup>
         </Col>
       </Row>
     );

@@ -35,7 +35,9 @@ export function data(state = initialState, action: DataTypes): DataState {
         ...state,
         prevDoc: prevDoc,
         nextDoc: nextDoc,
-        status: `${curr_ind + 1}/${action.data["documentIDs"].length}`,
+        status: `On document ${curr_ind + 1} out of ${
+          action.data["documentIDs"].length
+        }.`,
       };
     case LOADDOC_SUCCESS:
       return {

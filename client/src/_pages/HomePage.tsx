@@ -3,6 +3,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
 import { MainPanel } from "../_components";
 import { dataActions } from "../_actions";
+import { ListGroup } from "react-bootstrap";
 
 // this page shows a list of datasets. If you click on a dataset,
 // that takes you to a DatasetPage.
@@ -15,18 +16,31 @@ class HomePage extends React.Component<MatchProps> {
     const { user, data } = this.props;
     return (
       <MainPanel>
-        <div className="col-md-6 col-md-offset-3">
+        <div className="col-md-12">
           <h1>Hi {user.username}!</h1>
+          <ListGroup>
+            {data.items &&
+              data.items.datasetIDs &&
+              data.items.datasetIDs.map((id: string, index: number) => (
+                <ListGroup.Item key={index}>
+                  <Link to={`/dataset/${id}`}>{id}</Link>
+                </ListGroup.Item>
+              ))}
+          </ListGroup>
+        </div>
+
+        {/* <div className="col-md-6 col-md-offset-3">
+
           <ul>
             {data.items &&
               data.items.datasetIDs &&
               data.items.datasetIDs.map((id: string, index: number) => (
                 <li key={index}>
-                  <Link to={`/dataset/${id}`}>{id}</Link>
+                  
                 </li>
               ))}
           </ul>
-        </div>
+        </div> */}
       </MainPanel>
     );
   }
