@@ -46,6 +46,26 @@ body {
   }
 }
 
+.label {
+  padding: 5px 0px 5px 0px;
+}
+
+.labelstart {
+  border-radius: 3px 0 0 3px;
+  /* padding-left: 2px; */
+}
+
+.labelend {
+  border-radius: 0 3px 3px 0;
+  /* padding-right: 2px; */
+}
+
+.labelsingle {
+  border-radius: 3px;
+  /* padding-right: 2px; */
+  /* padding-left: 2px; */
+}
+
 .O {
   background-color: transparent;
 }
@@ -88,19 +108,21 @@ body {
 .token {
   color: black;
   /* padding-right: 1px; */
-  padding: 2px 0px 2px 0;
+  /* padding: 2px 0px 2px 0; */
   border: 1px solid transparent;
 }
 
 .spacer {
   border: 1px solid transparent;
   /* border-bottom: 1px solid transparent; */
-  padding: 2px 0px 2px 0;
+  /* padding: 2px 0px 2px 0; */
 }
 
 .highlightsingle {
   border: lightgray solid 1px;
   border-radius: 3px;
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 .highlightstart {
@@ -109,6 +131,8 @@ body {
   border-left: 1px solid lightgray;
   border-right: 0px solid transparent;
   padding-right: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 3px 0 0 3px;
 }
 
@@ -119,6 +143,8 @@ body {
   border-right: 0px solid transparent;
   padding-left: 1px;
   padding-right: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   /* border-right-color: transparent; */
   /* border-left-color: transparent; */
 }
@@ -128,6 +154,8 @@ body {
   border-bottom: 1px solid lightgray;
   border-left: 0px solid transparent;
   padding-left: 1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-right: 1px solid lightgray;
   border-radius: 0 3px 3px 0;
 }

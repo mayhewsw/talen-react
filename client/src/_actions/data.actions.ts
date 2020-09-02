@@ -6,7 +6,6 @@ import {
   SETLABELS,
   SAVEDOC_SUCCESS,
   MessageTypes,
-  DataTypes,
 } from "../_utils/types";
 
 import { dataService } from "../_services";

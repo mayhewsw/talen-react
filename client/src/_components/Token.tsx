@@ -63,6 +63,7 @@ class Token extends React.Component<TokProps> {
     var spacer_list = ["spacer"];
     if (this.props.label !== "O" && this.props.next_token_is_entity) {
       spacer_list.push(this.props.label.split("-").pop() || "");
+      spacer_list.push("label");
     }
 
     if (
@@ -71,16 +72,26 @@ class Token extends React.Component<TokProps> {
     ) {
       spacer_list.push("highlighted");
     }
+    const class_list = [
+      "token",
+      "nocopy",
+      this.props.selected,
+      this.props.label.split("-").pop(),
+      this.props.label === "O" ? null : "label",
+    ];
+
+    if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
+      class_list.push("labelsingle");
+    } else if (this.props.label[0] === "B") {
+      class_list.push("labelstart");
+    } else if (this.props.label !== "O" && !this.props.next_token_is_entity) {
+      class_list.push("labelend");
+    }
 
     return (
       <>
         <span
-          className={[
-            "token",
-            this.props.label.split("-").pop(),
-            "nocopy",
-            this.props.selected,
-          ].join(" ")}
+          className={class_list.join(" ")}
           onMouseDown={(evt) => this.handleDown(evt)}
           onMouseUp={(evt) => this.handleUp(evt)}
           onMouseOver={(evt) => this.handleOver(evt)}

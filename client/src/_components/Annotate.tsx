@@ -91,7 +91,7 @@ class Annotate extends React.Component<any, State> {
           // assumes that all spans start with B-
           // if i+1 is I-, then set i+1 to B-
           var next = newLabels[phrase_sent][i + 1];
-          if (next.startsWith("I-")) {
+          if (next && next.startsWith("I-")) {
             // change the I- to a B-
             newLabels[phrase_sent][i + 1] = "B-" + next.split("-").pop();
           }
