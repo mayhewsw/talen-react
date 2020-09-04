@@ -56,7 +56,6 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "http://mayhewsw.github.io/talen-react",
   "devDependencies": {
     "@types/lodash": "^4.14.159",
     "gh-pages": "^3.1.0",

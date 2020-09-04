@@ -1,18 +1,20 @@
-from flask import Flask, jsonify, request
-from flask_jwt import JWT, jwt_required
+from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_jwt import JWT
 from flask_sqlalchemy import SQLAlchemy
-from config import Config, BUILD_DIR
-
+from logger import get_logger, setup_logger
 from views import bp
-from logger import setup_logger, get_logger
+
+from config import BUILD_DIR, Config
 
 setup_logger()
 LOG = get_logger()
 
 if Config.SERVE_STATIC:
-    # in order for this to work, you need to run npm react-scripts build in the client folder.
-    app = Flask(__name__, static_folder=BUILD_DIR, static_url_path='/')
+    print("Serving statically!")
+    # in order for this to work, you need to run npm react-scripts
+    # build in the client folder.
+    app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
 else:
     app = Flask(__name__)
 app.debug = True
@@ -33,19 +35,22 @@ if __name__ == "__main__":
             return user
 
     def identity(payload):
-        user_id = payload['identity']
+        user_id = payload["identity"]
         return load_user(user_id)
 
     jwt = JWT(app, authenticate, identity)
 
     @jwt.auth_response_handler
     def _default_auth_response_handler(access_token, identity):
-        return jsonify({
-            'access_token': access_token.decode('utf-8'),
-            'username' : identity.username})
+        return jsonify(
+            {
+                "access_token": access_token.decode("utf-8"),
+                "username": identity.username,
+            }
+        )
 
     CORS(app)
 
-    app.register_blueprint(bp, url_prefix='/')
+    app.register_blueprint(bp, url_prefix="/")
 
     app.run()
