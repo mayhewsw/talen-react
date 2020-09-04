@@ -17,6 +17,7 @@ export interface DataState {
   words: string[][];
   labels: string[][];
   path: string;
+  isAnnotated: boolean;
 }
 
 export interface UtilState {
@@ -139,6 +140,7 @@ interface LoadDocsAction {
     sentences: string[][];
     labels: string[][];
     path: string;
+    isAnnotated: boolean;
   };
 }
 

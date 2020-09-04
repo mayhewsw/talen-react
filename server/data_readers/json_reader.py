@@ -6,6 +6,7 @@ class JsonReader:
     def read_doc(dataset: str, docid: str, path):
         with open(path) as f:
             doc = json.load(f)
+        doc["path"] = path
         return doc
 
     @staticmethod
