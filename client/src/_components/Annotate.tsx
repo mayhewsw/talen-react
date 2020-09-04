@@ -79,6 +79,11 @@ class Annotate extends React.Component<MatchProps, State> {
       var phrase_start = tuple[1];
       var phrase_end = tuple[2];
 
+      // dont' update something in the middle of an annotated entity
+      if (this.props.data.labels[phrase_sent][phrase_start][0] === "I") {
+        return;
+      }
+
       for (var i = phrase_start; i <= phrase_end; i++) {
         var pref = "";
         if (label !== "O") {
