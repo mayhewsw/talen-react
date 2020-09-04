@@ -30,7 +30,10 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "dot-prop": ">=4.2.1",
+    "serialize-javascript": ">=3.1.0",
+    "elliptic": ">=6.5.3"
   },
   "scripts": {
     "start": "react-scripts start",
