@@ -12,13 +12,13 @@ import {
   IoIosArrowBack,
 } from "react-icons/io";
 import { connect } from "react-redux";
-
+import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
 
-class Annotate extends React.Component<any, State> {
-  constructor(props: any) {
+class Annotate extends React.Component<MatchProps, State> {
+  constructor(props: MatchProps) {
     super(props);
-
+    console.log(props);
     this.state = {
       activeSent: -1,
       isSaved: true,
@@ -117,6 +117,7 @@ class Annotate extends React.Component<any, State> {
       path: this.props.data.path,
     };
     this.props.saveDocument(data);
+    this.props.data.isAnnotated = true;
   }
 
   setFocus(sent_index: number) {
@@ -132,16 +133,42 @@ class Annotate extends React.Component<any, State> {
   buttonPush(dataset: string, newDoc: string) {
     // this is a very important line
     // don't save docs that have not been touched!
-    if (!this.state.isSaved) {
-      this.sendLabels();
+    // if (!this.state.isSaved) {
+    //   this.sendLabels();
+    // }
+
+    const labels = this.props.data.labels;
+    let hasLabel = false;
+    for (let i = 0; i < labels.length; i++) {
+      const sent = labels[i];
+      for (let j = 0; j < sent.length; j++) {
+        const label = sent[j];
+        if (label !== "O") {
+          hasLabel = true;
+          break;
+        }
+      }
     }
 
-    var url = `/dataset/${dataset}/${newDoc}`;
-    this.loadAll(dataset, newDoc);
-    history.push(url);
+    let confirmed = true;
+    if (hasLabel && !this.state.isSaved) {
+      confirmed = window.confirm(
+        "There are unsaved labels! Press OK to discard labels, and cancel to stay on this page."
+      );
+    }
+
+    if (confirmed) {
+      var url = `/dataset/${dataset}/${newDoc}`;
+      this.loadAll(dataset, newDoc);
+      history.push(url);
+    }
   }
 
   render() {
+    const { data } = this.props;
+
+    console.log(data.isAnnotated);
+
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
@@ -152,34 +179,32 @@ class Annotate extends React.Component<any, State> {
         <Col md={9}>
           <Card>
             <Card.Body>
-              {this.props.data.words &&
-                this.props.data.words.map(
-                  (sent: string[], sent_index: number) => (
-                    <Sentence
-                      key={sent_index}
-                      index={sent_index}
-                      sent={sent}
-                      labels={this.props.data.labels[sent_index]}
-                      setFocus={(ind: number) => this.setFocus(ind)}
-                      isActive={sent_index === this.state.activeSent}
-                      set_label={(lab: string, first: number, last: number) =>
-                        this.setLabel(lab, first, last, sent_index)
-                      }
-                    />
-                  )
-                )}
+              {data.words &&
+                data.words.map((sent: string[], sent_index: number) => (
+                  <Sentence
+                    key={sent_index}
+                    index={sent_index}
+                    sent={sent}
+                    labels={data.labels[sent_index]}
+                    setFocus={(ind: number) => this.setFocus(ind)}
+                    isActive={sent_index === this.state.activeSent}
+                    set_label={(lab: string, first: number, last: number) =>
+                      this.setLabel(lab, first, last, sent_index)
+                    }
+                  />
+                ))}
             </Card.Body>
           </Card>
         </Col>
         <Col md={3}>
-          {this.state.isSaved && (
+          {this.state.isSaved && data.isAnnotated && (
             <Button variant="outline-success">
               <>
                 <IoMdCheckmarkCircleOutline /> Saved
               </>
             </Button>
           )}
-          {!this.state.isSaved && (
+          {(!this.state.isSaved || !data.isAnnotated) && (
             <Button variant="outline-danger" onClick={() => this.sendLabels()}>
               <>
                 <IoIosSave /> Save
@@ -187,20 +212,20 @@ class Annotate extends React.Component<any, State> {
             </Button>
           )}
           <p></p>
-          {this.props.data.status && <p>{this.props.data.status}</p>}
+          {data.status && <p>{data.status}</p>}
           <p></p>
           <ButtonGroup>
-            {this.props.data.prevDoc && (
+            {data.prevDoc && (
               <Button
                 variant="outline-primary"
                 onClick={() =>
-                  this.buttonPush(this.props.dataset, this.props.data.prevDoc)
+                  this.buttonPush(this.props.dataset, data.prevDoc)
                 }
               >
                 <IoIosArrowBack /> Previous
               </Button>
             )}
-            {this.props.data.nextDoc && (
+            {data.nextDoc && (
               <Button
                 variant="outline-primary"
                 onClick={() =>
@@ -222,6 +247,20 @@ class Annotate extends React.Component<any, State> {
     );
   }
 }
+
+// TODO: fix the any!!
+interface MatchProps extends RouteComponentProps<MatchParams> {
+  data: any;
+  dataset: string;
+  docid: string;
+  uplink: string;
+  setLabels: any;
+  saveDocument: any;
+  loadDocument: any;
+  loadStatus: any;
+}
+
+interface MatchParams {}
 
 // TODO: move this state into the main state?
 type State = {

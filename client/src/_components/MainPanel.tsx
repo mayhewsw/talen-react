@@ -6,7 +6,6 @@ import { withRouter, Link, RouteComponentProps } from "react-router-dom";
 
 class MainPanel extends React.Component<MatchProps> {
   render() {
-    console.log(this.props.hideLoginButton);
     return (
       <div>
         <Navbar bg="light" expand="lg" fixed="top">

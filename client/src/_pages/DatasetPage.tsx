@@ -18,6 +18,8 @@ class DatasetPage extends React.Component<MatchProps> {
     const { match, data } = this.props;
     console.log(match.params.id);
 
+    console.log(data);
+
     return (
       <MainPanel>
         <div className="col-md-12">
@@ -55,7 +57,9 @@ class DatasetPage extends React.Component<MatchProps> {
                   >
                     {index + 1}
                   </Badge>
-                  <Link to={`/dataset/${match.params.id}/${id}`}>{id}</Link>
+                  <Link to={{ pathname: `/dataset/${match.params.id}/${id}` }}>
+                    {id}
+                  </Link>
                 </ListGroup.Item>
               ))}
           </ListGroup>

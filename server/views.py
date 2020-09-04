@@ -44,7 +44,7 @@ def loaddataset():
     files = sorted(os.listdir(datapath))
 
     annotated_datapath = datapath + "-anno-" + current_identity.username
-    annotated_files = sorted(os.listdir(annotated_datapath))
+    annotated_files = sorted([p for p in os.listdir(annotated_datapath) if p[0] != "."])
 
     dataset = {"documentIDs": files,
                "annotatedDocumentIDs" : annotated_files,
@@ -76,12 +76,16 @@ def loaddoc():
 
     path = datapath + "-anno-" + current_identity.username
     filepath = os.path.join(path, doc["docid"])
+
+    doc["isAnnotated"] = False
+
     if os.path.exists(filepath):
         anno_doc = reader.read_doc(dataset, docid, filepath)
 
         # TODO: ideally, here we compare the tokens, etc. etc.
         # but for now we just overwrite the labels.
         doc["labels"] = anno_doc["labels"]
+        doc["isAnnotated"] = True
 
     return jsonify(doc)
 
@@ -95,7 +99,8 @@ def savedoc():
         "labels": json_payload["labels"],
         "docid": json_payload["docid"],
         "dataset": json_payload["dataset"],
-        "path" : json_payload["path"]
+        "path" : json_payload["path"],
+        "isAnnotated": True
     }
 
     datapath = Config.dataset_configs[doc["dataset"]]["path"]

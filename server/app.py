@@ -5,6 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from config import Config, BUILD_DIR
 
 from views import bp
+from logger import setup_logger, get_logger
+
+setup_logger()
+LOG = get_logger()
 
 if Config.SERVE_STATIC:
     # in order for this to work, you need to run npm react-scripts build in the client folder.
@@ -19,7 +23,7 @@ if __name__ == "__main__":
     from models import User
 
     def load_user(user_id: int) -> User:
-        print(f"load_user happening {user_id}")
+        LOG.debug(f"load_user happening, with id: {user_id}")
         user = User.query.filter_by(id=user_id).first()
         return user
 

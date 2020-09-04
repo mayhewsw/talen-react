@@ -16,6 +16,7 @@ const initialState: DataState = {
   words: [[]],
   labels: [[]],
   path: "",
+  isAnnotated: false,
 };
 
 export function data(state = initialState, action: DataTypes): DataState {
@@ -45,6 +46,7 @@ export function data(state = initialState, action: DataTypes): DataState {
         words: action.data["sentences"],
         labels: action.data["labels"],
         path: action.data["path"],
+        isAnnotated: action.data["isAnnotated"],
       };
     case SETLABELS:
       return {

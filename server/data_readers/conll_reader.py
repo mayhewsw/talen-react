@@ -36,6 +36,7 @@ class ConllReader:
             "labels": labels,
             "docid": docid,
             "dataset": dataset,
+            "path": path,
         }
         return doc
 
