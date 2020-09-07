@@ -74,7 +74,7 @@ Every .yml file in `config/datasets/` will be loaded as a config file. Each conf
 - reader: the Python class that will read this data. See `server/data_readers` for examples.
 
 You may optionally include a list of labels and their colors, but by default each config file inherits the
-labelset from `base.yml`.
+labelset from `config/base.yml`.
 
 ### Annotating Universal Dependencies
 

@@ -1,6 +1,15 @@
+# TALEN Backend
+
+The backend is written in python.
+
+## Data Readers
+
+See `data_readers/` for examples of dataset readers. If you have your own bespoke formatted dataset, you may want
+to write a reader for it.
+
 ## Database
 
-To check the database, do the following:
+Before running the app, you should have run `init_db.py`. To check the database in a python repl, do the following:
 
 ```python
 > from app import db
@@ -17,13 +26,11 @@ True
 > db.session.commit()   # IMPORTANT!
 ```
 
-This came from (here)[https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application].
-
-## Login
-
-This uses [flask-login](https://flask-login.readthedocs.io/en/latest/).
+This came from [here](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application).
 
 ## Authorization and Sessions
+
+This uses [flask-login](https://flask-login.readthedocs.io/en/latest/).
 
 This uses JWT for user authentication. The client asks the server for a JWT by giving a username and password. If this succeeds, the token is stored in the browser (`localStorage`) until it expires (5 minutes is the default). All further requests to the server require knowledge of the JWT.
 
