@@ -8,6 +8,7 @@ __pycache__/
 .pyenv
 *.code-workspace
 server/data/en_ewt*
+config/datasets/UD_English_train.yml
 
 node_modules/
 .vscode/
