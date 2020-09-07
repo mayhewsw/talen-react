@@ -1,3 +1,0 @@
-name: dummy
-path: data/dummy
-reader: json_reader.JsonReader

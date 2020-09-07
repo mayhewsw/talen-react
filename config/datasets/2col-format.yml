@@ -1,5 +1,5 @@
-name: 3col
-path: data/3col
+name: 2col-format
+path: data/2col-format
 reader: conll_reader.ConllReader
 
 labelset:
