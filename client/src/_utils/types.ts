@@ -16,6 +16,7 @@ export interface DataState {
   status?: string;
   words: string[][];
   labels: string[][];
+  labelset: any;
   path: string;
   isAnnotated: boolean;
 }
@@ -141,6 +142,7 @@ interface LoadDocsAction {
     labels: string[][];
     path: string;
     isAnnotated: boolean;
+    labelset: any;
   };
 }
 

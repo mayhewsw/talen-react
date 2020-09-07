@@ -38,7 +38,6 @@ function getDatasets() {
   return (dispatch: Dispatch<any>) => {
     dataService.getDatasets().then(
       (data: any[]) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {
@@ -57,7 +56,6 @@ function loadStatus(dataset: string, docId: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
       (data: any) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {
@@ -75,7 +73,6 @@ function getDocuments(dataset: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
       (data: any) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {

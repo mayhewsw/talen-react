@@ -1,29 +1,40 @@
-from flask import request, jsonify, Blueprint
-from flask_jwt import jwt_required, current_identity
-import json
-from config import Config, DATASET_CONFIG_FILE_PATH
-import os
 import importlib
+import os
+
 import yaml
+from flask import Blueprint, jsonify, request
+from flask_jwt import current_identity, jwt_required
 
-bp = Blueprint('blueprint', __name__, template_folder='templates')
+from config import DATASET_CONFIG_FILE_PATH, Config
 
-@bp.route('/users/me')
+bp = Blueprint("blueprint", __name__, template_folder="templates")
+
+
+@bp.route("/users/me")
 @jwt_required()
 def protected():
     return current_identity
 
 
-@bp.route('/datasetlist')
+@bp.route("/datasetlist")
 @jwt_required()
 def datasetlist():
     # we want to reload this every time.
-    config_fnames = filter(lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH))
+    config_fnames = filter(
+        lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH)
+    )
 
     dataset_configs = {}
     for fname in config_fnames:
         with open(os.path.join(DATASET_CONFIG_FILE_PATH, fname)) as f:
             cfg = yaml.load(f, Loader=yaml.Loader)
+
+            if "labelset" not in cfg:
+                cfg["labelset"] = dict(Config.config_data["labelset"])
+            print(cfg["labelset"])
+            # add O as a special case, with color: transparent
+            cfg["labelset"]["O"] = "transparent"
+
             dataset_configs[cfg["name"]] = cfg
 
     Config.dataset_configs = dataset_configs
@@ -33,10 +44,10 @@ def datasetlist():
     return jsonify(datasetIDs)
 
 
-@bp.route('/loaddataset')
+@bp.route("/loaddataset")
 @jwt_required()
 def loaddataset():
-    datasetID = request.args.get('dataset')
+    datasetID = request.args.get("dataset")
 
     cfg = Config.dataset_configs[datasetID]
     datapath = cfg["path"]
@@ -46,24 +57,28 @@ def loaddataset():
     annotated_datapath = datapath + "-anno-" + current_identity.username
     annotated_files = sorted([p for p in os.listdir(annotated_datapath) if p[0] != "."])
 
-    dataset = {"documentIDs": files,
-               "annotatedDocumentIDs" : annotated_files,
-               "datasetID": datasetID}
+    dataset = {
+        "documentIDs": files,
+        "annotatedDocumentIDs": annotated_files,
+        "datasetID": datasetID,
+    }
 
     return jsonify(dataset)
+
 
 def get_reader(dataset):
     cfg = Config.dataset_configs[dataset]
     module_name, class_name = cfg["reader"].split(".")
-    module = importlib.import_module(f'data_readers.{module_name}')
+    module = importlib.import_module(f"data_readers.{module_name}")
     reader = getattr(module, class_name)
     return reader
 
-@bp.route('/loaddoc')
+
+@bp.route("/loaddoc")
 @jwt_required()
 def loaddoc():
-    docid = request.args.get('docid')
-    dataset = request.args.get('dataset')
+    docid = request.args.get("docid")
+    dataset = request.args.get("dataset")
 
     cfg = Config.dataset_configs[dataset]
 
@@ -77,6 +92,7 @@ def loaddoc():
     path = datapath + "-anno-" + current_identity.username
     filepath = os.path.join(path, doc["docid"])
 
+    doc["labelset"] = cfg["labelset"]
     doc["isAnnotated"] = False
 
     if os.path.exists(filepath):
@@ -89,7 +105,8 @@ def loaddoc():
 
     return jsonify(doc)
 
-@bp.route('/savedoc', methods=["POST"])
+
+@bp.route("/savedoc", methods=["POST"])
 @jwt_required()
 def savedoc():
     json_payload = request.get_json()
@@ -99,17 +116,17 @@ def savedoc():
         "labels": json_payload["labels"],
         "docid": json_payload["docid"],
         "dataset": json_payload["dataset"],
-        "path" : json_payload["path"],
-        "isAnnotated": True
+        "path": json_payload["path"],
+        "isAnnotated": True,
     }
 
     datapath = Config.dataset_configs[doc["dataset"]]["path"]
     outpath = datapath + "-anno-" + current_identity.username
-    
+
     if not os.path.exists(outpath):
         os.mkdir(outpath)
-    
+
     reader = get_reader(doc["dataset"])
     reader.write_doc(doc, os.path.join(outpath, doc["docid"]))
-        
+
     return jsonify(200)

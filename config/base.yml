@@ -6,3 +6,9 @@ cities:
 DATABASE_FILE: app.db
 
 SERVE_STATIC: true
+
+labelset:
+  PER: yellow
+  ORG: lightblue
+  LOC: yellowgreen
+  GPE: coral

@@ -1,3 +1,8 @@
 name: 3col
 path: data/3col
 reader: conll_reader.ConllReader
+
+labelset:
+  PER: yellow
+  ORG: lightblue
+  LOC: yellowgreen

@@ -116,6 +116,7 @@ class Sentence extends React.Component<SentProps, State> {
             key={index}
             form={tok}
             label={this.props.labels[index]}
+            labelset={this.props.labelset}
             next_token_is_entity={
               index === this.props.sent.length - 1
                 ? false
@@ -156,6 +157,7 @@ type SentProps = {
   index: number;
   sent: string[];
   labels: string[];
+  labelset: { [key: string]: string };
   setFocus: any;
   isActive: boolean;
   set_label: any;

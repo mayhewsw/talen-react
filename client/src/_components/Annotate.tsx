@@ -105,8 +105,6 @@ class Annotate extends React.Component<MatchProps, State> {
       }
     });
 
-    console.log(this.props.data.labels[0]);
-
     this.props.setLabels(newLabels);
     // TODO: update labels here!
     this.setState({ activeSent: -1 });
@@ -172,8 +170,6 @@ class Annotate extends React.Component<MatchProps, State> {
   render() {
     const { data } = this.props;
 
-    console.log(data.isAnnotated);
-
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
@@ -185,12 +181,14 @@ class Annotate extends React.Component<MatchProps, State> {
           <Card>
             <Card.Body>
               {data.words &&
+                data.labelset &&
                 data.words.map((sent: string[], sent_index: number) => (
                   <Sentence
                     key={sent_index}
                     index={sent_index}
                     sent={sent}
                     labels={data.labels[sent_index]}
+                    labelset={data.labelset}
                     setFocus={(ind: number) => this.setFocus(ind)}
                     isActive={sent_index === this.state.activeSent}
                     set_label={(lab: string, first: number, last: number) =>

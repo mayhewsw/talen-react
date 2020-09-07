@@ -50,19 +50,21 @@ class Token extends React.Component<TokProps> {
   }
 
   render() {
-    // TODO: can this be moved out to save time?
-    const label_set = ["PER", "ORG", "LOC", "GPE", "O"];
-    const label_button_list = label_set.map((label) => (
+    const tag = this.props.label.split("-").pop() || "O";
+    const label_button_list = Object.keys(this.props.labelset).map((label) => (
       <LabelButton
         key={label}
         label={label}
+        color={this.props.labelset[label]}
         onClick={() => this.props.set_label(label)}
       />
     ));
 
     var spacer_list = ["spacer"];
+    var spacer_style = { background: "transparent" };
     if (this.props.label !== "O" && this.props.next_token_is_entity) {
-      spacer_list.push(this.props.label.split("-").pop() || "");
+      //spacer_list.push(tag || "");
+      spacer_style.background = this.props.labelset[tag];
       spacer_list.push("label");
     }
 
@@ -76,7 +78,7 @@ class Token extends React.Component<TokProps> {
       "token",
       "nocopy",
       this.props.selected,
-      this.props.label.split("-").pop(),
+      tag,
       this.props.label === "O" ? null : "label",
     ];
 
@@ -95,12 +97,15 @@ class Token extends React.Component<TokProps> {
           onMouseDown={(evt) => this.handleDown(evt)}
           onMouseUp={(evt) => this.handleUp(evt)}
           onMouseOver={(evt) => this.handleOver(evt)}
+          style={{ background: this.props.labelset[tag] }}
           ref={this.myRef}
         >
           {this.props.form}
         </span>
         {/*  this whitespace is needed to get correct line breaks! */}
-        <span className={spacer_list.join(" ")}> </span>
+        <span className={spacer_list.join(" ")} style={spacer_style}>
+          {" "}
+        </span>
         <Overlay
           show={this.props.show_popover}
           target={this.myRef.current}
@@ -123,6 +128,7 @@ export default Token;
 type TokProps = {
   form: string;
   label: string;
+  labelset: { [key: string]: string };
   selected: string;
   mousedown: any;
   mouseup: any;

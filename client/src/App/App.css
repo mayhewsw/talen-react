@@ -78,7 +78,7 @@ body {
 .O {
   background-color: transparent;
 }
-.ORG {
+/* .ORG {
   background-color: lightblue;
 }
 .LOC {
@@ -89,7 +89,7 @@ body {
 }
 .GPE {
   background-color: coral;
-}
+} */
 
 .custom-btn {
   border: 0px;

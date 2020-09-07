@@ -15,6 +15,7 @@ const initialState: DataState = {
   status: "",
   words: [[]],
   labels: [[]],
+  labelset: [],
   path: "",
   isAnnotated: false,
 };
@@ -45,6 +46,7 @@ export function data(state = initialState, action: DataTypes): DataState {
         ...state,
         words: action.data["sentences"],
         labels: action.data["labels"],
+        labelset: action.data["labelset"],
         path: action.data["path"],
         isAnnotated: action.data["isAnnotated"],
       };
