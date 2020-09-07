@@ -1,0 +1,1 @@
+{"sentences": [["John", "is", "the", "first", "person", "."], ["There", "are", "two", "sentences", "here", "."]], "labels": [["O", "O", "O", "O", "O", "O"],["O", "O", "O", "O", "O", "O"]], "docid": "doc1", "dataset": "json-format"}
