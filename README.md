@@ -6,8 +6,6 @@ This software was designed for annotating Named Entity Recognition (NER), but ca
 
 ## Quickstart
 
-### Config Files
-
 ### Requirements
 
 - [npm](https://www.npmjs.com/get-npm)
@@ -65,6 +63,19 @@ Then, with the backend server running, visit, `localhost:5000/index.html`.
 
 ## Data
 
+This repo contains some example datasets in `server/data/`, as well as corresponding dataset config files in `config/datasets/`.
+
+### Config Files
+
+Every .yml file in `config/datasets/` will be loaded as a config file. Each config file must contain:
+
+- name: some string identifier
+- path: path to the dataset
+- reader: the Python class that will read this data. See `server/data_readers` for examples.
+
+You may optionally include a list of labels and their colors, but by default each config file inherits the
+labelset from `base.yml`.
+
 ### Annotating Universal Dependencies
 
 One of the motivators for writing this software was to annotate Universal Dependencies with NER tags.
@@ -77,7 +88,15 @@ $ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
 $ python scripts/conllu_to_docs.py UD_English-EWT/en_ewt-ud-train.conllu data/en_ewt-ud-train/
 ```
 
-Make sure that `UD_English.yml` is set correctly, and you're good to go!
+Create `UD_English.yml`:
+
+```
+name: UD_English-EWT-train
+path: data/en_ewt-ud-train
+reader: ud_reader.UDReader
+```
+
+And get going!
 
 ## Citation
 
