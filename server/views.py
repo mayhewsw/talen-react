@@ -55,7 +55,12 @@ def loaddataset():
     files = sorted(os.listdir(datapath))
 
     annotated_datapath = datapath + "-anno-" + current_identity.username
-    annotated_files = sorted([p for p in os.listdir(annotated_datapath) if p[0] != "."])
+    if os.path.exists(annotated_datapath):
+        annotated_files = sorted(
+            [p for p in os.listdir(annotated_datapath) if p[0] != "."]
+        )
+    else:
+        annotated_files = []
 
     dataset = {
         "documentIDs": files,
