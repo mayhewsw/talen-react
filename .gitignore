@@ -7,7 +7,7 @@ __pycache__/
 .DS_Store
 .pyenv
 *.code-workspace
-server/data/
+server/data/en_ewt*
 
 node_modules/
 .vscode/

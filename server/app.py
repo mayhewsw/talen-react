@@ -10,13 +10,8 @@ from config import BUILD_DIR, Config
 setup_logger()
 LOG = get_logger()
 
-if Config.SERVE_STATIC:
-    print("Serving statically!")
-    # in order for this to work, you need to run npm react-scripts
-    # build in the client folder.
-    app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
-else:
-    app = Flask(__name__)
+app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
+
 app.debug = True
 app.config.from_object(Config)
 db = SQLAlchemy(app)
