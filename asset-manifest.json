@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "https://mayhewsw.github.io/talen-react/static/css/main.d8b4a202.chunk.css",
-    "main.js": "https://mayhewsw.github.io/talen-react/static/js/main.80e670aa.chunk.js",
-    "main.js.map": "https://mayhewsw.github.io/talen-react/static/js/main.80e670aa.chunk.js.map",
-    "runtime-main.js": "https://mayhewsw.github.io/talen-react/static/js/runtime-main.a2d8d342.js",
-    "runtime-main.js.map": "https://mayhewsw.github.io/talen-react/static/js/runtime-main.a2d8d342.js.map",
-    "static/css/2.25d8efc1.chunk.css": "https://mayhewsw.github.io/talen-react/static/css/2.25d8efc1.chunk.css",
-    "static/js/2.76f19645.chunk.js": "https://mayhewsw.github.io/talen-react/static/js/2.76f19645.chunk.js",
-    "static/js/2.76f19645.chunk.js.map": "https://mayhewsw.github.io/talen-react/static/js/2.76f19645.chunk.js.map",
-    "index.html": "https://mayhewsw.github.io/talen-react/index.html",
-    "precache-manifest.6e61763eb3171b7856018d87ae6848b7.js": "https://mayhewsw.github.io/talen-react/precache-manifest.6e61763eb3171b7856018d87ae6848b7.js",
-    "service-worker.js": "https://mayhewsw.github.io/talen-react/service-worker.js",
-    "static/css/2.25d8efc1.chunk.css.map": "https://mayhewsw.github.io/talen-react/static/css/2.25d8efc1.chunk.css.map",
-    "static/css/main.d8b4a202.chunk.css.map": "https://mayhewsw.github.io/talen-react/static/css/main.d8b4a202.chunk.css.map",
-    "static/js/2.76f19645.chunk.js.LICENSE": "https://mayhewsw.github.io/talen-react/static/js/2.76f19645.chunk.js.LICENSE"
+    "main.css": "talen-react/static/css/main.d8b4a202.chunk.css",
+    "main.js": "talen-react/static/js/main.1470faaa.chunk.js",
+    "main.js.map": "talen-react/static/js/main.1470faaa.chunk.js.map",
+    "runtime-main.js": "talen-react/static/js/runtime-main.71ceb317.js",
+    "runtime-main.js.map": "talen-react/static/js/runtime-main.71ceb317.js.map",
+    "static/css/2.25d8efc1.chunk.css": "talen-react/static/css/2.25d8efc1.chunk.css",
+    "static/js/2.76f19645.chunk.js": "talen-react/static/js/2.76f19645.chunk.js",
+    "static/js/2.76f19645.chunk.js.map": "talen-react/static/js/2.76f19645.chunk.js.map",
+    "index.html": "talen-react/index.html",
+    "precache-manifest.6cd6dc5d2b779565277af06f32519ca7.js": "talen-react/precache-manifest.6cd6dc5d2b779565277af06f32519ca7.js",
+    "service-worker.js": "talen-react/service-worker.js",
+    "static/css/2.25d8efc1.chunk.css.map": "talen-react/static/css/2.25d8efc1.chunk.css.map",
+    "static/css/main.d8b4a202.chunk.css.map": "talen-react/static/css/main.d8b4a202.chunk.css.map",
+    "static/js/2.76f19645.chunk.js.LICENSE": "talen-react/static/js/2.76f19645.chunk.js.LICENSE"
   },
   "entrypoints": [
-    "static/js/runtime-main.a2d8d342.js",
+    "static/js/runtime-main.71ceb317.js",
     "static/css/2.25d8efc1.chunk.css",
     "static/js/2.76f19645.chunk.js",
     "static/css/main.d8b4a202.chunk.css",
-    "static/js/main.80e670aa.chunk.js"
+    "static/js/main.1470faaa.chunk.js"
   ]
 }
