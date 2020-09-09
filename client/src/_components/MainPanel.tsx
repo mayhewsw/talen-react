@@ -13,7 +13,7 @@ class MainPanel extends React.Component<MatchProps> {
       <div>
         <Navbar bg="light" expand="lg" fixed="top">
           <Container>
-            <Navbar.Brand href="/">
+            <Navbar.Brand href={process.env.PUBLIC_URL}>
               <img
                 alt=""
                 src={`${process.env.PUBLIC_URL}/logo-black-trans.png`}
