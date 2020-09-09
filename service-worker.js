@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/talen-react/precache-manifest.9f46997181057b0967fa24c34021781b.js"
+  "/talen-react/precache-manifest.1fe1d35abf3598ab1872c2759555baf5.js"
 );
 
 self.addEventListener('message', (event) => {

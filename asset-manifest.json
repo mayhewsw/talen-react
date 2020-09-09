@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/talen-react/static/css/main.3c1982ac.chunk.css",
-    "main.js": "/talen-react/static/js/main.2c6f2015.chunk.js",
-    "main.js.map": "/talen-react/static/js/main.2c6f2015.chunk.js.map",
+    "main.js": "/talen-react/static/js/main.ed805520.chunk.js",
+    "main.js.map": "/talen-react/static/js/main.ed805520.chunk.js.map",
     "runtime-main.js": "/talen-react/static/js/runtime-main.26ee70fd.js",
     "runtime-main.js.map": "/talen-react/static/js/runtime-main.26ee70fd.js.map",
     "static/css/2.25d8efc1.chunk.css": "/talen-react/static/css/2.25d8efc1.chunk.css",
     "static/js/2.355df92f.chunk.js": "/talen-react/static/js/2.355df92f.chunk.js",
     "static/js/2.355df92f.chunk.js.map": "/talen-react/static/js/2.355df92f.chunk.js.map",
     "index.html": "/talen-react/index.html",
-    "precache-manifest.9f46997181057b0967fa24c34021781b.js": "/talen-react/precache-manifest.9f46997181057b0967fa24c34021781b.js",
+    "precache-manifest.1fe1d35abf3598ab1872c2759555baf5.js": "/talen-react/precache-manifest.1fe1d35abf3598ab1872c2759555baf5.js",
     "service-worker.js": "/talen-react/service-worker.js",
     "static/css/2.25d8efc1.chunk.css.map": "/talen-react/static/css/2.25d8efc1.chunk.css.map",
     "static/css/main.3c1982ac.chunk.css.map": "/talen-react/static/css/main.3c1982ac.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.25d8efc1.chunk.css",
     "static/js/2.355df92f.chunk.js",
     "static/css/main.3c1982ac.chunk.css",
-    "static/js/main.2c6f2015.chunk.js"
+    "static/js/main.ed805520.chunk.js"
   ]
 }
