@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b112643adf0b209f956f960dfc24be4e",
+    "revision": "4a5b49d8df8d1a9e39ff10cbb6930918",
     "url": "https://mayhewsw.github.io/talen-react/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "https://mayhewsw.github.io/talen-react/static/css/2.25d8efc1.chunk.css"
   },
   {
-    "revision": "93b83c3ec7eb225fcb6b",
+    "revision": "52cba04e586117132ed2",
     "url": "https://mayhewsw.github.io/talen-react/static/css/main.d8b4a202.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "https://mayhewsw.github.io/talen-react/static/js/2.582a6fad.chunk.js.LICENSE"
   },
   {
-    "revision": "93b83c3ec7eb225fcb6b",
-    "url": "https://mayhewsw.github.io/talen-react/static/js/main.98623dbc.chunk.js"
+    "revision": "52cba04e586117132ed2",
+    "url": "https://mayhewsw.github.io/talen-react/static/js/main.da927f7c.chunk.js"
   },
   {
     "revision": "8e73f509f453903430c5",
