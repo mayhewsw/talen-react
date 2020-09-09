@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { MainPanel, Input } from "../_components";
 import { userActions } from "../_actions";

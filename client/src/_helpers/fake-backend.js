@@ -138,7 +138,13 @@ export function configureFakeBackend() {
         }
 
         if (url.indexOf("savedoc") > -1) {
-          resolve({ ok: true });
+          let responseJson = {
+            msg: "Saved correctly.",
+          };
+          resolve({
+            ok: true,
+            text: () => Promise.resolve(JSON.stringify(responseJson)),
+          });
           return;
         }
 
