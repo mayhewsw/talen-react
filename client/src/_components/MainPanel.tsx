@@ -16,7 +16,7 @@ class MainPanel extends React.Component<MatchProps> {
             <Navbar.Brand href="/">
               <img
                 alt=""
-                src="/logo-black-trans.png"
+                src={`${process.env.PUBLIC_URL}/logo-black-trans.png`}
                 //width="30"
                 height="30"
                 className="d-inline-block align-top"

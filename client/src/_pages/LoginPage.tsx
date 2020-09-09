@@ -24,10 +24,17 @@ class LoginPage extends React.Component<Props, State> {
   }
 
   render() {
+    let msg = null;
+    if (process.env.REACT_APP_ENV === "demo") {
+      msg = <p>In the demo, you can log in with anything (empty/empty).</p>;
+    }
+
     return (
       <MainPanel hideLoginButton={true}>
         <div className="col-md-6 col-md-offset-3">
           <h2>Login</h2>
+
+          {msg}
 
           <form name="form" onSubmit={this.handleSubmit}>
             <Input
