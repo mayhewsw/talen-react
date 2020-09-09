@@ -78,18 +78,6 @@ body {
 .O {
   background-color: transparent;
 }
-/* .ORG {
-  background-color: lightblue;
-}
-.LOC {
-  background-color: yellowgreen;
-}
-.PER {
-  background-color: yellow;
-}
-.GPE {
-  background-color: coral;
-} */
 
 .custom-btn {
   border: 0px;
@@ -128,16 +116,16 @@ body {
 }
 
 .highlightsingle {
-  border: lightgray solid 1px;
+  border: silver solid 1px;
   border-radius: 3px;
   padding-top: 5px;
   padding-bottom: 5px;
 }
 
 .highlightstart {
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
-  border-left: 1px solid lightgray;
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
+  border-left: 1px solid silver;
   border-right: 0px solid transparent;
   padding-right: 1px;
   padding-top: 5px;
@@ -146,8 +134,8 @@ body {
 }
 
 .highlighted {
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
   border-left: 0px solid transparent;
   border-right: 0px solid transparent;
   padding-left: 1px;
@@ -159,13 +147,13 @@ body {
 }
 
 .highlightend {
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  border-top: 1px solid silver;
+  border-bottom: 1px solid silver;
   border-left: 0px solid transparent;
   padding-left: 1px;
   padding-top: 5px;
   padding-bottom: 5px;
-  border-right: 1px solid lightgray;
+  border-right: 1px solid silver;
   border-radius: 0 3px 3px 0;
 }
 

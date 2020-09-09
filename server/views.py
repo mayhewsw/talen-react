@@ -19,27 +19,8 @@ def protected():
 @bp.route("/datasetlist")
 @jwt_required()
 def datasetlist():
-    # we want to reload this every time.
-    config_fnames = filter(
-        lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH)
-    )
 
-    dataset_configs = {}
-    for fname in config_fnames:
-        with open(os.path.join(DATASET_CONFIG_FILE_PATH, fname)) as f:
-            cfg = yaml.load(f, Loader=yaml.Loader)
-
-            if "labelset" not in cfg:
-                cfg["labelset"] = dict(Config.config_data["labelset"])
-            print(cfg["labelset"])
-            # add O as a special case, with color: transparent
-            cfg["labelset"]["O"] = "transparent"
-
-            dataset_configs[cfg["name"]] = cfg
-
-    Config.dataset_configs = dataset_configs
-
-    keys = sorted(dataset_configs.keys())
+    keys = sorted(Config.dataset_configs.keys())
     datasetIDs = {"datasetIDs": keys}
     return jsonify(datasetIDs)
 
@@ -48,7 +29,6 @@ def datasetlist():
 @jwt_required()
 def loaddataset():
     datasetID = request.args.get("dataset")
-
     cfg = Config.dataset_configs[datasetID]
     datapath = cfg["path"]
 

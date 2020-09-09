@@ -39,14 +39,14 @@ class LoginPage extends React.Component<Props, State> {
             <Input
               name="password"
               label="Password"
-              type="text"
+              type="password"
               model="password"
             ></Input>
             <div className="form-group">
               <button className="btn btn-primary">Login</button>
-              <Link to="/register" className="btn btn-link">
+              {/* <Link to="/register" className="btn btn-link">
                 Register
-              </Link>
+              </Link> */}
             </div>
           </form>
         </div>

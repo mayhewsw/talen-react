@@ -27,7 +27,7 @@ function redirectToLogin(dispatch: Dispatch<MessageTypes>, error_text: string) {
   if (error_text === "UNAUTHORIZED") {
     dispatch(alertActions.error("Logged out! Redirecting to login page..."));
     setTimeout(() => {
-      history.push("/login");
+      history.push(process.env.PUBLIC_URL + "/login");
     }, 500);
   } else {
     dispatch(alertActions.error(error_text.toString()));

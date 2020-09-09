@@ -6,25 +6,34 @@ import { withRouter, Link, RouteComponentProps } from "react-router-dom";
 
 class MainPanel extends React.Component<MatchProps> {
   render() {
+    const docid = this.props.match.params.docid;
+    const datasetid = this.props.match.params.id;
+
     return (
       <div>
         <Navbar bg="light" expand="lg" fixed="top">
           <Container>
-            <Navbar.Brand href="">TALEN</Navbar.Brand>
+            <Navbar.Brand href="/">
+              <img
+                alt=""
+                src="/logo-black-trans.png"
+                //width="30"
+                height="30"
+                className="d-inline-block align-top"
+              />
+            </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Navbar.Collapse className="mr-auto">
                 <Navbar.Text className="px-2">
                   <Link to="/">Home</Link>
                 </Navbar.Text>
+                {datasetid && <Navbar.Text className="px-1">{">"}</Navbar.Text>}
                 <Navbar.Text className="px-2">
-                  <Link to={`/dataset/${this.props.match.params.id}`}>
-                    {this.props.match.params.id}
-                  </Link>
+                  <Link to={`/dataset/${datasetid}`}>{datasetid}</Link>
                 </Navbar.Text>
-                <Navbar.Text className="px-2">
-                  {this.props.match.params.docid}
-                </Navbar.Text>
+                {docid && <Navbar.Text className="px-1">{">"}</Navbar.Text>}
+                <Navbar.Text className="px-2">{docid}</Navbar.Text>
               </Navbar.Collapse>
 
               {this.props.hideLoginButton ? null : (

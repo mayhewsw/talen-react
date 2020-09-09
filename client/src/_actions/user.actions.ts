@@ -33,7 +33,8 @@ function login(username: string, password: string) {
     userService.login(username, password).then(
       (user) => {
         dispatch(success(user));
-        history.push("/");
+        console.log(process.env.PUBLIC_URL + "/");
+        history.push(process.env.PUBLIC_URL + "/");
       },
       (error) => {
         dispatch(failure(error.toString()));
@@ -67,7 +68,7 @@ function register(user: User) {
     userService.register(user).then(
       (user) => {
         dispatch(success(user));
-        history.push("/login");
+        history.push(process.env.PUBLIC_URL + "/login");
         dispatch(alertActions.success("Registration successful"));
       },
       (error) => {

@@ -51,7 +51,12 @@ class Token extends React.Component<TokProps> {
 
   render() {
     const tag = this.props.label.split("-").pop() || "O";
-    const label_button_list = Object.keys(this.props.labelset).map((label) => (
+    let labellist = Object.keys(this.props.labelset).sort();
+    const oindex = labellist.indexOf("O");
+    labellist.splice(oindex, 1);
+    labellist.push("O");
+
+    const label_button_list = labellist.map((label) => (
       <LabelButton
         key={label}
         label={label}

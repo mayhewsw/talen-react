@@ -12,6 +12,7 @@ BUILD_DIR = os.path.join(basedir, "../client/build")
 
 class Config(object):
 
+    config_data = {}
     if os.path.exists(CONFIG_BASE_FILE):
         with open(CONFIG_BASE_FILE) as f:
             config_data = yaml.load(f, Loader=yaml.Loader)
@@ -19,6 +20,23 @@ class Config(object):
         print(f"File not found: {CONFIG_BASE_FILE}")
 
     dataset_configs = {}
+
+    # we want to reload this every time.
+    config_fnames = filter(
+        lambda p: p.endswith("yml"), os.listdir(DATASET_CONFIG_FILE_PATH)
+    )
+
+    for fname in config_fnames:
+        with open(os.path.join(DATASET_CONFIG_FILE_PATH, fname)) as f:
+            cfg = yaml.load(f, Loader=yaml.Loader)
+
+            if "labelset" not in cfg:
+                cfg["labelset"] = dict(config_data["labelset"])
+
+            # add O as a special case, with color: transparent
+            cfg["labelset"]["O"] = "transparent"
+
+            dataset_configs[cfg["name"]] = cfg
 
     # Some other stuff that doesn't really fit into a config file
     SQLALCHEMY_DATABASE_URI = os.environ.get(

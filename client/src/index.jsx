@@ -4,8 +4,14 @@ import { Provider } from "react-redux";
 import "./index.css";
 import { store } from "./_helpers";
 import { App } from "./App";
+import { configureFakeBackend } from "./_helpers";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+
+if (process.env.REACT_APP_ENV === "demo") {
+  // setup fake backend
+  configureFakeBackend();
+}
 
 ReactDOM.render(
   <Provider store={store}>

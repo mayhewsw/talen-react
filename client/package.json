@@ -43,7 +43,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "prettier": "prettier --write .",
-    "predeploy": "npm run build",
+    "predeploy": "PUBLIC_URL=/talen-react/ REACT_APP_ENV=demo npm run build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {

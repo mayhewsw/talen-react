@@ -163,7 +163,7 @@ class Annotate extends React.Component<MatchProps, State> {
     if (confirmed) {
       var url = `/dataset/${dataset}/${newDoc}`;
       this.loadAll(dataset, newDoc);
-      history.push(url);
+      history.push(process.env.PUBLIC_URL + url);
     }
   }
 

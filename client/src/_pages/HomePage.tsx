@@ -3,7 +3,7 @@ import { Link, RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
 import { MainPanel } from "../_components";
 import { dataActions } from "../_actions";
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Jumbotron } from "react-bootstrap";
 
 // this page shows a list of datasets. If you click on a dataset,
 // that takes you to a DatasetPage.
@@ -17,7 +17,14 @@ class HomePage extends React.Component<MatchProps> {
     return (
       <MainPanel>
         <div className="col-md-12">
-          <h1>Hi {user.username}!</h1>
+          <Jumbotron>
+            <h1>Hello, {user.username}!</h1>
+            <p>
+              Welcome to TALEN. Choose a dataset below to get started
+              annotating!
+            </p>
+          </Jumbotron>
+          <h3>Dataset List:</h3>
           <ListGroup>
             {data.items &&
               data.items.datasetIDs &&
@@ -28,19 +35,6 @@ class HomePage extends React.Component<MatchProps> {
               ))}
           </ListGroup>
         </div>
-
-        {/* <div className="col-md-6 col-md-offset-3">
-
-          <ul>
-            {data.items &&
-              data.items.datasetIDs &&
-              data.items.datasetIDs.map((id: string, index: number) => (
-                <li key={index}>
-                  
-                </li>
-              ))}
-          </ul>
-        </div> */}
       </MainPanel>
     );
   }
