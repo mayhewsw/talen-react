@@ -4,6 +4,10 @@ This is a rewrite of [TALEN: a Tool for Annotation of Low-resource ENtities](htt
 
 This software was designed for annotating Named Entity Recognition (NER), but can be used for any token-level sequence annotation task.
 
+Check out a demo here: [mayhewsw.github.io/talen-react/](https://mayhewsw.github.io/talen-react/)
+
+![Screenshot of web interface](/talen-screenshot.png?raw=true "Screenshot")
+
 ## Quickstart
 
 ### Requirements
