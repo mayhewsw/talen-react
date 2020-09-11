@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "470f05d9677b3e906bd4954850f6f293",
+    "revision": "600b0aa50528a093aafca45b3dae5cb1",
     "url": "/talen-react/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/talen-react/static/css/2.25d8efc1.chunk.css"
   },
   {
-    "revision": "c5901aacb4a0778e3511",
+    "revision": "34fc8f7dfbb3f80a0c61",
     "url": "/talen-react/static/css/main.3c1982ac.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/talen-react/static/js/2.355df92f.chunk.js.LICENSE"
   },
   {
-    "revision": "c5901aacb4a0778e3511",
-    "url": "/talen-react/static/js/main.eb8a3621.chunk.js"
+    "revision": "34fc8f7dfbb3f80a0c61",
+    "url": "/talen-react/static/js/main.cf05fdc5.chunk.js"
   },
   {
     "revision": "640e2fbf7f2374a37827",
