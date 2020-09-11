@@ -24,7 +24,7 @@ class DocumentPage extends React.Component<MatchProps> {
             uplink={`/dataset/${match.params.id}`}
           />
         </div>
-        <p></p>
+        <div style={{ height: 150 }}></div>
       </MainPanel>
     );
   }

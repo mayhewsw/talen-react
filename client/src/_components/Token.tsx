@@ -123,6 +123,7 @@ class Token extends React.Component<TokProps> {
               <a
                 href={`https://www.google.com/search?q=${this.props.display_phrase}`}
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 (Google)
               </a>
