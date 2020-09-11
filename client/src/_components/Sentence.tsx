@@ -44,15 +44,13 @@ class Sentence extends React.Component<SentProps, State> {
   }
 
   rowMouseDown(evt: any) {
-    // if(evt.target.tagName !== "BUTTON"){
-    //   this.setState({mouseIsDown: true})
-    // }
     this.props.setFocus(this.props.index);
   }
 
   rowMouseUp(evt: any) {
-    // this.setState({mouseIsDown: false})
-    this.checkClearRange(evt);
+    if (evt.target.tagName !== "A") {
+      this.checkClearRange(evt);
+    }
   }
 
   checkClearRange(evt: any) {
@@ -98,6 +96,10 @@ class Sentence extends React.Component<SentProps, State> {
   }
 
   render() {
+    const highlighted_phrase = this.props.sent
+      .slice(this.state.selected_range[0], this.state.selected_range[1] + 1)
+      .join(" ");
+
     return (
       <div
         className="sentence"
@@ -126,6 +128,7 @@ class Sentence extends React.Component<SentProps, State> {
             mousedown={() => this.tokenDown(index)}
             mouseup={() => this.tokenUp(index)}
             show_popover={this.showPopoverFunc(index)}
+            display_phrase={highlighted_phrase}
             set_label={(label: string) =>
               this.props.set_label(
                 label,

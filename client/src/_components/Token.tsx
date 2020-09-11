@@ -118,6 +118,15 @@ class Token extends React.Component<TokProps> {
           transition={false}
         >
           <Popover id="popover-container">
+            <Popover.Title>
+              {this.props.display_phrase}{" "}
+              <a
+                href={`https://www.google.com/search?q=${this.props.display_phrase}`}
+                target="_blank"
+              >
+                (Google)
+              </a>
+            </Popover.Title>
             <Popover.Content>
               <div className="label-box">{label_button_list}</div>
             </Popover.Content>
@@ -140,4 +149,5 @@ type TokProps = {
   show_popover: boolean;
   set_label: any;
   next_token_is_entity: boolean;
+  display_phrase: string;
 };
