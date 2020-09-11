@@ -1,7 +1,6 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { cloneDeep } from "lodash";
-//import './Annotate.css';
-import { Button, ButtonGroup, Row, Col, Card } from "react-bootstrap";
+import { Button, ButtonGroup, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
 import { Link, withRouter } from "react-router-dom";
 import { history } from "../_helpers";
@@ -22,6 +21,7 @@ class Annotate extends React.Component<MatchProps, State> {
     this.state = {
       activeSent: -1,
       isSaved: true,
+      propagate: true,
     };
   }
 
@@ -31,7 +31,7 @@ class Annotate extends React.Component<MatchProps, State> {
 
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
   // CSA is continuous sub array
-  find_csa(arr: any, subarr: any, from_index: number) {
+  find_csa(arr: string[], subarr: string[], from_index: number) {
     let i = from_index >>> 0,
       sl = subarr.length,
       l = arr.length + 1 - sl;
@@ -39,7 +39,9 @@ class Annotate extends React.Component<MatchProps, State> {
     let inds = [];
 
     loop: for (; i < l; i++) {
-      for (let j = 0; j < sl; j++) if (arr[i + j] !== subarr[j]) continue loop;
+      // TODO: consider adding another option to control whether it should propagate on lower case.
+      for (let j = 0; j < sl; j++)
+        if (arr[i + j].toLowerCase() !== subarr[j].toLowerCase()) continue loop;
       inds.push(i);
     }
     return inds;
@@ -57,17 +59,22 @@ class Annotate extends React.Component<MatchProps, State> {
     }
 
     //TODO: make sure everything is lower case!
+    console.log(`propagate? ${this.state.propagate}`);
 
     // get the string associated with this range
     var word_slice = this.props.data.words[sent_index].slice(first, last + 1);
 
     var phrase_locations: number[][] = [];
-
-    for (let j = 0; j < this.props.data.words.length; j++) {
-      var inds = this.find_csa(this.props.data.words[j], word_slice, 0);
-      inds.forEach((ind) =>
-        phrase_locations.push([j, ind, ind + word_slice.length - 1])
-      );
+    if (this.state.propagate) {
+      for (let j = 0; j < this.props.data.words.length; j++) {
+        var inds = this.find_csa(this.props.data.words[j], word_slice, 0);
+        inds.forEach((ind) =>
+          phrase_locations.push([j, ind, ind + word_slice.length - 1])
+        );
+      }
+    } else {
+      // only put the target phrase location
+      phrase_locations.push([sent_index, first, last]);
     }
 
     // I don't want to modify the state variable!
@@ -217,6 +224,20 @@ class Annotate extends React.Component<MatchProps, State> {
           <p></p>
           {data.status && <p>{data.status}</p>}
           <p></p>
+          <Form>
+            <div className="mb-3">
+              <Form.Check
+                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                  this.setState({ propagate: evt.target.checked })
+                }
+                defaultChecked={this.state.propagate}
+                id="propagation-checkbox"
+                type="checkbox"
+                label="Propagate annotations?"
+              />
+            </div>
+          </Form>
+          <p></p>
           <ButtonGroup>
             {data.prevDoc && (
               <Button
@@ -269,6 +290,7 @@ interface MatchParams {}
 type State = {
   isSaved: boolean;
   activeSent: number;
+  propagate: boolean;
 };
 
 // TODO: fix this any...

@@ -3,7 +3,7 @@ from models import User
 
 # Why can't this be run inside app.py? I don't know why.
 db.create_all()
-for un in ["user1", "user2", "user3"]:
+for un in ["user1", "user2", "user3", "stephen"]:
     admin = User(username=un, email=f"{un}@{un}.com", admin=True, readonly=False)
     admin.set_password(un)
     db.session.add(admin)

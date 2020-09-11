@@ -65,7 +65,7 @@ class Token extends React.Component<TokProps> {
       />
     ));
 
-    var spacer_list = ["spacer"];
+    var spacer_list = ["spacer", "nocopy"];
     var spacer_style = { background: "transparent" };
     if (this.props.label !== "O" && this.props.next_token_is_entity) {
       //spacer_list.push(tag || "");
