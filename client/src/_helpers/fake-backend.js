@@ -65,8 +65,6 @@ let alldata = {
   },
 };
 
-console.log(alldata);
-
 export function configureFakeBackend() {
   let realFetch = window.fetch;
   window.fetch = function (url, opts) {

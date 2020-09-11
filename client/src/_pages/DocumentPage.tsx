@@ -8,7 +8,6 @@ import { dataActions } from "../_actions";
 class DocumentPage extends React.Component<MatchProps> {
   componentDidMount() {
     const { match } = this.props;
-    console.log("this doc is:" + match.params.id);
     this.props.getDocuments(match.params.id);
   }
 

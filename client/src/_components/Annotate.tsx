@@ -17,7 +17,6 @@ import { dataActions } from "../_actions";
 class Annotate extends React.Component<MatchProps, State> {
   constructor(props: MatchProps) {
     super(props);
-    console.log(props);
     this.state = {
       activeSent: -1,
       isSaved: true,
@@ -49,7 +48,6 @@ class Annotate extends React.Component<MatchProps, State> {
 
   setLabel(label: string, first: number, last: number, sent_index: number) {
     this.setState({ isSaved: false });
-    console.log("set label: " + label);
 
     // then we switch them!
     if (first > last) {
@@ -57,9 +55,6 @@ class Annotate extends React.Component<MatchProps, State> {
       last = first;
       first = tmp;
     }
-
-    //TODO: make sure everything is lower case!
-    console.log(`propagate? ${this.state.propagate}`);
 
     // get the string associated with this range
     var word_slice = this.props.data.words[sent_index].slice(first, last + 1);
@@ -86,8 +81,11 @@ class Annotate extends React.Component<MatchProps, State> {
       var phrase_start = tuple[1];
       var phrase_end = tuple[2];
 
-      // dont' update something in the middle of an annotated entity
-      if (this.props.data.labels[phrase_sent][phrase_start][0] === "I") {
+      // don't update something in the middle of an annotated entity
+      if (
+        this.props.data.labels[phrase_sent][phrase_start][0] === "I" &&
+        label !== "O"
+      ) {
         return;
       }
 

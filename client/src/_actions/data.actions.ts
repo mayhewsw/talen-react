@@ -97,7 +97,6 @@ function loadDocument(dataset: string, docid: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.loadDocument(dataset, docid).then(
       (data: any) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {
@@ -115,11 +114,9 @@ function saveDocument(data: any) {
   return (dispatch: Dispatch<any>) => {
     dataService.saveDocument(data).then(
       (data: any) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {
-        console.log(error);
         redirectToLogin(dispatch, error);
       }
     );
