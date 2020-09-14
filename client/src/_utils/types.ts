@@ -10,15 +10,17 @@ export interface AuthState {
 }
 
 export interface DataState {
-  items: any[];
-  prevDoc?: any;
-  nextDoc?: any;
-  status?: string;
+  datasetName: string;
+  documentList: string[];
+  annotatedDocumentSet: Set<string>;
   words: string[][];
   labels: string[][];
   labelset: any;
   path: string;
   isAnnotated: boolean;
+  suggestions: any[];
+  datasetIDs: string[];
+  wordsColor: string;
 }
 
 export interface UtilState {
@@ -64,6 +66,7 @@ export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
 export const GETDATASETS_SUCCESS = "GETDATASETS_SUCCESS";
 export const GETDOCS_SUCCESS = "GETDOCS_SUCCESS";
 export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
+export const CLEARDOC = "CLEARDOC";
 export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
 export const LOADSTATUS = "LOADSTATUS";
 export const SETLABELS = "SETLABELS";
@@ -106,12 +109,18 @@ interface ClearAction {
 
 interface GetDatasetsAction {
   type: typeof GETDATASETS_SUCCESS;
-  data: any[];
+  data: {
+    datasetIDs: string[];
+  };
 }
 
 interface GetDocsAction {
   type: typeof GETDOCS_SUCCESS;
-  data: any[];
+  data: {
+    documentIDs: string[];
+    annotatedDocumentIDs: Set<string>;
+    datasetID: string;
+  };
 }
 
 interface RegisterRequestAction {
@@ -143,7 +152,12 @@ interface LoadDocsAction {
     path: string;
     isAnnotated: boolean;
     labelset: any;
+    suggestions: any[];
   };
+}
+
+interface ClearDocAction {
+  type: typeof CLEARDOC;
 }
 
 interface SetLabelsAction {
@@ -184,7 +198,8 @@ export type DataTypes =
   | GetDocsAction
   | LoadStatusAction
   | LoadDocsAction
-  | SetLabelsAction;
+  | SetLabelsAction
+  | ClearDocAction;
 export type UtilTypes = ChangeFormAction;
 export type MessageTypes = SuccessAction | ErrorAction | ClearAction;
 export type DocumentTypes =

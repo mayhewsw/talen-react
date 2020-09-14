@@ -1,5 +1,5 @@
 import React from "react";
-import Token from "./Token";
+import { Token } from "./Token";
 import { Badge } from "react-bootstrap";
 
 class Sentence extends React.Component<SentProps, State> {

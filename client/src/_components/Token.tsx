@@ -1,6 +1,7 @@
 import React from "react";
 import { Popover, Overlay } from "react-bootstrap";
 import LabelButton from "./LabelButton";
+import { connect } from "react-redux";
 
 class Token extends React.Component<TokProps> {
   private myRef = React.createRef<any>();
@@ -102,7 +103,10 @@ class Token extends React.Component<TokProps> {
           onMouseDown={(evt) => this.handleDown(evt)}
           onMouseUp={(evt) => this.handleUp(evt)}
           onMouseOver={(evt) => this.handleOver(evt)}
-          style={{ background: this.props.labelset[tag] }}
+          style={{
+            background: this.props.labelset[tag],
+            color: this.props.wordsColor,
+          }}
           ref={this.myRef}
         >
           {this.props.form}
@@ -138,9 +142,15 @@ class Token extends React.Component<TokProps> {
   }
 }
 
-export default Token;
+// TODO: make this STATE
+function mapState(state: any) {
+  const { data } = state;
+  const { wordsColor } = data;
+  return { wordsColor };
+}
 
 type TokProps = {
+  wordsColor: string;
   form: string;
   label: string;
   labelset: { [key: string]: string };
@@ -152,3 +162,10 @@ type TokProps = {
   next_token_is_entity: boolean;
   display_phrase: string;
 };
+
+const actionCreators = {
+  //getDocuments: dataActions.getDocuments,
+};
+
+const connectedToken = connect(mapState, actionCreators)(Token);
+export { connectedToken as Token };

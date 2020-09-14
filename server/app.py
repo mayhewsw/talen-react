@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask_jwt import JWT
 from flask_sqlalchemy import SQLAlchemy
 from logger import get_logger, setup_logger
+from suggestions import RuleSuggestionEngine
 from views import bp
 
 from config import BUILD_DIR, Config
@@ -15,6 +16,9 @@ app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
 app.debug = True
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+
+app.suggestion_engine = RuleSuggestionEngine()
+
 
 if __name__ == "__main__":
     from models import User

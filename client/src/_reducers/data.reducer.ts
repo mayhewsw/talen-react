@@ -3,43 +3,41 @@ import {
   DataState,
   GETDATASETS_SUCCESS,
   GETDOCS_SUCCESS,
-  LOADSTATUS,
   LOADDOC_SUCCESS,
   SETLABELS,
+  CLEARDOC,
 } from "../_utils/types";
 
 const initialState: DataState = {
-  items: [],
-  prevDoc: "",
-  nextDoc: "",
-  status: "",
   words: [[]],
   labels: [[]],
   labelset: [],
   path: "",
   isAnnotated: false,
+  suggestions: [],
+  datasetName: "",
+  documentList: [],
+  annotatedDocumentSet: new Set(),
+  datasetIDs: [],
+  wordsColor: "black",
 };
 
 export function data(state = initialState, action: DataTypes): DataState {
   switch (action.type) {
     case GETDATASETS_SUCCESS:
-      return { ...state, items: action.data };
+      return {
+        ...state,
+        datasetIDs: action.data["datasetIDs"],
+        documentList: [],
+        datasetName: "",
+        annotatedDocumentSet: new Set(),
+      };
     case GETDOCS_SUCCESS:
       return {
         ...state,
-        items: action.data,
-      };
-    case LOADSTATUS:
-      var curr_ind = action.data["documentIDs"].indexOf(action.docId);
-      var prevDoc = action.data["documentIDs"][curr_ind - 1];
-      var nextDoc = action.data["documentIDs"][curr_ind + 1];
-      return {
-        ...state,
-        prevDoc: prevDoc,
-        nextDoc: nextDoc,
-        status: `On document ${curr_ind + 1} out of ${
-          action.data["documentIDs"].length
-        }.`,
+        datasetName: action.data["datasetID"],
+        documentList: action.data["documentIDs"],
+        annotatedDocumentSet: action.data["annotatedDocumentIDs"],
       };
     case LOADDOC_SUCCESS:
       return {
@@ -49,6 +47,13 @@ export function data(state = initialState, action: DataTypes): DataState {
         labelset: action.data["labelset"],
         path: action.data["path"],
         isAnnotated: action.data["isAnnotated"],
+        suggestions: action.data["suggestions"],
+        wordsColor: "black",
+      };
+    case CLEARDOC:
+      return {
+        ...state,
+        wordsColor: "silver",
       };
     case SETLABELS:
       return {

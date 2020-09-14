@@ -2,11 +2,13 @@ import importlib
 import os
 
 import yaml
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 from flask_jwt import current_identity, jwt_required
+from logger import get_logger
 
 from config import DATASET_CONFIG_FILE_PATH, Config
 
+LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
 
 
@@ -33,6 +35,11 @@ def loaddataset():
     datapath = cfg["path"]
 
     files = sorted(os.listdir(datapath))
+
+    current_app.suggestion_engine.update_model(datasetID, current_identity.username)
+    LOG.debug(
+        f"IN LOADDATASET, loaded {len(current_app.suggestion_engine.tag_rules)} rules"
+    )
 
     annotated_datapath = datapath + "-anno-" + current_identity.username
     if os.path.exists(annotated_datapath):
@@ -88,6 +95,10 @@ def loaddoc():
         doc["labels"] = anno_doc["labels"]
         doc["isAnnotated"] = True
 
+    suggestions = current_app.suggestion_engine.make_suggestions(doc["sentences"])
+    LOG.debug(f"suggestions {suggestions}")
+    doc["suggestions"] = suggestions
+
     return jsonify(doc)
 
 
@@ -113,5 +124,9 @@ def savedoc():
 
     reader = get_reader(doc["dataset"])
     reader.write_doc(doc, os.path.join(outpath, doc["docid"]))
+
+    current_app.suggestion_engine.update_model(
+        json_payload["dataset"], current_identity.username
+    )
 
     return jsonify(200)

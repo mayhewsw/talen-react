@@ -6,6 +6,7 @@ import {
   SETLABELS,
   SAVEDOC_SUCCESS,
   MessageTypes,
+  CLEARDOC,
 } from "../_utils/types";
 
 import { dataService } from "../_services";
@@ -20,6 +21,7 @@ export const dataActions = {
   getDocuments,
   loadStatus,
   setLabels,
+  clearDocument,
 };
 
 function redirectToLogin(dispatch: Dispatch<MessageTypes>, error_text: string) {
@@ -93,10 +95,17 @@ function setLabels(newLabels: any[]) {
   };
 }
 
+function clearDocument() {
+  return {
+    type: CLEARDOC,
+  };
+}
+
 function loadDocument(dataset: string, docid: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.loadDocument(dataset, docid).then(
       (data: any) => {
+        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {

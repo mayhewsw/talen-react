@@ -3,17 +3,10 @@ import { connect } from "react-redux";
 import { Annotate } from "../_components/Annotate";
 import { MainPanel } from "../_components";
 import { RouteComponentProps } from "react-router-dom";
-import { dataActions } from "../_actions";
 
 class DocumentPage extends React.Component<MatchProps> {
-  componentDidMount() {
-    const { match } = this.props;
-    this.props.getDocuments(match.params.id);
-  }
-
   render() {
     const { match } = this.props;
-
     return (
       <MainPanel>
         <div className="col-md-12">
@@ -31,7 +24,6 @@ class DocumentPage extends React.Component<MatchProps> {
 
 // TODO: fix the any!!
 interface MatchProps extends RouteComponentProps<MatchParams> {
-  getDocuments: any;
   data: any;
 }
 
@@ -47,9 +39,7 @@ function mapState(state: any) {
   return { user, data };
 }
 
-const actionCreators = {
-  getDocuments: dataActions.getDocuments,
-};
+const actionCreators = {};
 
 const connectedDocumentPage = connect(mapState, actionCreators)(DocumentPage);
 export { connectedDocumentPage as DocumentPage };

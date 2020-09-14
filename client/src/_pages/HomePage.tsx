@@ -26,9 +26,9 @@ class HomePage extends React.Component<MatchProps> {
           </Jumbotron>
           <h3>Dataset List:</h3>
           <ListGroup>
-            {data.items &&
-              data.items.datasetIDs &&
-              data.items.datasetIDs.map((id: string, index: number) => (
+            {data &&
+              data.datasetIDs &&
+              data.datasetIDs.map((id: string, index: number) => (
                 <ListGroup.Item key={index}>
                   <Link to={`/dataset/${id}`}>{id}</Link>
                 </ListGroup.Item>
@@ -42,7 +42,6 @@ class HomePage extends React.Component<MatchProps> {
 
 // TODO: fix the any!!
 interface MatchProps extends RouteComponentProps<MatchParams> {
-  getDocuments: any;
   data: any;
   user: any;
   getDatasets: any;

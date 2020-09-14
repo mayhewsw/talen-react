@@ -1,6 +1,14 @@
 import React, { ChangeEvent } from "react";
 import { cloneDeep } from "lodash";
-import { Button, ButtonGroup, Row, Col, Card, Form } from "react-bootstrap";
+import {
+  Button,
+  ButtonGroup,
+  Row,
+  Col,
+  Card,
+  Form,
+  Table,
+} from "react-bootstrap";
 import Sentence from "./Sentence";
 import { Link, withRouter } from "react-router-dom";
 import { history } from "../_helpers";
@@ -135,7 +143,7 @@ class Annotate extends React.Component<MatchProps, State> {
 
   loadAll(dataset: string, docId: string) {
     this.props.loadDocument(dataset, docId);
-    this.props.loadStatus(dataset, docId);
+    // this.props.loadStatus(dataset, docId);
   }
 
   buttonPush(dataset: string, newDoc: string) {
@@ -166,6 +174,7 @@ class Annotate extends React.Component<MatchProps, State> {
     }
 
     if (confirmed) {
+      this.props.clearDocument();
       var url = `/dataset/${dataset}/${newDoc}`;
       this.loadAll(dataset, newDoc);
       history.push(process.env.PUBLIC_URL + url);
@@ -173,7 +182,11 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   render() {
-    const { data } = this.props;
+    const { data, docid } = this.props;
+
+    const doc_index = data.documentList.indexOf(docid);
+    const nextDoc = data.documentList[doc_index + 1];
+    const prevDoc = data.documentList[doc_index - 1];
 
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
@@ -220,7 +233,9 @@ class Annotate extends React.Component<MatchProps, State> {
             </Button>
           )}
           <p></p>
-          {data.status && <p>{data.status}</p>}
+          <p>{`On document ${doc_index + 1} out of ${
+            data.documentList.length
+          }`}</p>
           <p></p>
           <Form>
             <div className="mb-3">
@@ -237,22 +252,18 @@ class Annotate extends React.Component<MatchProps, State> {
           </Form>
           <p></p>
           <ButtonGroup>
-            {data.prevDoc && (
+            {prevDoc && (
               <Button
                 variant="outline-primary"
-                onClick={() =>
-                  this.buttonPush(this.props.dataset, data.prevDoc)
-                }
+                onClick={() => this.buttonPush(this.props.dataset, prevDoc)}
               >
                 <IoIosArrowBack /> Previous
               </Button>
             )}
-            {data.nextDoc && (
+            {nextDoc && (
               <Button
                 variant="outline-primary"
-                onClick={() =>
-                  this.buttonPush(this.props.dataset, this.props.data.nextDoc)
-                }
+                onClick={() => this.buttonPush(this.props.dataset, nextDoc)}
               >
                 Next <IoIosArrowForward />
               </Button>
@@ -264,6 +275,24 @@ class Annotate extends React.Component<MatchProps, State> {
               <Button variant="outline-secondary">Back to all docs...</Button>
             </Link>
           </ButtonGroup>
+          <p></p>
+          <Table striped bordered hover size="sm">
+            <thead>
+              <tr>
+                <th>Phrase</th>
+                <th>Num Occur.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(data.suggestions).map((s: string) => (
+                <tr key={s}>
+                  <td>{s}</td>
+                  <td>{data.suggestions[s].length}</td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          {/* {this.props.data.suggestions && this.props.data.suggestions.map((dd: any) => dd["text"])} */}
         </Col>
       </Row>
     );
@@ -277,6 +306,7 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   docid: string;
   uplink: string;
   setLabels: any;
+  clearDocument: any;
   saveDocument: any;
   loadDocument: any;
   loadStatus: any;
@@ -302,6 +332,7 @@ const actionCreators = {
   loadDocument: dataActions.loadDocument,
   loadStatus: dataActions.loadStatus,
   setLabels: dataActions.setLabels,
+  clearDocument: dataActions.clearDocument,
 };
 
 const connectedAnnotate = connect(
