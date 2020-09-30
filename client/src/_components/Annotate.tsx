@@ -276,22 +276,24 @@ class Annotate extends React.Component<MatchProps, State> {
             </Link>
           </ButtonGroup>
           <p></p>
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>Phrase</th>
-                <th>Num Occur.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.keys(data.suggestions).map((s: string) => (
-                <tr key={s}>
-                  <td>{s}</td>
-                  <td>{data.suggestions[s].length}</td>
+          {data.suggestions && (
+            <Table striped bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th>Phrase</th>
+                  <th>Num Occur.</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {Object.keys(data.suggestions).map((s: string) => (
+                  <tr key={s}>
+                    <td>{s}</td>
+                    <td>{data.suggestions[s].length}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
           {/* {this.props.data.suggestions && this.props.data.suggestions.map((dd: any) => dd["text"])} */}
         </Col>
       </Row>
