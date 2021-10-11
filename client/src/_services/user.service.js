@@ -17,7 +17,10 @@ function login(username, password) {
     body: JSON.stringify({ username, password }),
   };
 
-  return fetch(`http://localhost:5000/users/authenticate`, requestOptions)
+  return fetch(
+    `${process.env.REACT_APP_URL}/users/authenticate`,
+    requestOptions
+  )
     .then(handleResponse)
     .then((user) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -39,7 +42,7 @@ function getAll() {
     headers: authHeader(),
   };
 
-  return fetch(`http://localhost:5000/users`, requestOptions).then(
+  return fetch(`${process.env.REACT_APP_URL}/users`, requestOptions).then(
     handleResponse
   );
 }
@@ -50,7 +53,7 @@ function getById(id) {
     headers: authHeader(),
   };
 
-  return fetch(`http://localhost:5000/users/${id}`, requestOptions).then(
+  return fetch(`${process.env.REACT_APP_URL}/users/${id}`, requestOptions).then(
     handleResponse
   );
 }
@@ -62,9 +65,10 @@ function register(user) {
     body: JSON.stringify(user),
   };
 
-  return fetch(`http://localhost:5000/users/register`, requestOptions).then(
-    handleResponse
-  );
+  return fetch(
+    `${process.env.REACT_APP_URL}/users/register`,
+    requestOptions
+  ).then(handleResponse);
 }
 
 function update(user) {
@@ -74,9 +78,10 @@ function update(user) {
     body: JSON.stringify(user),
   };
 
-  return fetch(`http://localhost:5000/users/${user.id}`, requestOptions).then(
-    handleResponse
-  );
+  return fetch(
+    `${process.env.REACT_APP_URL}/users/${user.id}`,
+    requestOptions
+  ).then(handleResponse);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
@@ -86,7 +91,7 @@ function _delete(id) {
     headers: authHeader(),
   };
 
-  return fetch(`http://localhost:5000/users/${id}`, requestOptions).then(
+  return fetch(`${process.env.REACT_APP_URL}/users/${id}`, requestOptions).then(
     handleResponse
   );
 }

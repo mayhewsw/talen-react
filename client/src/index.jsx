@@ -13,6 +13,8 @@ if (process.env.REACT_APP_ENV === "demo") {
   configureFakeBackend();
 }
 
+console.log(process.env.REACT_APP_ENV);
+
 ReactDOM.render(
   <Provider store={store}>
     <App />
