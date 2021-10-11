@@ -2,12 +2,16 @@ from app import db
 from models import User
 
 # Why can't this be run inside app.py? I don't know why.
-db.create_all()
-for un in ["user1", "user2", "user3", "stephen"]:
-    admin = User(username=un, email=f"{un}@{un}.com", admin=True, readonly=False)
-    admin.set_password(un)
-    db.session.add(admin)
-db.session.commit()
+try:
+    db.drop_all()
+    db.create_all()
+    for un in ["stephen"]:
+        admin = User(username=un, email=f"{un}@{un}.com", admin=True, readonly=False)
+        admin.set_password(un)
+        db.session.add(admin)
+    db.session.commit()
+except Exception:
+    print("Something went wrong in the DB creation process.")
 
 print(
     "Admin users with usernames/passwords 'user1', 'user2', and 'user3' have been added."
