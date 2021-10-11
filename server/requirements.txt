@@ -7,3 +7,4 @@ Flask-SQLAlchemy==2.5
 PyJWT==1.4.2
 pyyaml
 conllu
+gunicorn==20.1.0
