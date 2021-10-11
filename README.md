@@ -102,6 +102,22 @@ reader: ud_reader.UDReader
 
 And get going!
 
+
+
+## Dockerization
+
+To build:
+```
+$ docker build -f Dockerfile -t sample:prod . 
+```
+
+To run:
+```
+$ docker run -it --rm -e "PORT=8080" -p 1337:8080 sample:prod
+```
+
+Then visit `http://localhost:1337/index.html` in a browser.
+
 ## Citation
 
 If you use this in your research paper, please cite us!
