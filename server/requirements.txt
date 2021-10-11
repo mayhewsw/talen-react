@@ -3,7 +3,8 @@ Flask-Cors==3.0.7
 Flask-JWT==0.3.2
 Flask-Login==0.5.0
 Flask-Session==0.3.1
-Flask-SQLAlchemy==2.4.1
+Flask-SQLAlchemy==2.5
 PyJWT==1.4.2
 pyyaml
 conllu
+gunicorn==20.1.0
