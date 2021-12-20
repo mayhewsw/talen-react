@@ -1,4 +1,8 @@
 
+from talen.dal.mongo_dal import MongoDAL
+from talen.models.user import LoginStatus
+
+
 def test_add_get_document(mongo_dal, document):
     mongo_dal.add_document(document)
     returned_doc = mongo_dal.get_document(document.id, document.dataset_id)
@@ -25,3 +29,28 @@ def test_get_datasets(mongo_dal, document_list):
             mongo_dal.add_document(doc)
 
     assert set(mongo_dal.get_dataset_list()) == set(expected_dataset_list)
+
+def test_get_user(mongo_dal, user):
+    mongo_dal.add_user(user)
+    # this should pass
+    assert mongo_dal.check_user("coolUser", "passw0rd") == LoginStatus.SUCCESS
+    # this should fail b/c wrong password
+    assert mongo_dal.check_user("coolUser", "not_a_real_password") == LoginStatus.PASSWORD_INCORRECT
+    # this should fail b/c no user
+    mongo_dal.check_user("noMan", "who_cares") == LoginStatus.USER_NOT_FOUND
+    
+def test_annotation(mongo_dal: MongoDAL, annotation):
+    for i in range(3):
+        annotation.id = f"dumb_anno_{i}"
+        annotation.dataset_id = "dumb_dataset"
+        mongo_dal.add_annotation(annotation)
+
+    # we do this twice, just to show that it's possible to have annotations
+    # with identical values but different datasets.
+    for i in range(3):
+        annotation.id = f"dumb_anno_{i}"
+        annotation.dataset_id = "dumber_dataset"
+        mongo_dal.add_annotation(annotation)
+
+    annotations = mongo_dal.get_annotations("dumb_dataset", "doc1", "coolUser")
+    assert len(annotations) == 3

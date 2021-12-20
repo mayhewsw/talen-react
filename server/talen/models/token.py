@@ -1,11 +1,11 @@
 from typing import Dict
 from attr import attrs, attrib, asdict
 
+
 @attrs
 class Token:
     id: str = attrib()
     document_id: str = attrib()
-    dataset_id: str = attrib()
     text: str = attrib()
     start_span: int = attrib()
     end_span: int = attrib()
@@ -15,4 +15,6 @@ class Token:
 
     @staticmethod
     def deserialize(obj):
+        if "_id" in obj:
+            del obj["_id"]
         return Token(**obj)

@@ -1,7 +1,10 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt import JWT
-from flask_sqlalchemy import SQLAlchemy
+from talen.dal.mongo_dal import MongoDAL
+from talen.models.user import LoginStatus
+from talen.models.user import User
+# from flask_sqlalchemy import SQLAlchemy
 from talen.logger import get_logger, setup_logger
 from talen.views import bp
 
@@ -14,27 +17,30 @@ app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
 
 app.debug = True
 app.config.from_object(Config)
-db = SQLAlchemy(app)
+# FIXME: obviously make this url better!
+app.mongo_dal = MongoDAL("localhost:27017/")
 
+
+user = User("stephen", "user@user.com", None, True, False)
+user.set_password("stephen")
+app.mongo_dal.add_user(user)
+
+# db = SQLAlchemy(app)
 # app.suggestion_engine = RuleSuggestionEngine()
 
 
 if __name__ == "__main__":
-    from talen.models import User
-
-    def load_user(user_id: int) -> User:
-        LOG.debug(f"load_user happening, with id: {user_id}")
-        user = User.query.filter_by(id=user_id).first()
-        return user
+    # FIXME: move all this to touch mongo db!
 
     def authenticate(username: str, password: str) -> User:
-        user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            return user
+        # TODO: what about failures?
+        # TODO: also, this is inefficient, checking twice
+        if app.mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
+            return app.mongo_dal.load_user(username)
 
     def identity(payload):
-        user_id = payload["identity"]
-        return load_user(user_id)
+        username = payload["identity"]
+        return app.mongo_dal.load_user(username)
 
     jwt = JWT(app, authenticate, identity)
 
@@ -43,7 +49,7 @@ if __name__ == "__main__":
         return jsonify(
             {
                 "access_token": access_token.decode("utf-8"),
-                "username": identity.username,
+                "username": identity.id,
             }
         )
 
