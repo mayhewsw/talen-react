@@ -1,5 +1,5 @@
 from app import db
-from models import User
+from talen.models import User
 
 # Why can't this be run inside app.py? I don't know why.
 db.create_all()

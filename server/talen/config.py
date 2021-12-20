@@ -5,9 +5,9 @@ import yaml
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-CONFIG_BASE_FILE = os.path.join(basedir, "../config/base.yml")
-DATASET_CONFIG_FILE_PATH = os.path.join(basedir, "../config/datasets")
-BUILD_DIR = os.path.join(basedir, "../client/build")
+CONFIG_BASE_FILE = os.path.join(basedir, "../../config/base.yml")
+DATASET_CONFIG_FILE_PATH = os.path.join(basedir, "../../config/datasets")
+BUILD_DIR = os.path.join(basedir, "../../client/build")
 
 
 class Config(object):

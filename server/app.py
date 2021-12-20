@@ -2,11 +2,10 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt import JWT
 from flask_sqlalchemy import SQLAlchemy
-from logger import get_logger, setup_logger
-from suggestions import RuleSuggestionEngine
-from views import bp
+from talen.logger import get_logger, setup_logger
+from talen.views import bp
 
-from config import BUILD_DIR, Config
+from talen.config import BUILD_DIR, Config
 
 setup_logger()
 LOG = get_logger()
@@ -17,11 +16,11 @@ app.debug = True
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 
-app.suggestion_engine = RuleSuggestionEngine()
+# app.suggestion_engine = RuleSuggestionEngine()
 
 
 if __name__ == "__main__":
-    from models import User
+    from talen.models import User
 
     def load_user(user_id: int) -> User:
         LOG.debug(f"load_user happening, with id: {user_id}")

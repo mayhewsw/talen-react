@@ -4,9 +4,9 @@ import os
 import yaml
 from flask import Blueprint, current_app, jsonify, request
 from flask_jwt import current_identity, jwt_required
-from logger import get_logger
+from talen.logger import get_logger
 
-from config import DATASET_CONFIG_FILE_PATH, Config
+from talen.config import DATASET_CONFIG_FILE_PATH, Config
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
@@ -21,7 +21,7 @@ def protected():
 @bp.route("/datasetlist")
 @jwt_required()
 def datasetlist():
-
+    LOG.info("Requesting datasets")
     keys = sorted(Config.dataset_configs.keys())
     datasetIDs = {"datasetIDs": keys}
     return jsonify(datasetIDs)

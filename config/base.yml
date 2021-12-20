@@ -5,3 +5,6 @@ labelset:
   ORG: lightblue
   LOC: yellowgreen
   GPE: coral
+
+mongo_url: somethingsomething
+
