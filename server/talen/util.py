@@ -42,6 +42,8 @@ def make_client_doc(document: Document, annotations: List[Annotation]) -> Dict[a
 
     # We use BIO format. 
     for annotation in annotations:
+        # annotations with label O are dummies.
+        if annotation.label == "O": continue
         anno_sent = labels[annotation.sent_id]
         for i in range(annotation.start_span, annotation.end_span):
             prefix = "B-" if i == annotation.start_span else "I-"

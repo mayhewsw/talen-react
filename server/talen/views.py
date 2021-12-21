@@ -1,11 +1,8 @@
-import importlib
-import os
 from typing import List
 
 import yaml
 from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
-from talen.models.document import Document
 from talen.models.annotation import Annotation
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
@@ -25,7 +22,6 @@ def hello():
 def protected():
     return current_identity
 
-
 @bp.route("/datasetlist")
 @jwt_required()
 def datasetlist():
@@ -44,9 +40,7 @@ def loaddataset():
 
     # FIXME: it's wasteful to grab the whole document, then just get the name
     files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
-    # FIXME: figure out a way to determine which docs are annotated
-    # annotated_ids = mongo_dal.get_annotated_doc_ids()
-    annotated_files = []
+    annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
 
     dataset = {
         "documentIDs": files,
@@ -56,13 +50,6 @@ def loaddataset():
 
     return jsonify(dataset)
 
-
-def get_reader(dataset):
-    cfg = Config.dataset_configs[dataset]
-    module_name, class_name = cfg["reader"].split(".")
-    module = importlib.import_module(f"data_readers.{module_name}")
-    reader = getattr(module, class_name)
-    return reader
 
 @bp.route("/loaddoc")
 @jwt_required()
@@ -93,13 +80,12 @@ def loaddoc():
 @jwt_required()
 def savedoc():
     json_payload = request.get_json()
-    # TODO: important that the doc that comes back is the same as the doc up above. Because it will be saved to file.
+    # TODO: important that the doc that comes back is the same as the doc up above
     client_doc = {
         "sentences": json_payload["sentences"],
         "labels": json_payload["labels"],
         "docid": json_payload["docid"],
         "dataset": json_payload["dataset"],
-        "path": json_payload["path"],
         "isAnnotated": True,
     }
     LOG.info("Have received doc!")
@@ -107,10 +93,16 @@ def savedoc():
     mongo_dal: MongoDAL = current_app.mongo_dal
 
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
-    annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
+    new_annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
 
-    # FIXME: error handling, etc.
-    for annotation in annotations:
+    # simple: just delete all annotations from this document and user.
+    mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], current_identity.id)
+
+    for annotation in new_annotations:
         mongo_dal.add_annotation(annotation) 
+
+    # we also add a dummy annotation that marks that the document has been annotated!
+    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", original_doc.sentences[0][0:1], 0,1)
+    mongo_dal.add_annotation(dummy_annotation)
 
     return jsonify(200)

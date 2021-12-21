@@ -47,3 +47,35 @@ def test_annotation(mongo_dal: MongoDAL, annotation):
     annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
     assert len(annotations) == 1
     assert annotations[0].label == "ORG"
+
+def test_delete_annotation(mongo_dal: MongoDAL, annotation):
+    mongo_dal.add_annotation(annotation)
+
+    annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
+    assert len(annotations) == 1
+    assert annotations[0].label == "PERSON"
+
+    mongo_dal.delete_annotations("dataset1", "doc1", "coolUser")
+    annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
+    assert len(annotations) == 0
+
+def test_get_annotated_doc_ids(mongo_dal: MongoDAL, document, annotation):
+    mongo_dal.add_document(document)
+
+    # no annotated doc ids before we've added anything
+    annotated_doc_ids = mongo_dal.get_annotated_doc_ids("dataset1", "coolUser")
+    assert annotated_doc_ids == []
+
+    mongo_dal.add_annotation(annotation)
+
+    # check that the doc is included
+    annotated_doc_ids = mongo_dal.get_annotated_doc_ids("dataset1", "coolUser")
+    assert annotated_doc_ids == [annotation.doc_id]
+
+    # make sure that a different user gets no docs
+    annotated_doc_ids = mongo_dal.get_annotated_doc_ids("dataset1", "notCoolUser")
+    assert annotated_doc_ids == []
+
+    # make sure that a different dataset gets no docs
+    annotated_doc_ids = mongo_dal.get_annotated_doc_ids("dataset1billion", "coolUser")
+    assert annotated_doc_ids == []
