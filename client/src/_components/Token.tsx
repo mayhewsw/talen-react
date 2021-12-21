@@ -53,6 +53,7 @@ class Token extends React.Component<TokProps> {
   render() {
     const tag = this.props.label.split("-").pop() || "O";
     let labellist = Object.keys(this.props.labelset).sort();
+    // TODO: What's going on here?
     const oindex = labellist.indexOf("O");
     labellist.splice(oindex, 1);
     labellist.push("O");

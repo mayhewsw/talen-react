@@ -1,13 +1,17 @@
 import importlib
 import os
+from typing import List
 
 import yaml
 from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
+from talen.models.document import Document
+from talen.models.annotation import Annotation
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 
 from talen.config import Config
+from talen.util import make_client_doc
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
@@ -40,6 +44,7 @@ def loaddataset():
 
     # FIXME: it's wasteful to grab the whole document, then just get the name
     files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
+    # FIXME: figure out a way to determine which docs are annotated
     # annotated_ids = mongo_dal.get_annotated_doc_ids()
     annotated_files = []
 
@@ -59,41 +64,29 @@ def get_reader(dataset):
     reader = getattr(module, class_name)
     return reader
 
-
 @bp.route("/loaddoc")
 @jwt_required()
 def loaddoc():
     docid = request.args.get("docid")
     dataset = request.args.get("dataset")
+    username = current_identity.id
 
-    cfg = Config.dataset_configs[dataset]
+    mongo_dal: MongoDAL = current_app.mongo_dal
 
-    datapath = cfg["path"]
+    document = mongo_dal.get_document(docid, dataset)
+    annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, username)
 
-    reader = get_reader(dataset)
+    client_doc = make_client_doc(document, annotations)
+    client_doc["isAnnotated"] = len(annotations) > 0
+    # FIXME: how do we associate labelsets with datasets?
+    client_doc["labelset"] = {
+        "O": "transparent",
+        "PER": "yellow",
+        "ORG": "lightblue",
+        "LOC": "yellowgreen"
+    }
 
-    path = os.path.join(datapath, docid)
-    doc = reader.read_doc(dataset, docid, path)
-
-    path = datapath + "-anno-" + current_identity.username
-    filepath = os.path.join(path, doc["docid"])
-
-    doc["labelset"] = cfg["labelset"]
-    doc["isAnnotated"] = False
-
-    if os.path.exists(filepath):
-        anno_doc = reader.read_doc(dataset, docid, filepath)
-
-        # TODO: ideally, here we compare the tokens, etc. etc.
-        # but for now we just overwrite the labels.
-        doc["labels"] = anno_doc["labels"]
-        doc["isAnnotated"] = True
-
-    # suggestions = current_app.suggestion_engine.make_suggestions(doc["sentences"])
-    # LOG.debug(f"suggestions {suggestions}")
-    # doc["suggestions"] = suggestions
-
-    return jsonify(doc)
+    return jsonify(client_doc)
 
 
 @bp.route("/savedoc", methods=["POST"])
@@ -109,18 +102,6 @@ def savedoc():
         "path": json_payload["path"],
         "isAnnotated": True,
     }
-
-    datapath = Config.dataset_configs[doc["dataset"]]["path"]
-    outpath = datapath + "-anno-" + current_identity.username
-
-    if not os.path.exists(outpath):
-        os.mkdir(outpath)
-
-    reader = get_reader(doc["dataset"])
-    reader.write_doc(doc, os.path.join(outpath, doc["docid"]))
-
-    current_app.suggestion_engine.update_model(
-        json_payload["dataset"], current_identity.username
-    )
+    LOG.info("Have received doc!")
 
     return jsonify(200)
