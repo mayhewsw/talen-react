@@ -2,15 +2,19 @@ import importlib
 import os
 
 import yaml
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
+from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 
-from talen.config import DATASET_CONFIG_FILE_PATH, Config
+from talen.config import Config
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
 
+@bp.route("/")
+def hello():
+    return redirect("/index.html")
 
 @bp.route("/users/me")
 @jwt_required()
@@ -22,48 +26,54 @@ def protected():
 @jwt_required()
 def datasetlist():
     LOG.info("Requesting datasets")
-    keys = sorted(Config.dataset_configs.keys())
-    datasetIDs = {"datasetIDs": keys}
+    mongo_dal: MongoDAL = current_app.mongo_dal
+    datasetIDs = {"datasetIDs": mongo_dal.get_dataset_list()}
     return jsonify(datasetIDs)
 
 
 @bp.route("/loaddataset")
 @jwt_required()
 def loaddataset():
-    datasetID = request.args.get("dataset")
-    cfg = Config.dataset_configs[datasetID]
-    datapath = cfg["path"]
+    dataset_id = request.args.get("dataset")
 
-    files = sorted(os.listdir(datapath))
+    # cfg = Config.dataset_configs[datasetID]
+    # datapath = cfg["path"]
 
-    current_app.suggestion_engine.update_model(datasetID, current_identity.username)
-    LOG.debug(
-        f"IN LOADDATASET, loaded {len(current_app.suggestion_engine.tag_rules)} rules"
-    )
+    # files = sorted(os.listdir(datapath))
 
-    annotated_datapath = datapath + "-anno-" + current_identity.username
-    if os.path.exists(annotated_datapath):
-        annotated_files = sorted(
-            [p for p in os.listdir(annotated_datapath) if p[0] != "."]
-        )
-    else:
-        annotated_files = []
+    # current_app.suggestion_engine.update_model(datasetID, current_identity.username)
+    # LOG.debug(
+    #     f"IN LOADDATASET, loaded {len(current_app.suggestion_engine.tag_rules)} rules"
+    # )
+
+    # annotated_datapath = datapath + "-anno-" + current_identity.username
+    # if os.path.exists(annotated_datapath):
+    #     annotated_files = sorted(
+    #         [p for p in os.listdir(annotated_datapath) if p[0] != "."]
+    #     )
+    # else:
+    #     annotated_files = []
+    mongo_dal: MongoDAL = current_app.mongo_dal
+
+    files = mongo_dal.get_document_list(dataset_id)
+    # annotated_ids = mongo_dal.get_annotated_doc_ids()
+    annotated_files = []
 
     dataset = {
         "documentIDs": files,
         "annotatedDocumentIDs": annotated_files,
-        "datasetID": datasetID,
+        "datasetID": dataset_id,
     }
 
     return jsonify(dataset)
 
 
-def get_reader(dataset):
-    cfg = Config.dataset_configs[dataset]
-    module_name, class_name = cfg["reader"].split(".")
-    module = importlib.import_module(f"data_readers.{module_name}")
-    reader = getattr(module, class_name)
-    return reader
+# def get_reader(dataset):
+#     cfg = Config.dataset_configs[dataset]
+#     module_name, class_name = cfg["reader"].split(".")
+#     module = importlib.import_module(f"data_readers.{module_name}")
+#     reader = getattr(module, class_name)
+#     return reader
 
 
 @bp.route("/loaddoc")
@@ -95,9 +105,9 @@ def loaddoc():
         doc["labels"] = anno_doc["labels"]
         doc["isAnnotated"] = True
 
-    suggestions = current_app.suggestion_engine.make_suggestions(doc["sentences"])
-    LOG.debug(f"suggestions {suggestions}")
-    doc["suggestions"] = suggestions
+    # suggestions = current_app.suggestion_engine.make_suggestions(doc["sentences"])
+    # LOG.debug(f"suggestions {suggestions}")
+    # doc["suggestions"] = suggestions
 
     return jsonify(doc)
 

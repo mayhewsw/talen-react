@@ -17,13 +17,17 @@ class User():
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
+    def _make_id(self):
+        return f"{self.id}"
+
     def serialize(self) -> Dict[any, any]:
-        return asdict(self)
+        d = asdict(self)
+        d["_id"] = self._make_id()
+        return d
 
     @staticmethod
     def deserialize(obj):
-        if "_id" in obj:
-            del obj["_id"]
+        del obj["_id"]
         return User(**obj)
 
 

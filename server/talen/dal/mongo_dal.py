@@ -24,9 +24,9 @@ class MongoDAL():
         self.datasets.insert_one(document.serialize())
 
     def get_document(self, id: str, dataset_id: str) -> Document:
-        response = self.datasets.find_one({"id": id, "dataset_id": dataset_id})
+        response = self.datasets.find_one({"name": id, "dataset_id": dataset_id})
         # parse this into a document object
-        return Document.deserialize(response)
+        return Document.deserialize(response) if response else None
 
     def get_document_list(self, dataset_id: str) -> List[Document]:
         # TODO: would it be faster to just get the unique doc names?

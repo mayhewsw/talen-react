@@ -5,16 +5,21 @@ from talen.models.token import Token
 
 @attrs
 class Document:
-    id: str = attrib()
+    name: str = attrib()
     dataset_id: str = attrib()
-    tokens: List[Token] = attrib()
+    sentences: List[List[Token]] = attrib()
+
+    def _make_id(self):
+        return f"{self.dataset_id}_{self.name}"
 
     def serialize(self) -> Dict[any, any]:
-        return asdict(self)
+        d = asdict(self)
+        d["_id"] = self._make_id()
+        return d
 
     @staticmethod
     def deserialize(obj):
-        if "_id" in obj:
-            del obj["_id"]
-        obj["tokens"] = [Token.deserialize(t) for t in obj["tokens"]]
-        return Document(**obj)
+        deserialized_sents = []
+        for sent in obj["sentences"]:
+            deserialized_sents.append([Token.deserialize(t) for t in sent])
+        return Document(name=obj["name"], dataset_id=obj["dataset_id"], sentences=deserialized_sents)

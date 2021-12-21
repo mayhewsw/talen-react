@@ -49,3 +49,8 @@ $ PYTHONPATH=. pytest
 ```
 
 Otherwise you will get a module not found error.
+
+If you want to run an individual test:
+```
+$ PYTHONPATH=. pytest -s -k "test_annotation_serialization"
+```

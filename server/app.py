@@ -4,7 +4,6 @@ from flask_jwt import JWT
 from talen.dal.mongo_dal import MongoDAL
 from talen.models.user import LoginStatus
 from talen.models.user import User
-# from flask_sqlalchemy import SQLAlchemy
 from talen.logger import get_logger, setup_logger
 from talen.views import bp
 
@@ -20,14 +19,11 @@ app.config.from_object(Config)
 # FIXME: obviously make this url better!
 app.mongo_dal = MongoDAL("localhost:27017/")
 
-
-user = User("stephen", "user@user.com", None, True, False)
-user.set_password("stephen")
-app.mongo_dal.add_user(user)
-
-# db = SQLAlchemy(app)
-# app.suggestion_engine = RuleSuggestionEngine()
-
+# FIXME: don't do this!
+if app.mongo_dal.check_user("stephen", "stephen") == LoginStatus.USER_NOT_FOUND:
+    user = User("stephen", "user@user.com", None, True, False)
+    user.set_password("stephen")
+    app.mongo_dal.add_user(user)
 
 if __name__ == "__main__":
     # FIXME: move all this to touch mongo db!

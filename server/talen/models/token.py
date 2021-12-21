@@ -4,17 +4,18 @@ from attr import attrs, attrib, asdict
 
 @attrs
 class Token:
-    id: str = attrib()
     document_id: str = attrib()
     text: str = attrib()
-    start_span: int = attrib()
-    end_span: int = attrib()
+    index: int = attrib()
+
+    def _make_id(self):
+        return f"{self.document_id}_{self.index}"
 
     def serialize(self) -> Dict[any, any]:
-        return asdict(self)
+        d = asdict(self)
+        d["_id"] = self._make_id()
+        return d
 
     @staticmethod
     def deserialize(obj):
-        if "_id" in obj:
-            del obj["_id"]
-        return Token(**obj)
+        return Token(document_id=obj["document_id"], text=obj["text"], index=obj["index"])
