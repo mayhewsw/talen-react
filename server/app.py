@@ -26,7 +26,6 @@ if app.mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:
     app.mongo_dal.add_user(user)
 
 if __name__ == "__main__":
-    # FIXME: move all this to touch mongo db!
 
     def authenticate(username: str, password: str) -> User:
         # TODO: what about failures?

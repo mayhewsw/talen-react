@@ -6,7 +6,7 @@ from talen.models.document import Document
 from talen.models.user import User
 import mongomock
 
-# FIXME: consider making this subclass IODAL
+# TODO: consider making this subclass IODAL
 class MongoDAL():
     
     def __init__(self, url: str) -> None:

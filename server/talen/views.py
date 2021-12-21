@@ -38,7 +38,7 @@ def loaddataset():
 
     mongo_dal: MongoDAL = current_app.mongo_dal
 
-    # FIXME: it's wasteful to grab the whole document, then just get the name
+    # TODO: it's wasteful to grab the whole document, then just get the name
     files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
     annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
 
