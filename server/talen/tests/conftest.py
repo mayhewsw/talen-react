@@ -41,4 +41,16 @@ def annotation():
     sent_id = 0
     start_span = 1
     end_span = 2
-    return Annotation("dataset1", doc_name, sent_id, "coolUser", "PERSON", document.sentences[sent_id][start_span:end_span], start_span, end_span)
+    label = "PERSON"
+    return Annotation("dataset1", doc_name, sent_id, "coolUser", label, document.sentences[sent_id][start_span:end_span], start_span, end_span)
+
+@pytest.fixture
+def final_span_annotation():
+    doc_name = "doc1"
+    document = make_document(doc_name)
+    sent_id = 0
+    sent = document.sentences[sent_id]
+    start_span = len(sent)-2
+    end_span = len(sent)
+    label = "ORG"
+    return Annotation("dataset1", doc_name, sent_id, "coolUser", label, document.sentences[sent_id][start_span:end_span], start_span, end_span)

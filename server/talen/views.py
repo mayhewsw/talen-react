@@ -11,7 +11,7 @@ from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 
 from talen.config import Config
-from talen.util import make_client_doc
+from talen.util import get_annotations_from_client, make_client_doc
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
@@ -94,7 +94,7 @@ def loaddoc():
 def savedoc():
     json_payload = request.get_json()
     # TODO: important that the doc that comes back is the same as the doc up above. Because it will be saved to file.
-    doc = {
+    client_doc = {
         "sentences": json_payload["sentences"],
         "labels": json_payload["labels"],
         "docid": json_payload["docid"],
@@ -103,5 +103,14 @@ def savedoc():
         "isAnnotated": True,
     }
     LOG.info("Have received doc!")
+
+    mongo_dal: MongoDAL = current_app.mongo_dal
+
+    original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
+    annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
+
+    # FIXME: error handling, etc.
+    for annotation in annotations:
+        mongo_dal.add_annotation(annotation) 
 
     return jsonify(200)

@@ -38,3 +38,12 @@ def test_annotation(mongo_dal: MongoDAL, annotation):
 
     annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
     assert len(annotations) == 1
+    assert annotations[0].label == "PERSON"
+
+    # Ugly to modify this object, but oh well!
+    annotation.label = "ORG"
+    mongo_dal.add_annotation(annotation)
+
+    annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
+    assert len(annotations) == 1
+    assert annotations[0].label == "ORG"

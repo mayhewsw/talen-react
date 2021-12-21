@@ -56,3 +56,37 @@ def make_client_doc(document: Document, annotations: List[Annotation]) -> Dict[a
     }
 
     return doc
+
+def get_annotations_from_client(original_doc: Document, client_doc: Dict[any, any], username: str) -> List[Annotation]:
+    """
+    This converts a client document into a list of annotations
+    TODO: make the client understand Document/Annotation model
+    """
+    annotations: List[Annotation] = []
+
+
+    for sent_index, label_list in enumerate(client_doc["labels"]):
+        # sentence is a list of words
+        start_span = -1
+        end_span = -1
+        inside_entity = False
+        tag = None
+
+        for token_index, label in enumerate(label_list):
+            if label.startswith("B-"):
+                start_span = token_index
+                inside_entity = True                
+                tag = label.split("-")[-1]
+            if inside_entity and label == "O":
+                # create an annotation if we 
+                end_span = token_index
+                annotation = Annotation(client_doc["dataset"], client_doc["docid"], sent_index, username, tag, original_doc.sentences[sent_index][start_span:end_span], start_span, end_span)
+                annotations.append(annotation)
+                inside_entity = False
+
+        if inside_entity:
+            end_span = len(label_list)
+            annotation = Annotation(client_doc["dataset"], client_doc["docid"], sent_index, username, tag, original_doc.sentences[sent_index][start_span:end_span], start_span, end_span)
+            annotations.append(annotation)
+
+    return annotations

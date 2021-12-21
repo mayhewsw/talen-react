@@ -21,6 +21,9 @@ class Annotation:
         d["_id"] = self._make_id()
         return d
 
+    def text(self) -> str:
+        return " ".join(t.text for t in self.tokens)
+
     @staticmethod
     def deserialize(obj):
         del obj["_id"]

@@ -55,7 +55,12 @@ class MongoDAL():
         return LoginStatus.SUCCESS if user.check_password(password) else LoginStatus.PASSWORD_INCORRECT
             
     def add_annotation(self, annotation: Annotation) -> None:
-        self.annotations.insert_one(annotation.serialize())
+        """
+        This will add an annotation to the database if it doesn't exist, and it will
+        update an existing one if it does.
+        """
+        serialized_annotation = annotation.serialize()
+        self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
 
     def delete_annotation(self, annotation: Annotation) -> None:
         self.annotations.delete_one(annotation.serialize())    
