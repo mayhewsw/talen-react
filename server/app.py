@@ -19,10 +19,10 @@ app.config.from_object(Config)
 # FIXME: obviously make this url better!
 app.mongo_dal = MongoDAL("localhost:27017/")
 
-# FIXME: don't do this!
-if app.mongo_dal.check_user("stephen", "stephen") == LoginStatus.USER_NOT_FOUND:
-    user = User("stephen", "user@user.com", None, True, False)
-    user.set_password("stephen")
+# FIXME: remove this boilerplate code
+if app.mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:
+    user = User("a", "user@user.com", None, True, False)
+    user.set_password("a")
     app.mongo_dal.add_user(user)
 
 if __name__ == "__main__":

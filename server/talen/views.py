@@ -36,26 +36,10 @@ def datasetlist():
 def loaddataset():
     dataset_id = request.args.get("dataset")
 
-    # cfg = Config.dataset_configs[datasetID]
-    # datapath = cfg["path"]
-
-    # files = sorted(os.listdir(datapath))
-
-    # current_app.suggestion_engine.update_model(datasetID, current_identity.username)
-    # LOG.debug(
-    #     f"IN LOADDATASET, loaded {len(current_app.suggestion_engine.tag_rules)} rules"
-    # )
-
-    # annotated_datapath = datapath + "-anno-" + current_identity.username
-    # if os.path.exists(annotated_datapath):
-    #     annotated_files = sorted(
-    #         [p for p in os.listdir(annotated_datapath) if p[0] != "."]
-    #     )
-    # else:
-    #     annotated_files = []
     mongo_dal: MongoDAL = current_app.mongo_dal
 
-    files = mongo_dal.get_document_list(dataset_id)
+    # FIXME: it's wasteful to grab the whole document, then just get the name
+    files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
     # annotated_ids = mongo_dal.get_annotated_doc_ids()
     annotated_files = []
 
@@ -68,12 +52,12 @@ def loaddataset():
     return jsonify(dataset)
 
 
-# def get_reader(dataset):
-#     cfg = Config.dataset_configs[dataset]
-#     module_name, class_name = cfg["reader"].split(".")
-#     module = importlib.import_module(f"data_readers.{module_name}")
-#     reader = getattr(module, class_name)
-#     return reader
+def get_reader(dataset):
+    cfg = Config.dataset_configs[dataset]
+    module_name, class_name = cfg["reader"].split(".")
+    module = importlib.import_module(f"data_readers.{module_name}")
+    reader = getattr(module, class_name)
+    return reader
 
 
 @bp.route("/loaddoc")
