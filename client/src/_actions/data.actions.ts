@@ -105,7 +105,6 @@ function loadDocument(dataset: string, docid: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.loadDocument(dataset, docid).then(
       (data: any) => {
-        console.log(data);
         dispatch(success(data));
       },
       (error: any) => {

@@ -164,9 +164,7 @@ type TokProps = {
   display_phrase: string;
 };
 
-const actionCreators = {
-  //getDocuments: dataActions.getDocuments,
-};
+const actionCreators = {};
 
 const connectedToken = connect(mapState, actionCreators)(Token);
 export { connectedToken as Token };

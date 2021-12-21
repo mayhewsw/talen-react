@@ -143,16 +143,9 @@ class Annotate extends React.Component<MatchProps, State> {
 
   loadAll(dataset: string, docId: string) {
     this.props.loadDocument(dataset, docId);
-    // this.props.loadStatus(dataset, docId);
   }
 
   buttonPush(dataset: string, newDoc: string) {
-    // this is a very important line
-    // don't save docs that have not been touched!
-    // if (!this.state.isSaved) {
-    //   this.sendLabels();
-    // }
-
     const labels = this.props.data.labels;
     let hasLabel = false;
     for (let i = 0; i < labels.length; i++) {
@@ -276,25 +269,6 @@ class Annotate extends React.Component<MatchProps, State> {
             </Link>
           </ButtonGroup>
           <p></p>
-          {data.suggestions && (
-            <Table striped bordered hover size="sm">
-              <thead>
-                <tr>
-                  <th>Phrase</th>
-                  <th>Num Occur.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Object.keys(data.suggestions).map((s: string) => (
-                  <tr key={s}>
-                    <td>{s}</td>
-                    <td>{data.suggestions[s].length}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          )}
-          {/* {this.props.data.suggestions && this.props.data.suggestions.map((dd: any) => dd["text"])} */}
         </Col>
       </Row>
     );
