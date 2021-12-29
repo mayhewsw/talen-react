@@ -3,12 +3,17 @@
   min-height: 700vh;
 }
 
+html {
+  height: 100%;
+}
+
 body {
-  padding-top: 80px;
+  padding-top: 50px;
+  height: 100%;
 }
 
 #root {
-  height: 500px;
+  height: 100%;
 }
 
 .App-logo {
@@ -165,4 +170,58 @@ body {
 
 .annotateddoc {
   background-color: green;
+}
+
+.doc-title {
+  padding-top: 10px;
+  font-weight: bold;
+  font-size: 1.7vw;
+  margin-bottom: 15px;
+}
+
+.dataset-title {
+  padding-top: 10px;
+}
+
+.document-list {
+  font-size: 11px;
+  white-space: nowrap;
+
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+}
+
+.document-list-item {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.document-list-item:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.document-list-panel {
+  border-right: 1px solid lightgray;
+  padding-right: 10px;
+}
+
+.check-mark {
+  color: #28a745;
+  justify-content: flex-end;
+  flex-grow: 1;
+  min-height: 20px;
+  min-width: 40px;
+}
+
+.document-list-item-id {
+  flex-grow: 4;
+  overflow: hidden;
+}
+
+.document-list-item-id-annotated {
+  background: -webkit-linear-gradient(left, #333, #333, #eee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

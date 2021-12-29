@@ -43,7 +43,7 @@ What kinds of things do authorized users want to do? Load documents, annotate, s
 
 ## Install MongoDB
 
-Follow instructions [here](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/). 
+Follow instructions [here](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/).
 
 ## To Test
 

@@ -11,8 +11,9 @@ export interface AuthState {
 
 export interface DataState {
   datasetName: string;
+  currDoc: string;
   documentList: string[];
-  annotatedDocumentSet: Set<string>;
+  annotatedDocumentSet: string[];
   words: string[][];
   labels: string[][];
   labelset: any;
@@ -43,7 +44,6 @@ export interface State {
 }
 
 export const LOAD_DOCUMENT = "LOAD_DOCUMENT";
-export const SAVE_DOCUMENT = "SAVE_DOCUMENT";
 export const CHANGE_FORM = "CHANGE_FORM";
 export const SET_AUTH = "SET_AUTH";
 export const SENDING_REQUEST = "SENDING_REQUEST";
@@ -65,6 +65,7 @@ export const GETALL_SUCCESS = "DATA_GETALL_SUCCESS";
 export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
 export const GETDATASETS_SUCCESS = "GETDATASETS_SUCCESS";
 export const GETDOCS_SUCCESS = "GETDOCS_SUCCESS";
+export const SETCURRDOC = "SETCURRDOC";
 export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
 export const CLEARDOC = "CLEARDOC";
 export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
@@ -84,8 +85,9 @@ interface LoadDocumentAction {
   docid: string;
   dataset: string;
 }
+
 interface SaveDocumentAction {
-  type: typeof SAVE_DOCUMENT;
+  type: typeof SAVEDOC_SUCCESS;
   docid: string;
   dataset: string;
 }
@@ -118,7 +120,7 @@ interface GetDocsAction {
   type: typeof GETDOCS_SUCCESS;
   data: {
     documentIDs: string[];
-    annotatedDocumentIDs: Set<string>;
+    annotatedDocumentIDs: [];
     datasetID: string;
   };
 }
@@ -154,6 +156,11 @@ interface LoadDocsAction {
     labelset: any;
     suggestions: any[];
   };
+}
+
+interface SetCurrDocAction {
+  type: typeof SETCURRDOC;
+  docId: string;
 }
 
 interface ClearDocAction {
@@ -199,7 +206,8 @@ export type DataTypes =
   | LoadStatusAction
   | LoadDocsAction
   | SetLabelsAction
-  | ClearDocAction;
+  | ClearDocAction
+  | SetCurrDocAction;
 export type UtilTypes = ChangeFormAction;
 export type MessageTypes = SuccessAction | ErrorAction | ClearAction;
 export type DocumentTypes =

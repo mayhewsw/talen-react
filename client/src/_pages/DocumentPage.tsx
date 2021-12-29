@@ -12,7 +12,6 @@ class DocumentPage extends React.Component<MatchProps> {
         <div className="col-md-12">
           <Annotate
             dataset={match.params.id}
-            docid={match.params.docid}
             uplink={`/dataset/${match.params.id}`}
           />
         </div>

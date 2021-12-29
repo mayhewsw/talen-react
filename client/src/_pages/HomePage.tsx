@@ -1,9 +1,9 @@
 import React from "react";
-import { Link, RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
-import { MainPanel } from "../_components";
+import { MainPanel, DatasetCard } from "../_components";
 import { dataActions } from "../_actions";
-import { ListGroup, Jumbotron } from "react-bootstrap";
+import { Jumbotron } from "react-bootstrap";
 
 // this page shows a list of datasets. If you click on a dataset,
 // that takes you to a DatasetPage.
@@ -25,15 +25,11 @@ class HomePage extends React.Component<MatchProps> {
             </p>
           </Jumbotron>
           <h3>Dataset List:</h3>
-          <ListGroup>
-            {data &&
-              data.datasetIDs &&
-              data.datasetIDs.map((id: string, index: number) => (
-                <ListGroup.Item key={index}>
-                  <Link to={`/dataset/${id}`}>{id}</Link>
-                </ListGroup.Item>
-              ))}
-          </ListGroup>
+          {data &&
+            data.datasetIDs &&
+            data.datasetIDs.map((id: string, index: number) => (
+              <DatasetCard key={index} id={id} />
+            ))}
         </div>
       </MainPanel>
     );

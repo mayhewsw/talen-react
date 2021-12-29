@@ -10,9 +10,9 @@ class MainPanel extends React.Component<MatchProps> {
     const datasetid = this.props.match.params.id;
 
     return (
-      <div>
+      <>
         <Navbar bg="light" expand="lg" fixed="top">
-          <Container>
+          <Container fluid>
             <Navbar.Brand href={process.env.PUBLIC_URL}>
               <img
                 alt=""
@@ -55,8 +55,10 @@ class MainPanel extends React.Component<MatchProps> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Container>{this.props.children}</Container>
-      </div>
+        <Container fluid className="flex-column h-100 d-flex">
+          {this.props.children}
+        </Container>
+      </>
     );
   }
 }

@@ -1,23 +1,10 @@
 import React, { ChangeEvent } from "react";
 import { cloneDeep } from "lodash";
-import {
-  Button,
-  ButtonGroup,
-  Row,
-  Col,
-  Card,
-  Form,
-  Table,
-} from "react-bootstrap";
+import { Button, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { history } from "../_helpers";
-import {
-  IoIosSave,
-  IoMdCheckmarkCircleOutline,
-  IoIosArrowForward,
-  IoIosArrowBack,
-} from "react-icons/io";
+import { IoIosSave, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
@@ -34,6 +21,12 @@ class Annotate extends React.Component<MatchProps, State> {
 
   componentDidMount() {
     this.loadAll(this.props.dataset, this.props.docid);
+  }
+
+  componentDidUpdate(prevProps: MatchProps) {
+    if (this.props.docid !== prevProps.docid) {
+      this.loadAll(this.props.dataset, this.props.docid);
+    }
   }
 
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
@@ -177,9 +170,10 @@ class Annotate extends React.Component<MatchProps, State> {
   render() {
     const { data, docid } = this.props;
 
-    const doc_index = data.documentList.indexOf(docid);
-    const nextDoc = data.documentList[doc_index + 1];
-    const prevDoc = data.documentList[doc_index - 1];
+    // TODO: consider adding nextdoc, prevdoc back in.
+    // const doc_index = data.documentList.indexOf(docid);
+    // const nextDoc = data.documentList[doc_index + 1];
+    // const prevDoc = data.documentList[doc_index - 1];
 
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
@@ -187,90 +181,74 @@ class Annotate extends React.Component<MatchProps, State> {
     // if mousedown OUTSIDE a token, then clear the range.
     // if mouseup on a token, that becomes end of the range.
     return (
-      <Row className="document">
-        <Col md={9}>
-          <Card>
-            <Card.Body>
-              {data.words &&
-                data.labelset &&
-                data.words.map((sent: string[], sent_index: number) => (
-                  <Sentence
-                    key={sent_index}
-                    index={sent_index}
-                    sent={sent}
-                    labels={data.labels[sent_index]}
-                    labelset={data.labelset}
-                    setFocus={(ind: number) => this.setFocus(ind)}
-                    isActive={sent_index === this.state.activeSent}
-                    set_label={(lab: string, first: number, last: number) =>
-                      this.setLabel(lab, first, last, sent_index)
-                    }
-                  />
-                ))}
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          {this.state.isSaved && data.isAnnotated && (
-            <Button variant="outline-success">
-              <>
-                <IoMdCheckmarkCircleOutline /> Saved
-              </>
-            </Button>
-          )}
-          {(!this.state.isSaved || !data.isAnnotated) && (
-            <Button variant="outline-danger" onClick={() => this.sendLabels()}>
-              <>
-                <IoIosSave /> Save
-              </>
-            </Button>
-          )}
-          <p></p>
-          <p>{`On document ${doc_index + 1} out of ${
-            data.documentList.length
-          }`}</p>
-          <p></p>
-          <Form>
-            <div className="mb-3">
-              <Form.Check
-                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                  this.setState({ propagate: evt.target.checked })
-                }
-                defaultChecked={this.state.propagate}
-                id="propagation-checkbox"
-                type="checkbox"
-                label="Propagate annotations?"
-              />
-            </div>
-          </Form>
-          <p></p>
-          <ButtonGroup>
-            {prevDoc && (
-              <Button
-                variant="outline-primary"
-                onClick={() => this.buttonPush(this.props.dataset, prevDoc)}
-              >
-                <IoIosArrowBack /> Previous
+      <div>
+        <Row>
+          <Col>
+            <div className="doc-title">{docid}</div>
+          </Col>
+        </Row>
+        <Row className="align-items-baseline">
+          <Col>
+            {this.state.isSaved && data.isAnnotated && (
+              <Button variant="outline-success">
+                <>
+                  <IoMdCheckmarkCircleOutline /> Saved
+                </>
               </Button>
             )}
-            {nextDoc && (
+            {(!this.state.isSaved || !data.isAnnotated) && (
               <Button
-                variant="outline-primary"
-                onClick={() => this.buttonPush(this.props.dataset, nextDoc)}
+                variant="outline-danger"
+                onClick={() => this.sendLabels()}
               >
-                Next <IoIosArrowForward />
+                <>
+                  <IoIosSave /> Save
+                </>
               </Button>
             )}
-          </ButtonGroup>
-          <p></p>
-          <ButtonGroup>
-            <Link to={`${this.props.uplink}`}>
-              <Button variant="outline-secondary">Back to all docs...</Button>
-            </Link>
-          </ButtonGroup>
-          <p></p>
-        </Col>
-      </Row>
+            <p></p>
+          </Col>
+          <Col>
+            <Form>
+              <div className="mb-3">
+                <Form.Check
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    this.setState({ propagate: evt.target.checked })
+                  }
+                  defaultChecked={this.state.propagate}
+                  id="propagation-checkbox"
+                  type="checkbox"
+                  label="Propagate annotations?"
+                />
+              </div>
+            </Form>
+          </Col>
+        </Row>
+        <Row className="document">
+          <Col md={11}>
+            <Card>
+              <Card.Body>
+                {data.words &&
+                  data.labelset &&
+                  data.words.map((sent: string[], sent_index: number) => (
+                    <Sentence
+                      key={sent_index}
+                      index={sent_index}
+                      sent={sent}
+                      labels={data.labels[sent_index]}
+                      labelset={data.labelset}
+                      setFocus={(ind: number) => this.setFocus(ind)}
+                      isActive={sent_index === this.state.activeSent}
+                      set_label={(lab: string, first: number, last: number) =>
+                        this.setLabel(lab, first, last, sent_index)
+                      }
+                    />
+                  ))}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
@@ -300,7 +278,8 @@ type State = {
 // TODO: fix this any...
 function mapState(state: any) {
   const { data } = state;
-  return { data };
+  const docid = data.currDoc;
+  return { data, docid };
 }
 
 const actionCreators = {
