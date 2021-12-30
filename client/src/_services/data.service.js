@@ -14,7 +14,7 @@ function getDatasets() {
     headers: authHeader(),
   };
 
-  return fetch(`http://localhost:5000/datasetlist`, requestOptions)
+  return fetch(`${process.env.REACT_APP_URL}/datasetlist`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       return data;
@@ -28,7 +28,7 @@ function getDatasetStats(dataset) {
   };
 
   return fetch(
-    `http://localhost:5000/datasetstats?dataset=${dataset}`,
+    `${process.env.REACT_APP_URL}/datasetstats?dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
@@ -44,7 +44,7 @@ function getDocuments(dataset) {
   };
 
   return fetch(
-    `http://localhost:5000/loaddataset?dataset=${dataset}`,
+    `${process.env.REACT_APP_URL}/loaddataset?dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
@@ -62,7 +62,7 @@ function saveDocument(data) {
     method: "POST",
   };
 
-  return fetch(`http://localhost:5000/savedoc`, requestOptions)
+  return fetch(`${process.env.REACT_APP_URL}/savedoc`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       return data;
@@ -76,7 +76,7 @@ function loadDocument(dataset, docid) {
   };
 
   return fetch(
-    `http://localhost:5000/loaddoc?docid=${docid}&dataset=${dataset}`,
+    `${process.env.REACT_APP_URL}/loaddoc?docid=${docid}&dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
