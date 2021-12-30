@@ -17,7 +17,7 @@ app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
 app.debug = True
 app.config.from_object(Config)
 # FIXME: obviously make this url better!
-app.mongo_dal = MongoDAL("localhost:27017/")
+app.mongo_dal = MongoDAL("mongodb://localhost:27017/")
 
 # FIXME: remove this boilerplate code
 if app.mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:

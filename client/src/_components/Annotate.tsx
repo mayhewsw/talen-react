@@ -12,14 +12,20 @@ import { dataActions } from "../_actions";
 class Annotate extends React.Component<MatchProps, State> {
   constructor(props: MatchProps) {
     super(props);
+    // FIXME: why does this have it's own state??
     this.state = {
       activeSent: -1,
       isSaved: true,
       propagate: true,
     };
+    // Bind these functions so the s-key save shortcut works
+    this.handleKey = this.handleKey.bind(this);
+    this.sendLabels = this.sendLabels.bind(this);
+    this.setLabel = this.setLabel.bind(this);
   }
 
   componentDidMount() {
+    document.addEventListener("keydown", this.handleKey);
     this.loadAll(this.props.dataset, this.props.docid);
   }
 
@@ -117,6 +123,10 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   sendLabels() {
+    if (this.state.isSaved) {
+      console.log("no need to resave...");
+      return;
+    }
     this.setState({ isSaved: true });
     var data = {
       docid: this.props.docid,
@@ -127,6 +137,19 @@ class Annotate extends React.Component<MatchProps, State> {
     };
     this.props.saveDocument(data);
     this.props.data.isAnnotated = true;
+  }
+
+  handleKey(e: any) {
+    if (e.key === "s") {
+      console.log("saving...");
+      this.sendLabels();
+    }
+
+    if (e.key === "0") {
+      console.log("setting 0");
+      // TODO: make this call the current button
+      // this.setLabel("PER", 0,1,this.state.activeSent);
+    }
   }
 
   setFocus(sent_index: number) {
@@ -258,11 +281,11 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   dataset: string;
   docid: string;
   uplink: string;
-  setLabels: any;
-  clearDocument: any;
-  saveDocument: any;
-  loadDocument: any;
-  loadStatus: any;
+  setLabels: Function;
+  clearDocument: Function;
+  saveDocument: Function;
+  loadDocument: Function;
+  loadStatus: Function;
 }
 
 interface MatchParams {}

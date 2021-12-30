@@ -1,10 +1,6 @@
-DATABASE_FILE: app.db
 
-labelset:
-  PER: yellow
-  ORG: lightblue
-  LOC: yellowgreen
-  GPE: coral
+# Some mongod db config options
+mongo_database_name: talen-annotation
+mongo_url: talen-cluster.ieagz.mongodb.net
 
-mongo_url: somethingsomething
 

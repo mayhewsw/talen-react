@@ -6,6 +6,7 @@ class Sentence extends React.Component<SentProps, State> {
   constructor(props: any) {
     super(props);
 
+    // FIXME: why does the Sentence have it's own state??
     this.state = {
       color: "white",
       words: [[]],

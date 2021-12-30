@@ -10,7 +10,10 @@ import mongomock
 class MongoDAL():
     
     def __init__(self, url: str) -> None:
-        self.client = mongomock.MongoClient() if url == "test"  else MongoClient(f"mongodb://{url}")
+        """
+        url is expected to include the mongodb:// or mongodb+srv:// prefix
+        """
+        self.client = mongomock.MongoClient() if url == "test"  else MongoClient(url)
         # TODO: can we test the client connection here?
 
         db = self.client.talen
