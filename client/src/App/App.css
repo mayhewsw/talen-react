@@ -197,14 +197,26 @@ body {
   align-items: center;
 }
 
-.document-list-item:focus {
-  outline: none;
-  box-shadow: none;
-}
-
 .document-list-panel {
   border-right: 1px solid lightgray;
   padding-right: 10px;
+}
+
+.document-list-header {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0px;
+  z-index: 1000;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+}
+
+.annotate-header {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0px;
+  z-index: 1000;
+  background-color: white;
 }
 
 .check-mark {

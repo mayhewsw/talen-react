@@ -35,7 +35,7 @@ class DocumentList extends React.Component<Props> {
           data.datasetName &&
           data.documentList &&
           data.annotatedDocumentSet && (
-            <div>
+            <div className="document-list-header">
               <h2 className="dataset-title">{data.datasetName}</h2>
               <p>
                 There are {data.documentList.length} documents. Of these,{" "}

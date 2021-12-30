@@ -182,45 +182,47 @@ class Annotate extends React.Component<MatchProps, State> {
     // if mouseup on a token, that becomes end of the range.
     return (
       <div>
-        <Row>
-          <Col>
-            <div className="doc-title">{docid}</div>
-          </Col>
-        </Row>
-        <Row className="align-items-baseline">
-          <Col md={12}>
-            <Form className="mb-3 form-inline">
-              {this.state.isSaved && data.isAnnotated && (
-                <Button variant="outline-success">
-                  <>
-                    <IoMdCheckmarkCircleOutline /> Saved
-                  </>
-                </Button>
-              )}
+        <div className="annotate-header">
+          <Row>
+            <Col>
+              <div className="doc-title">{docid}</div>
+            </Col>
+          </Row>
+          <Row className="align-items-baseline">
+            <Col md={12}>
+              <Form className="mb-3 form-inline">
+                {this.state.isSaved && data.isAnnotated && (
+                  <Button variant="outline-success">
+                    <>
+                      <IoMdCheckmarkCircleOutline /> Saved
+                    </>
+                  </Button>
+                )}
 
-              {(!this.state.isSaved || !data.isAnnotated) && (
-                <Button
-                  variant="outline-danger"
-                  onClick={() => this.sendLabels()}
-                >
-                  <>
-                    <IoIosSave /> Save
-                  </>
-                </Button>
-              )}
-              <Form.Check
-                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                  this.setState({ propagate: evt.target.checked })
-                }
-                defaultChecked={this.state.propagate}
-                id="propagation-checkbox"
-                type="checkbox"
-                label="Propagate annotations?"
-                className="pl-3"
-              />
-            </Form>
-          </Col>
-        </Row>
+                {(!this.state.isSaved || !data.isAnnotated) && (
+                  <Button
+                    variant="outline-danger"
+                    onClick={() => this.sendLabels()}
+                  >
+                    <>
+                      <IoIosSave /> Save
+                    </>
+                  </Button>
+                )}
+                <Form.Check
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    this.setState({ propagate: evt.target.checked })
+                  }
+                  defaultChecked={this.state.propagate}
+                  id="propagation-checkbox"
+                  type="checkbox"
+                  label="Propagate annotations?"
+                  className="pl-3"
+                />
+              </Form>
+            </Col>
+          </Row>
+        </div>
         <Row className="document">
           <Col md={11}>
             <Card>
