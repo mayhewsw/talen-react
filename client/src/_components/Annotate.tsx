@@ -188,39 +188,36 @@ class Annotate extends React.Component<MatchProps, State> {
           </Col>
         </Row>
         <Row className="align-items-baseline">
-          <Col>
-            {this.state.isSaved && data.isAnnotated && (
-              <Button variant="outline-success">
-                <>
-                  <IoMdCheckmarkCircleOutline /> Saved
-                </>
-              </Button>
-            )}
-            {(!this.state.isSaved || !data.isAnnotated) && (
-              <Button
-                variant="outline-danger"
-                onClick={() => this.sendLabels()}
-              >
-                <>
-                  <IoIosSave /> Save
-                </>
-              </Button>
-            )}
-            <p></p>
-          </Col>
-          <Col>
-            <Form>
-              <div className="mb-3">
-                <Form.Check
-                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                    this.setState({ propagate: evt.target.checked })
-                  }
-                  defaultChecked={this.state.propagate}
-                  id="propagation-checkbox"
-                  type="checkbox"
-                  label="Propagate annotations?"
-                />
-              </div>
+          <Col md={12}>
+            <Form className="mb-3 form-inline">
+              {this.state.isSaved && data.isAnnotated && (
+                <Button variant="outline-success">
+                  <>
+                    <IoMdCheckmarkCircleOutline /> Saved
+                  </>
+                </Button>
+              )}
+
+              {(!this.state.isSaved || !data.isAnnotated) && (
+                <Button
+                  variant="outline-danger"
+                  onClick={() => this.sendLabels()}
+                >
+                  <>
+                    <IoIosSave /> Save
+                  </>
+                </Button>
+              )}
+              <Form.Check
+                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                  this.setState({ propagate: evt.target.checked })
+                }
+                defaultChecked={this.state.propagate}
+                id="propagation-checkbox"
+                type="checkbox"
+                label="Propagate annotations?"
+                className="pl-3"
+              />
             </Form>
           </Col>
         </Row>
