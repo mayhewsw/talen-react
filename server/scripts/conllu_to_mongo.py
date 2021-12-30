@@ -1,29 +1,19 @@
 from io import open
 from conllu import parse_incr
-import sys
-from talen.data_readers.ud_reader import UDReader
 from talen.dal.mongo_dal import MongoDAL
 from talen.models.document import Document
 from talen.models.token import Token
+from talen.config import Config
 import argparse
 
-def write_to_mongo(path_to_udfile: str, dataset_name: str, use_local: bool) -> None:
+def write_to_mongo(path_to_udfile: str, dataset_name: str, environment: str) -> None:
     """
     This reads the conllu Universal Dependencies file, and writes out each individual
     document to the Mongo DB. 
     """
 
-    if use_local:
-        url = "mongodb://localhost:27017/"
-    else:
-        # FIXME: read these values from config
-        username= "mayhewsw"
-        password = "HAU-kgy!dqw8hur2fek"
-        databaseName = "talen-annotation"
-        url=f"mongodb+srv://{username}:{password}@talen-cluster.ieagz.mongodb.net/{databaseName}"
-        # TODO: do I want this? ?retryWrites=true&w=majority"
-
-    mongo_dal = MongoDAL(url)
+    config = Config(environment)
+    mongo_dal = MongoDAL(config.mongo_url)
 
     numdocs = 0
     sentences = []
@@ -71,8 +61,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-file", help="This should have a .conllu ending", type=str)
     parser.add_argument("--dataset-name", help="This is often the name of the file without the .conllu ending", type=str)
-    parser.add_argument("--local", help="Write locally", action="store_true", default=True)
+    parser.add_argument("--environment", help="Which environment to use", choices=["dev", "test", "prod"], default="dev")
 
     args = parser.parse_args()
 
-    write_to_mongo(args.input_file, args.dataset_name, args.local)
+    write_to_mongo(args.input_file, args.dataset_name, args.environment)
