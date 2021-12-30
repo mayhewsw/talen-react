@@ -43,13 +43,13 @@ class DocumentList extends React.Component<Props> {
                 with <IoMdCheckmarkCircleOutline />
                 ).
               </p>
-              <p>
+              <div className="mb-3">
                 <ProgressBar
                   variant="success"
                   now={progress}
                   label={`${progress}%`}
                 />
-              </p>
+              </div>
             </div>
           )}
         <ListGroup variant="flush" className="document-list">

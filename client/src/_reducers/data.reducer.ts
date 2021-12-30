@@ -24,6 +24,7 @@ const initialState: DataState = {
   annotatedDocumentSet: [],
   datasetIDs: [],
   wordsColor: "black",
+  datasetStats: [],
 };
 
 export function data(
@@ -35,6 +36,7 @@ export function data(
       return {
         ...state,
         datasetIDs: action.data["datasetIDs"],
+        datasetStats: action.data["datasetStats"],
         documentList: [],
         datasetName: "",
         annotatedDocumentSet: [],

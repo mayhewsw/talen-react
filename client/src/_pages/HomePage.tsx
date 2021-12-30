@@ -28,7 +28,11 @@ class HomePage extends React.Component<MatchProps> {
           {data &&
             data.datasetIDs &&
             data.datasetIDs.map((id: string, index: number) => (
-              <DatasetCard key={index} id={id} />
+              <DatasetCard
+                key={index}
+                datasetStats={data.datasetStats[index]}
+                id={id}
+              />
             ))}
         </div>
       </MainPanel>
@@ -40,7 +44,7 @@ class HomePage extends React.Component<MatchProps> {
 interface MatchProps extends RouteComponentProps<MatchParams> {
   data: any;
   user: any;
-  getDatasets: any;
+  getDatasets: Function;
 }
 
 interface MatchParams {

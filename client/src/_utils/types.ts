@@ -22,6 +22,7 @@ export interface DataState {
   suggestions: any[];
   datasetIDs: string[];
   wordsColor: string;
+  datasetStats: any[];
 }
 
 export interface UtilState {
@@ -113,6 +114,7 @@ interface GetDatasetsAction {
   type: typeof GETDATASETS_SUCCESS;
   data: {
     datasetIDs: string[];
+    datasetStats: any[];
   };
 }
 

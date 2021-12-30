@@ -27,8 +27,25 @@ def protected():
 def datasetlist():
     LOG.info("Requesting datasets")
     mongo_dal: MongoDAL = current_app.mongo_dal
-    datasetIDs = {"datasetIDs": mongo_dal.get_dataset_list()}
-    return jsonify(datasetIDs)
+    dataset_ids = mongo_dal.get_dataset_list()
+    dataset_stats = []
+    for dataset_id in dataset_ids:
+        # get some stats...
+
+    # TODO: it's wasteful to grab the whole document, then just get the name
+        files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
+        annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
+        dataset_stats.append({
+            "numFiles": len(files),
+            "numAnnotated" : len(annotated_files)
+            # TODO: include number of annotators?
+        })
+
+    response = {
+        "datasetIDs": dataset_ids,
+        "datasetStats" : dataset_stats
+    }
+    return jsonify(response)
 
 
 @bp.route("/loaddataset")
@@ -45,6 +62,25 @@ def loaddataset():
     dataset = {
         "documentIDs": files,
         "annotatedDocumentIDs": annotated_files,
+        "datasetID": dataset_id,
+    }
+
+    return jsonify(dataset)
+
+@bp.route("/datasetstats")
+@jwt_required()
+def datasetstats():
+    dataset_id = request.args.get("dataset")
+
+    mongo_dal: MongoDAL = current_app.mongo_dal
+
+    # TODO: it's wasteful to grab the whole document, then just get the name
+    files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
+    annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
+
+    dataset = {
+        "numDocuments": len(files),
+        "numAnnotated": len(annotated_files),
         "datasetID": dataset_id,
     }
 
