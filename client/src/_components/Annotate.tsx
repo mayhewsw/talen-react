@@ -4,7 +4,11 @@ import { Button, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
 import { withRouter } from "react-router-dom";
 import { history } from "../_helpers";
-import { IoIosSave, IoMdCheckmarkCircleOutline } from "react-icons/io";
+import {
+  IoIosSave,
+  IoMdCheckmarkCircleOutline,
+  IoMdCopy,
+} from "react-icons/io";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
@@ -22,6 +26,7 @@ class Annotate extends React.Component<MatchProps, State> {
     this.handleKey = this.handleKey.bind(this);
     this.sendLabels = this.sendLabels.bind(this);
     this.setLabel = this.setLabel.bind(this);
+    this.mergeDefaultAnnotations = this.mergeDefaultAnnotations.bind(this);
   }
 
   componentDidMount() {
@@ -133,6 +138,7 @@ class Annotate extends React.Component<MatchProps, State> {
       dataset: this.props.dataset,
       sentences: this.props.data.words,
       labels: this.props.data.labels,
+      default_labels: this.props.data.default_labels,
       path: this.props.data.path,
     };
     this.props.saveDocument(data);
@@ -143,6 +149,10 @@ class Annotate extends React.Component<MatchProps, State> {
     if (e.key === "s") {
       console.log("saving...");
       this.sendLabels();
+    }
+
+    if (e.key === "m") {
+      this.mergeDefaultAnnotations();
     }
 
     if (e.key === "0") {
@@ -189,6 +199,23 @@ class Annotate extends React.Component<MatchProps, State> {
       this.loadAll(dataset, newDoc);
       history.push(process.env.PUBLIC_URL + url);
     }
+  }
+
+  mergeDefaultAnnotations() {
+    // FIXME: this will overwrite labels! Probably should check with user first...
+    const df = this.props.data.default_labels;
+    const mine = this.props.data.labels;
+    const merged = mine.map((sent: string[], sent_index: number) => {
+      return sent.map((label: string, label_index: number) => {
+        const default_label = df[sent_index][label_index];
+        const new_label = label === "O" ? default_label : label;
+        return new_label;
+      });
+    });
+    console.log(merged);
+    console.log("mergin");
+    this.props.setLabels(merged);
+    this.setState({ isSaved: false });
   }
 
   render() {
@@ -241,8 +268,16 @@ class Annotate extends React.Component<MatchProps, State> {
                   id="propagation-checkbox"
                   type="checkbox"
                   label="Propagate annotations?"
-                  className="pl-3"
+                  className="pl-3 pr-3"
                 />
+                <Button
+                  variant="outline-primary"
+                  onClick={this.mergeDefaultAnnotations}
+                >
+                  <>
+                    <IoMdCopy /> Merge default annotations
+                  </>
+                </Button>
               </Form>
             </Col>
           </Row>
@@ -259,6 +294,8 @@ class Annotate extends React.Component<MatchProps, State> {
                       index={sent_index}
                       sent={sent}
                       labels={data.labels[sent_index]}
+                      default_labels={data.default_labels[sent_index]}
+                      space_markers={data.space_markers[sent_index]}
                       labelset={data.labelset}
                       setFocus={(ind: number) => this.setFocus(ind)}
                       isActive={sent_index === this.state.activeSent}

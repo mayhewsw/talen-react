@@ -29,17 +29,14 @@ def getPhrases(sent, labels):
 
     return phrases
 
-def make_client_doc(document: Document, annotations: List[Annotation]) -> Dict[any, any]:
+def make_labels_lists_from_annotations(annotations: List[Annotation], document: Document) -> List[List[str]]:
     """
-    This creates a document that the client knows how to read. 
-    TODO: make the client understand Document/Annotation model
+    This converts span-based annotations to list-based labels. It adds BIO tags to the labels.
     """
     labels = []
-    raw_sentences = []
     for sentence in document.sentences:
         labels.append(["O"] * len(sentence))
-        raw_sentences.append([t.text for t in sentence])
-
+    
     # We use BIO format. 
     for annotation in annotations:
         # annotations with label O are dummies.
@@ -49,9 +46,30 @@ def make_client_doc(document: Document, annotations: List[Annotation]) -> Dict[a
             prefix = "B-" if i == annotation.start_span else "I-"
             anno_sent[i] = f"{prefix}{annotation.label}"
 
+    return labels
+
+
+def make_client_doc(document: Document, annotations: List[Annotation], default_annotations: List[Annotation] = []) -> Dict[any, any]:
+    """
+    This creates a document that the client knows how to read. 
+    TODO: make the client understand Document/Annotation model
+    """
+    blank_labels = []
+    raw_sentences = []
+    space_markers = []
+    for sentence in document.sentences:
+        blank_labels.append(["O"] * len(sentence))
+        raw_sentences.append([t.text for t in sentence])
+        space_markers.append([t.space_after for t in sentence])
+
+    labels = make_labels_lists_from_annotations(annotations, document)
+    default_labels = make_labels_lists_from_annotations(default_annotations, document)
+    
     doc = {
         "sentences": raw_sentences,
         "labels": labels,
+        "space_markers": space_markers,
+        "default_labels": default_labels,
         "docid": document.name,
         "dataset": document.dataset_id,
         "path": "ignore_plz",

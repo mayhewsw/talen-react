@@ -14,6 +14,8 @@ import {
 const initialState: DataState = {
   words: [[]],
   labels: [[]],
+  default_labels: [[]],
+  space_markers: [[]],
   labelset: [],
   path: "",
   isAnnotated: false,
@@ -54,6 +56,8 @@ export function data(
         ...state,
         words: action.data["sentences"],
         labels: action.data["labels"],
+        default_labels: action.data["default_labels"],
+        space_markers: action.data["space_markers"],
         labelset: action.data["labelset"],
         path: action.data["path"],
         isAnnotated: action.data["isAnnotated"],

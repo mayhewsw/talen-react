@@ -1,13 +1,11 @@
 from typing import List
 
-import yaml
 from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
 from talen.models.annotation import Annotation
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 
-from talen.config import Config
 from talen.util import get_annotations_from_client, make_client_doc
 
 LOG = get_logger()
@@ -97,17 +95,19 @@ def loaddoc():
 
     document = mongo_dal.get_document(docid, dataset)
     annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, username)
+    default_annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, "default_anno")
 
-    client_doc = make_client_doc(document, annotations)
+    client_doc = make_client_doc(document, annotations, default_annotations)
     # this works because of the dummy annotation we add in savedoc()
     client_doc["isAnnotated"] = len(annotations) > 0
 
     # FIXME: how do we associate labelsets with datasets?
+    # These have to be RGB!!!!
     client_doc["labelset"] = {
         "O": "transparent",
-        "PER": "yellow",
-        "ORG": "lightblue",
-        "LOC": "yellowgreen"
+        "PER": "#EADA48",
+        "ORG": "#37C4E3",
+        "LOC": "#4AC300"
     }
 
     return jsonify(client_doc)

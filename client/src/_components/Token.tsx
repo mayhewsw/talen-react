@@ -52,6 +52,23 @@ class Token extends React.Component<TokProps> {
 
   render() {
     const tag = this.props.label.split("-").pop() || "O";
+    const default_tag = this.props.default_label.split("-").pop() || "O";
+
+    // Decide if we are going to show the main or default label
+    // The default label is a starter: perhaps from an ML system
+    let display_default;
+    if (tag === "O") {
+      if (default_tag === "O") {
+        display_default = false;
+      } else {
+        display_default = true;
+      }
+    } else {
+      display_default = false;
+    }
+
+    const tag_class = display_default ? default_tag : tag;
+
     let labellist = Object.keys(this.props.labelset).sort();
     // TODO: What's going on here?
     const oindex = labellist.indexOf("O");
@@ -69,9 +86,11 @@ class Token extends React.Component<TokProps> {
 
     var spacer_list = ["spacer", "nocopy"];
     var spacer_style = { background: "transparent" };
-    if (this.props.label !== "O" && this.props.next_token_is_entity) {
-      //spacer_list.push(tag || "");
-      spacer_style.background = this.props.labelset[tag];
+    if (
+      (this.props.default_label !== "O" || this.props.label !== "O") &&
+      this.props.next_token_is_entity
+    ) {
+      spacer_style.background = this.props.labelset[tag_class];
       spacer_list.push("label");
     }
 
@@ -81,13 +100,21 @@ class Token extends React.Component<TokProps> {
     ) {
       spacer_list.push("highlighted");
     }
+
     const class_list = [
       "token",
       "nocopy",
       this.props.selected,
-      tag,
-      this.props.label === "O" ? null : "label",
+      tag_class,
+      display_default ? "default-label" : "label",
     ];
+
+    // truth table for the above double ternary:
+    // label, default_label
+    // O O -> null
+    // O PER -> default_label
+    // PER O -> label
+    // PER PER -> label
 
     if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
       class_list.push("labelsingle");
@@ -97,6 +124,9 @@ class Token extends React.Component<TokProps> {
       class_list.push("labelend");
     }
 
+    // The 44 at the end is transparency in the RGBA space.
+    const background =
+      this.props.labelset[tag_class] + (display_default ? "44" : "");
     return (
       <>
         <span
@@ -105,7 +135,7 @@ class Token extends React.Component<TokProps> {
           onMouseUp={(evt) => this.handleUp(evt)}
           onMouseOver={(evt) => this.handleOver(evt)}
           style={{
-            background: this.props.labelset[tag],
+            background: background,
             color: this.props.wordsColor,
           }}
           ref={this.myRef}
@@ -113,9 +143,11 @@ class Token extends React.Component<TokProps> {
           {this.props.form}
         </span>
         {/*  this whitespace is needed to get correct line breaks! */}
-        <span className={spacer_list.join(" ")} style={spacer_style}>
-          {" "}
-        </span>
+        {this.props.space_after && (
+          <span className={spacer_list.join(" ")} style={spacer_style}>
+            {" "}
+          </span>
+        )}
         <Overlay
           show={this.props.show_popover}
           target={this.myRef.current}
@@ -153,7 +185,9 @@ function mapState(state: any) {
 type TokProps = {
   wordsColor: string;
   form: string;
+  space_after: boolean;
   label: string;
+  default_label: string;
   labelset: { [key: string]: string };
   selected: string;
   mousedown: any;

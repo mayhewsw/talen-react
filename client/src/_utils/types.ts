@@ -16,6 +16,8 @@ export interface DataState {
   annotatedDocumentSet: string[];
   words: string[][];
   labels: string[][];
+  space_markers: boolean[][];
+  default_labels: string[][];
   labelset: any;
   path: string;
   isAnnotated: boolean;
@@ -153,6 +155,8 @@ interface LoadDocsAction {
   data: {
     sentences: string[][];
     labels: string[][];
+    default_labels: string[][];
+    space_markers: boolean[][];
     path: string;
     isAnnotated: boolean;
     labelset: any;

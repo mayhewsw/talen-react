@@ -55,6 +55,10 @@ body {
   padding: 5px 0px 5px 0px;
 }
 
+.default-label {
+  padding: 5px 0px 5px 0px;
+}
+
 .label-box {
   justify-content: center;
   align-content: flex-start;
@@ -236,7 +240,4 @@ body {
   background: -webkit-linear-gradient(left, #333, #333, #eee);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.dataset-card-row {
 }
