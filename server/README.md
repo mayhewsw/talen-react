@@ -58,3 +58,30 @@ If you want to run an individual test:
 ```
 $ PYTHONPATH=. pytest -s -k "test_annotation_serialization"
 ```
+
+## Adding datasets
+To add a new CONLLU dataset (as used in Universal Dependencies), run the following:
+
+```bash
+$ python -m scripts.conllu_to_mongo --input-file <input_file.conllu> --dataset-name <your_dataset_name> --environment $ENV
+```
+
+where `$ENV` should be either `dev` (for local development), or `prod` for using the hosted MongoDB.
+
+For example, if you wanted to download the English Universal Dependencies data and put it into the local database, you would do the following:
+```bash
+$ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
+$ python -m scripts.conllu_to_mongo --input-file UD_English-EWT/en_ewt-ud-train.conllu --dataset-name en_ewt-ud-train --environment dev
+```
+
+## Creating Default Annotations
+
+You can use the spacy NER tagger to get starter or ("default") annotations for your dataset.
+
+Run:
+```bash
+$ python -m spacy download en_core_web_md
+$ python -m scripts.merge_default_annotations --dataset-name <your_dataset_name> --environment $ENV
+```
+
+where `$ENV` should be either `dev` (for local development), or `prod` for using the hosted MongoDB.

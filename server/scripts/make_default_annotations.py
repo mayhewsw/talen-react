@@ -45,7 +45,7 @@ def make_default_annotations(dataset_name: str, environment: str) -> None:
     mongo_dal = MongoDAL(config.mongo_url)
     
     # consider using en_core_web_trf for better accuracy
-    # python -m spacy download en_core_web_sm
+    # python -m spacy download en_core_web_md
     nlp = spacy.load("en_core_web_md", exclude=["tokenizer", "tagger", "parser", "lemmatizer"])
 
     document_list = mongo_dal.get_document_list(dataset_name)
