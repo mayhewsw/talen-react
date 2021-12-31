@@ -27,17 +27,18 @@ class MongoDAL():
     def add_document(self, document: Document) -> None:
         self.datasets.insert_one(document.serialize())
 
+    def add_documents(self, documents: List[Document]) -> None:
+        self.datasets.insert_many([document.serialize() for document in documents])
+
     def get_document(self, id: str, dataset_id: str) -> Document:
         response = self.datasets.find_one({"name": id, "dataset_id": dataset_id})
         # parse this into a document object
         return Document.deserialize(response) if response else None
 
-    # FIXME: just get document names here!
     def get_document_list(self, dataset_id: str) -> List[Document]:
         """
         This just gets document names for a given dataset
         """
-        # TODO: would it be faster to just get the unique doc names?
         return sorted(self.datasets.distinct("name", {"dataset_id": dataset_id}))
 
     def get_all_documents(self, dataset_id: str) -> List[Document]:
@@ -78,6 +79,14 @@ class MongoDAL():
         """
         serialized_annotation = annotation.serialize()
         self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
+
+    def add_annotations(self, annotations: List[Annotation]) -> None:
+        """
+        This just calls add_annotation several times. We do this because update_many 
+        doesn't work as expected.
+        """
+        for annotation in annotations:
+            self.add_annotation(annotation)
 
     def delete_annotation(self, annotation: Annotation) -> None:
         self.annotations.delete_one(annotation.serialize())    

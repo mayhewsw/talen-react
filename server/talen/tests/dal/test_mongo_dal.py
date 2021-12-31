@@ -1,18 +1,21 @@
 
 from talen.dal.mongo_dal import MongoDAL
 from talen.models.user import LoginStatus
-
+from pymongo.errors import DuplicateKeyError
+import pytest
 
 def test_add_get_document(mongo_dal, document):
     mongo_dal.add_document(document)
+    with pytest.raises(DuplicateKeyError):
+        mongo_dal.add_document(document)
+
     returned_doc = mongo_dal.get_document(document.name, document.dataset_id)
     assert document == returned_doc
 
 def test_add_get_document_multiple(mongo_dal, document_list):
     dataset_id = document_list[0].dataset_id
 
-    for doc in document_list:
-        mongo_dal.add_document(doc)
+    mongo_dal.add_documents(document_list)
 
     returned_docs = mongo_dal.get_document_list(dataset_id)
     assert returned_docs[0] == document_list[0].name
