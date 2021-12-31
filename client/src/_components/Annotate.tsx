@@ -123,7 +123,7 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   sendLabels() {
-    if (this.state.isSaved) {
+    if (this.state.isSaved && this.props.data.isAnnotated) {
       console.log("no need to resave...");
       return;
     }
@@ -161,6 +161,7 @@ class Annotate extends React.Component<MatchProps, State> {
     this.props.loadDocument(dataset, docId);
   }
 
+  // FIXME: this can probably be removed
   buttonPush(dataset: string, newDoc: string) {
     const labels = this.props.data.labels;
     let hasLabel = false;

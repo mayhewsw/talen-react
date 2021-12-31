@@ -5,14 +5,16 @@ from talen.models.token import Token
 from talen.models.user import User
 from talen.models.annotation import Annotation
 from talen.config import Config
+import os
 
 def make_document(doc_name):
     """
-    A little helper function
+    A little helper function to create a document
     """
     dataset_id = "dataset1"
     words = "These are some words .".split()
-    sentences = [[Token(doc_name, w, i) for i,w in enumerate(words)]]
+    # do some fancy indexing to make sure the last token has no space after it.
+    sentences = [[Token(doc_name, w, i, i<len(words)-1) for i,w in enumerate(words)]]
 
     return Document(doc_name, dataset_id, sentences)
 
@@ -39,7 +41,7 @@ def user():
     return user
 
 @pytest.fixture
-def annotation():
+def annotation() -> Annotation:
     doc_name = "doc1"
     document = make_document(doc_name)
     sent_id = 0
@@ -49,7 +51,7 @@ def annotation():
     return Annotation("dataset1", doc_name, sent_id, "coolUser", label, document.sentences[sent_id][start_span:end_span], start_span, end_span)
 
 @pytest.fixture
-def final_span_annotation():
+def final_span_annotation() -> Annotation:
     doc_name = "doc1"
     document = make_document(doc_name)
     sent_id = 0
@@ -58,3 +60,8 @@ def final_span_annotation():
     end_span = len(sent)
     label = "ORG"
     return Annotation("dataset1", doc_name, sent_id, "coolUser", label, document.sentences[sent_id][start_span:end_span], start_span, end_span)
+
+@pytest.fixture
+def conllu_path() -> str:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    return os.path.join(dir_path, "resources", "test.conllu")

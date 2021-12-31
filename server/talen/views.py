@@ -99,7 +99,9 @@ def loaddoc():
     annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, username)
 
     client_doc = make_client_doc(document, annotations)
+    # this works because of the dummy annotation we add in savedoc()
     client_doc["isAnnotated"] = len(annotations) > 0
+
     # FIXME: how do we associate labelsets with datasets?
     client_doc["labelset"] = {
         "O": "transparent",

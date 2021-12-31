@@ -7,6 +7,7 @@ class Token:
     document_id: str = attrib()
     text: str = attrib()
     index: int = attrib()
+    space_after: bool = attrib()
 
     def _make_id(self):
         return f"{self.document_id}_{self.index}"
@@ -18,4 +19,4 @@ class Token:
 
     @staticmethod
     def deserialize(obj):
-        return Token(document_id=obj["document_id"], text=obj["text"], index=obj["index"])
+        return Token(document_id=obj["document_id"], text=obj["text"], index=obj["index"], space_after=obj["space_after"])

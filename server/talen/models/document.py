@@ -18,6 +18,18 @@ class Document:
         return d
 
     @staticmethod
+    def get_sentence_text(sentence: List[Token]) -> str:
+        """
+        Note: this strips text, even if the last token has space_after=True
+        """
+        out = []
+        for token in sentence:
+            out.append(token.text)
+            if token.space_after:
+                out.append(" ")
+        return "".join(out).strip()
+
+    @staticmethod
     def deserialize(obj):
         deserialized_sents = []
         for sent in obj["sentences"]:

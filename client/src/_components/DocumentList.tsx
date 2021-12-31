@@ -20,6 +20,12 @@ class DocumentList extends React.Component<Props> {
     }
   }
 
+  handleDocumentClick(id: string) {
+    // color all words grey in case it takes a second to load the doc
+    this.props.clearDocument();
+    this.props.setCurrDocument(id);
+  }
+
   render() {
     const { data } = this.props;
 
@@ -59,7 +65,7 @@ class DocumentList extends React.Component<Props> {
               <ListGroup.Item
                 action
                 key={index}
-                onClick={() => this.props.setCurrDocument(id)}
+                onClick={() => this.handleDocumentClick(id)}
                 variant={id === currDoc ? "primary" : undefined}
               >
                 <span className="document-list-item">
@@ -93,9 +99,9 @@ class DocumentList extends React.Component<Props> {
 
 // TODO: fix the any!!
 type Props = {
-  getDocuments: any;
-  clearDocument: any;
-  setCurrDocument: any;
+  getDocuments: Function;
+  clearDocument: Function;
+  setCurrDocument: Function;
   data: any;
   dataset_id: string;
 };

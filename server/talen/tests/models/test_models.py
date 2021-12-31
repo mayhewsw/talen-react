@@ -13,6 +13,10 @@ def test_document_serialization(document):
     new_doc = Document.deserialize(serialized_doc)
     assert document == new_doc
 
+def test_document_text(document: Document):
+    text = Document.get_sentence_text(document.sentences[0])
+    assert text == "These are some words ."
+
 def test_user_serialization(user):
     serialized_user = user.serialize()
 

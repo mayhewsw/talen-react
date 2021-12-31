@@ -12,7 +12,7 @@ class DatasetCard extends React.Component<Props> {
       : 0;
     console.log(this.props);
     return (
-      <Card style={{ width: "18rem" }}>
+      <Card style={{ width: "18rem" }} className="m-2">
         <Card.Body>
           <Card.Title>
             <Link to={`/dataset/${this.props.id}`}>{this.props.id}</Link>
