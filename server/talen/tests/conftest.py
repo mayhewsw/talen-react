@@ -4,6 +4,7 @@ from talen.models.document import Document
 from talen.models.token import Token
 from talen.models.user import User
 from talen.models.annotation import Annotation
+from talen.config import Config
 
 def make_document(doc_name):
     """
@@ -15,6 +16,9 @@ def make_document(doc_name):
 
     return Document(doc_name, dataset_id, sentences)
 
+@pytest.fixture
+def config():
+    return Config("test")
 
 @pytest.fixture
 def document():
@@ -25,8 +29,8 @@ def document_list():
     return [make_document(doc_name=f"doc{i}") for i in range(1,11)]
 
 @pytest.fixture
-def mongo_dal():
-    return MongoDAL("test")
+def mongo_dal(config: Config):
+    return MongoDAL(config.mongo_url)
 
 @pytest.fixture
 def user():

@@ -13,7 +13,8 @@ class MongoDAL():
         """
         url is expected to include the mongodb:// or mongodb+srv:// prefix
         """
-        self.client = mongomock.MongoClient() if url == "test"  else MongoClient(url)
+        self.client = mongomock.MongoClient() if "test" in url else MongoClient(url)
+        self.url = url
         # TODO: can we test the client connection here?
 
         db = self.client.talen
@@ -31,8 +32,18 @@ class MongoDAL():
         # parse this into a document object
         return Document.deserialize(response) if response else None
 
+    # FIXME: just get document names here!
     def get_document_list(self, dataset_id: str) -> List[Document]:
+        """
+        This just gets document names for a given dataset
+        """
         # TODO: would it be faster to just get the unique doc names?
+        return sorted(self.datasets.distinct("name", {"dataset_id": dataset_id}))
+
+    def get_all_documents(self, dataset_id: str) -> List[Document]:
+        """
+        Does anyone actually use this?
+        """
         cursor = self.datasets.find({"dataset_id": dataset_id})
         return [Document.deserialize(d) for d in cursor]
 
@@ -57,6 +68,9 @@ class MongoDAL():
         user = User.deserialize(result)
         return LoginStatus.SUCCESS if user.check_password(password) else LoginStatus.PASSWORD_INCORRECT
             
+    def get_users(self) -> List[str]:
+        return self.logins.distinct("id")
+
     def add_annotation(self, annotation: Annotation) -> None:
         """
         This will add an annotation to the database if it doesn't exist, and it will

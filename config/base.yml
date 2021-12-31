@@ -1,4 +1,5 @@
 # Some mongod db config options
 mongo_database_name: talen-annotation
 # don't include the mongo:// in the beginning. this is automatically inferred in the config
-mongo_stub_url: localhost:27017/
+# don't put a slash at the end!
+mongo_stub_url: localhost:27017

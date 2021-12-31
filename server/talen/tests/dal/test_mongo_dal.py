@@ -15,7 +15,7 @@ def test_add_get_document_multiple(mongo_dal, document_list):
         mongo_dal.add_document(doc)
 
     returned_docs = mongo_dal.get_document_list(dataset_id)
-    assert returned_docs[0] == document_list[0]
+    assert returned_docs[0] == document_list[0].name
     assert len(returned_docs) == len(document_list)
 
 def test_get_datasets(mongo_dal, document_list):

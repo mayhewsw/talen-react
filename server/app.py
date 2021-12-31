@@ -6,6 +6,7 @@ from talen.models.user import LoginStatus
 from talen.models.user import User
 from talen.logger import get_logger, setup_logger
 from talen.views import bp
+import os
 
 from talen.config import BUILD_DIR, Config
 
@@ -15,9 +16,9 @@ LOG = get_logger()
 app = Flask(__name__, static_folder=BUILD_DIR, static_url_path="/")
 
 app.debug = True
-app.config.from_object(Config)
-# FIXME: obviously make this url better!
-app.mongo_dal = MongoDAL("mongodb://localhost:27017/")
+app.config.from_object(Config)  # FYI: it's ok to use Config statically here
+config = Config(os.environ.get("ENV") or "dev")
+app.mongo_dal = MongoDAL(config.mongo_url)
 
 # FIXME: remove this boilerplate code
 if app.mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:
