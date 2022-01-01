@@ -68,6 +68,10 @@ class Token extends React.Component<TokProps> {
     }
 
     const tag_class = display_default ? default_tag : tag;
+    // The 44 at the end is transparency in the RGBA space.
+    const background =
+      this.props.labelset[tag_class] + (display_default ? "44" : "");
+    const default_background = this.props.labelset[default_tag] + "44";
 
     let labellist = Object.keys(this.props.labelset).sort();
     // TODO: What's going on here?
@@ -86,11 +90,18 @@ class Token extends React.Component<TokProps> {
 
     var spacer_list = ["spacer", "nocopy"];
     var spacer_style = { background: "transparent" };
+
+    // it's important that this block (default) come before the other one.
     if (
-      (this.props.default_label !== "O" || this.props.label !== "O") &&
-      this.props.next_token_is_entity
+      this.props.default_label !== "O" &&
+      this.props.next_token_is_default_entity
     ) {
-      spacer_style.background = this.props.labelset[tag_class];
+      spacer_style.background = default_background;
+      spacer_list.push("label");
+    }
+
+    if (this.props.label !== "O" && this.props.next_token_is_entity) {
+      spacer_style.background = background;
       spacer_list.push("label");
     }
 
@@ -116,17 +127,30 @@ class Token extends React.Component<TokProps> {
     // PER O -> label
     // PER PER -> label
 
-    if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
-      class_list.push("labelsingle");
-    } else if (this.props.label[0] === "B") {
-      class_list.push("labelstart");
-    } else if (this.props.label !== "O" && !this.props.next_token_is_entity) {
-      class_list.push("labelend");
+    if (display_default) {
+      if (
+        !this.props.next_token_is_default_entity &&
+        this.props.default_label[0] === "B"
+      ) {
+        class_list.push("labelsingle");
+      } else if (this.props.default_label[0] === "B") {
+        class_list.push("labelstart");
+      } else if (
+        this.props.default_label !== "O" &&
+        !this.props.next_token_is_default_entity
+      ) {
+        class_list.push("labelend");
+      }
+    } else {
+      if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
+        class_list.push("labelsingle");
+      } else if (this.props.label[0] === "B") {
+        class_list.push("labelstart");
+      } else if (this.props.label !== "O" && !this.props.next_token_is_entity) {
+        class_list.push("labelend");
+      }
     }
 
-    // The 44 at the end is transparency in the RGBA space.
-    const background =
-      this.props.labelset[tag_class] + (display_default ? "44" : "");
     return (
       <>
         <span
@@ -195,6 +219,7 @@ type TokProps = {
   show_popover: boolean;
   set_label: any;
   next_token_is_entity: boolean;
+  next_token_is_default_entity: boolean;
   display_phrase: string;
 };
 
