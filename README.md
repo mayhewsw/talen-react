@@ -101,6 +101,11 @@ $ ./run_docker.sh run
 
 Then visit `http://localhost:1337` in a browser.
 
+## Managing users
+
+When running the app locally, it will add a default user with username "a" and password "a". When running in production,
+use the [`manage_users.py`](server/scripts/manage_users.py) script to add, update, or delete users.
+
 ## Citation
 
 If you use this in your research paper, please cite us!

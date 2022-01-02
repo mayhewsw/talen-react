@@ -4,7 +4,6 @@ from talen.models.user import User
 from talen.config import Config
 import argparse
 from pymongo.errors import DuplicateKeyError
-import tqdm
 
 
 def add_user(mongo_dal: MongoDAL, user: User):
@@ -20,7 +19,6 @@ def update_user(mongo_dal: MongoDAL, user: User):
     # add back in the new one.
     # seems dumb, but oh well.
     
-
 def delete_user(mongo_dal: MongoDAL, username: str):
     user = mongo_dal.load_user(username)
     if not user:
@@ -32,7 +30,7 @@ def delete_user(mongo_dal: MongoDAL, username: str):
 if __name__ == "__main__":
      
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", help="Whether to add or delete", choices=["add", "update", "delete"], type=str)
+    parser.add_argument("command", help="Whether to add, update, or delete", choices=["add", "update", "delete"], type=str)
     parser.add_argument("--username", "-u", help="Username", required=True, type=str)
     parser.add_argument("--password", "-p", help="Password", type=str)
     parser.add_argument("--email", "-m", help="Email", type=str)
@@ -53,8 +51,6 @@ if __name__ == "__main__":
     user = User(args.username, args.email, password_hash, admin, readonly)
     if args.password:
         user.set_password(args.password)
-
-    print(user)
 
     if args.command == "add":
         if(not args.password or not args.email):
