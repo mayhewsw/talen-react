@@ -114,7 +114,7 @@ $ docker build -f Dockerfile -t sample:prod .
 
 To run:
 ```
-$ docker run -it --rm -e "PORT=8080" -p 1337:8080 sample:prod
+$ docker run -it --rm -e "PORT=8080" -e "ENV=dev" -p 1337:8080 sample:prod
 ```
 
 Then visit `http://localhost:1337/index.html` in a browser.
