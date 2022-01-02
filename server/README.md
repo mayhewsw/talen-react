@@ -2,31 +2,6 @@
 
 The backend is written in python.
 
-## Data Readers
-
-See `data_readers/` for examples of dataset readers. If you have your own bespoke formatted dataset, you may want to write a reader for it.
-
-## Database
-
-Before running the app, you should have run `init_db.py`. To check the database in a python repl, do the following:
-
-```python
-> from app import db
-> from models import User
-> users = User.query.all()
-> u = users[0]
-> u.check_password("thing")
-False
-> u.set_password("thing")
-> u.check_password("thing")
-True
-> admin = User(username='admin', email='admin@example.com')
-> db.session.add(admin)
-> db.session.commit()   # IMPORTANT!
-```
-
-This came from [here](https://flask-sqlalchemy.palletsprojects.com/en/2.x/quickstart/#a-minimal-application).
-
 ## Authorization and Sessions
 
 This uses [flask-login](https://flask-login.readthedocs.io/en/latest/).

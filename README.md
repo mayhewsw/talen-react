@@ -28,7 +28,6 @@ $ cd server
 $ python -m venv cool-environment-name  # virtual env optional but strongly recommended
 $ source cool-environment-name/bin/activate
 $ pip install -r requirements.txt
-$ python init_db.py   # this creates the user database
 cd ..
 ```
 
@@ -44,7 +43,7 @@ $ cd ..
 
 ```bash
 $ cd server
-$ python app.py
+$ export ENV=dev && python app.py
 ```
 
 There are two options for viewing the frontend. If you want to modify it and have it
@@ -63,7 +62,7 @@ $ npm run build
 ```
 
 This will create a folder called `client/build` containing static files.
-Then, with the backend server running, visit, `localhost:5000/index.html`.
+Then, with the backend server running, visit, `localhost:5000`.
 
 ## Data
 
