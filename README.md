@@ -46,12 +46,14 @@ $ cd server
 $ export ENV=dev && python app.py
 ```
 
+This will default to port 8080, but you can change this by setting the `$PORT` variable.
+
 There are two options for viewing the frontend. If you want to modify it and have it
 reload automatically, start the node server (in a new terminal):
 
 ```bash
 $ cd client
-$ npm start
+$ export REACT_APP_URL="http://localhost:8080" && npm run start
 ```
 
 If you are ready to start annotating in earnest, compile the react code into static files and serve alongside the flask app. To do this, run (in `client/`):
@@ -62,7 +64,7 @@ $ npm run build
 ```
 
 This will create a folder called `client/build` containing static files.
-Then, with the backend server running, visit, `localhost:5000`.
+Then, with the backend server running, visit, `localhost:8080/`.
 
 ## Data
 
@@ -100,6 +102,22 @@ reader: ud_reader.UDReader
 ```
 
 And get going!
+
+
+
+## Dockerization
+
+To build:
+```
+$ docker build -f Dockerfile -t sample:prod . 
+```
+
+To run:
+```
+$ docker run -it --rm -e "PORT=8080" -p 1337:8080 sample:prod
+```
+
+Then visit `http://localhost:1337/index.html` in a browser.
 
 ## Citation
 
