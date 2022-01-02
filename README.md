@@ -85,39 +85,21 @@ labelset from `config/base.yml`.
 
 One of the motivators for writing this software was to annotate Universal Dependencies with NER tags.
 
-To get going with annotation, do the following:
-
-```bash
-$ cd server
-$ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
-$ python scripts/conllu_to_docs.py UD_English-EWT/en_ewt-ud-train.conllu data/en_ewt-ud-train/
-```
-
-Create `UD_English.yml`:
-
-```
-name: UD_English-EWT-train
-path: data/en_ewt-ud-train
-reader: ud_reader.UDReader
-```
-
-And get going!
-
-
+To get going with annotation, see [this file](server/README.md).
 
 ## Dockerization
 
 To build:
 ```
-$ docker build -f Dockerfile -t sample:prod . 
+$ ./run_docker.sh build
 ```
 
 To run:
 ```
-$ docker run -it --rm -e "PORT=8080" -e "ENV=dev" -p 1337:8080 sample:prod
+$ ./run_docker.sh run
 ```
 
-Then visit `http://localhost:1337/index.html` in a browser.
+Then visit `http://localhost:1337` in a browser.
 
 ## Citation
 

@@ -27,8 +27,9 @@ class User():
 
     @staticmethod
     def deserialize(obj):
-        del obj["_id"]
-        return User(**obj)
+        if obj: 
+            del obj["_id"]
+            return User(**obj)
 
 
 class LoginStatus(Enum):

@@ -1,11 +1,13 @@
 attrs==21.2.0
 click==8.0.3
 conllu==4.4.1
+dnspython==2.1.0
 Flask==1.0.2
 Flask-Cors==3.0.7
 Flask-JWT==0.3.2
 Flask-Login==0.5.0
 Flask-Session==0.3.1
+gunicorn==20.1.0
 iniconfig==1.1.1
 itsdangerous==2.0.1
 Jinja2==3.0.3
@@ -23,3 +25,4 @@ sentinels==1.0.0
 six==1.16.0
 toml==0.10.2
 Werkzeug==2.0.2
+tqdm==4.62.3

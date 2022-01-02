@@ -62,13 +62,16 @@ class MongoDAL():
         # TODO: include a warning or something if user isn't found
         return User.deserialize(self.logins.find_one({"id": username}))
 
-    def check_user(self, user_id: str, password: str) -> LoginStatus:
-        result = self.logins.find_one({"id" : user_id})
+    def check_user(self, username: str, password: str) -> LoginStatus:
+        result = self.logins.find_one({"id" : username})
         if result == None:
             return LoginStatus.USER_NOT_FOUND
         user = User.deserialize(result)
         return LoginStatus.SUCCESS if user.check_password(password) else LoginStatus.PASSWORD_INCORRECT
             
+    def delete_user(self, username: str) -> None:
+        self.logins.delete_one({"id": username})    
+
     def get_users(self) -> List[str]:
         return self.logins.distinct("id")
 

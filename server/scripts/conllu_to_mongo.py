@@ -6,6 +6,7 @@ from talen.data_readers.ud_reader import UDReader
 from talen.config import Config
 import argparse
 from pymongo.errors import DuplicateKeyError
+import tqdm
 
 def write_to_mongo(path_to_udfile: str, dataset_name: str, environment: str) -> None:
     """
