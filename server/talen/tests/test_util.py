@@ -1,4 +1,3 @@
-from typing import final
 from talen.models.annotation import Annotation
 from talen.util import get_annotations_from_client, make_client_doc
 

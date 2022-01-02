@@ -55,6 +55,7 @@ You can use the spacy NER tagger to get starter or ("default") annotations for y
 
 Run:
 ```bash
+$ pip install spacy
 $ python -m spacy download en_core_web_md
 $ python -m scripts.merge_default_annotations --dataset-name <your_dataset_name> --environment $ENV
 ```
