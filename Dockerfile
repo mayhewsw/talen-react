@@ -4,11 +4,12 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY client/package.json .
 COPY client/package-lock.json .
+ARG REACT_APP_URL $REACT_APP_URL
+RUN echo ${REACT_APP_URL}
 RUN npm ci --silent
 RUN npm install react-scripts@3.4.1 -g --silent
 COPY client/ .
-RUN npm run build
-
+RUN export REACT_APP_URL=$REACT_APP_URL && npm run build
 
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
@@ -25,11 +26,11 @@ COPY ./config ../config
 
 COPY --from=build /app/build ../client/build
 
+ENV MONGO_USERNAME $MONGO_USERNAME
+ENV MONGO_PASSWORD $MONGO_PASSWORD
+
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
-
-# TODO: This needs some work...
-RUN python init_db.py
 
 # Run the web service on container startup. Here we use the gunicorn
 # webserver, with one worker process and 8 threads.

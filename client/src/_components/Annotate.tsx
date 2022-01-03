@@ -1,14 +1,13 @@
 import React, { ChangeEvent } from "react";
 import { cloneDeep } from "lodash";
-import { Button, ButtonGroup, Row, Col, Card, Form } from "react-bootstrap";
+import { Button, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { history } from "../_helpers";
 import {
   IoIosSave,
   IoMdCheckmarkCircleOutline,
-  IoIosArrowForward,
-  IoIosArrowBack,
+  IoMdCopy,
 } from "react-icons/io";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
@@ -17,15 +16,28 @@ import { dataActions } from "../_actions";
 class Annotate extends React.Component<MatchProps, State> {
   constructor(props: MatchProps) {
     super(props);
+    // FIXME: why does this have it's own state??
     this.state = {
       activeSent: -1,
       isSaved: true,
       propagate: true,
     };
+    // Bind these functions so the s-key save shortcut works
+    this.handleKey = this.handleKey.bind(this);
+    this.sendLabels = this.sendLabels.bind(this);
+    this.setLabel = this.setLabel.bind(this);
+    this.mergeDefaultAnnotations = this.mergeDefaultAnnotations.bind(this);
   }
 
   componentDidMount() {
+    document.addEventListener("keydown", this.handleKey);
     this.loadAll(this.props.dataset, this.props.docid);
+  }
+
+  componentDidUpdate(prevProps: MatchProps) {
+    if (this.props.docid !== prevProps.docid) {
+      this.loadAll(this.props.dataset, this.props.docid);
+    }
   }
 
   // this came from: https://stackoverflow.com/questions/29425820/elegant-way-to-find-contiguous-subarray-within-an-array-in-javascript
@@ -116,16 +128,38 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   sendLabels() {
+    if (this.state.isSaved && this.props.data.isAnnotated) {
+      console.log("no need to resave...");
+      return;
+    }
     this.setState({ isSaved: true });
     var data = {
       docid: this.props.docid,
       dataset: this.props.dataset,
       sentences: this.props.data.words,
       labels: this.props.data.labels,
+      default_labels: this.props.data.default_labels,
       path: this.props.data.path,
     };
     this.props.saveDocument(data);
     this.props.data.isAnnotated = true;
+  }
+
+  handleKey(e: any) {
+    if (e.key === "s") {
+      console.log("saving...");
+      this.sendLabels();
+    }
+
+    if (e.key === "m") {
+      this.mergeDefaultAnnotations();
+    }
+
+    if (e.key === "0") {
+      console.log("setting 0");
+      // TODO: make this call the current button
+      // this.setLabel("PER", 0,1,this.state.activeSent);
+    }
   }
 
   setFocus(sent_index: number) {
@@ -135,16 +169,10 @@ class Annotate extends React.Component<MatchProps, State> {
 
   loadAll(dataset: string, docId: string) {
     this.props.loadDocument(dataset, docId);
-    this.props.loadStatus(dataset, docId);
   }
 
+  // FIXME: this can probably be removed
   buttonPush(dataset: string, newDoc: string) {
-    // this is a very important line
-    // don't save docs that have not been touched!
-    // if (!this.state.isSaved) {
-    //   this.sendLabels();
-    // }
-
     const labels = this.props.data.labels;
     let hasLabel = false;
     for (let i = 0; i < labels.length; i++) {
@@ -166,14 +194,37 @@ class Annotate extends React.Component<MatchProps, State> {
     }
 
     if (confirmed) {
+      this.props.clearDocument();
       var url = `/dataset/${dataset}/${newDoc}`;
       this.loadAll(dataset, newDoc);
       history.push(process.env.PUBLIC_URL + url);
     }
   }
 
+  mergeDefaultAnnotations() {
+    // FIXME: this will overwrite labels! Probably should check with user first...
+    const df = this.props.data.default_labels;
+    const mine = this.props.data.labels;
+    const merged = mine.map((sent: string[], sent_index: number) => {
+      return sent.map((label: string, label_index: number) => {
+        const default_label = df[sent_index][label_index];
+        const new_label = label === "O" ? default_label : label;
+        return new_label;
+      });
+    });
+    console.log(merged);
+    console.log("mergin");
+    this.props.setLabels(merged);
+    this.setState({ isSaved: false });
+  }
+
   render() {
-    const { data } = this.props;
+    const { data, docid } = this.props;
+
+    // TODO: consider adding nextdoc, prevdoc back in.
+    // const doc_index = data.documentList.indexOf(docid);
+    // const nextDoc = data.documentList[doc_index + 1];
+    // const prevDoc = data.documentList[doc_index - 1];
 
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
@@ -181,91 +232,83 @@ class Annotate extends React.Component<MatchProps, State> {
     // if mousedown OUTSIDE a token, then clear the range.
     // if mouseup on a token, that becomes end of the range.
     return (
-      <Row className="document">
-        <Col md={9}>
-          <Card>
-            <Card.Body>
-              {data.words &&
-                data.labelset &&
-                data.words.map((sent: string[], sent_index: number) => (
-                  <Sentence
-                    key={sent_index}
-                    index={sent_index}
-                    sent={sent}
-                    labels={data.labels[sent_index]}
-                    labelset={data.labelset}
-                    setFocus={(ind: number) => this.setFocus(ind)}
-                    isActive={sent_index === this.state.activeSent}
-                    set_label={(lab: string, first: number, last: number) =>
-                      this.setLabel(lab, first, last, sent_index)
-                    }
-                  />
-                ))}
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={3}>
-          {this.state.isSaved && data.isAnnotated && (
-            <Button variant="outline-success">
-              <>
-                <IoMdCheckmarkCircleOutline /> Saved
-              </>
-            </Button>
-          )}
-          {(!this.state.isSaved || !data.isAnnotated) && (
-            <Button variant="outline-danger" onClick={() => this.sendLabels()}>
-              <>
-                <IoIosSave /> Save
-              </>
-            </Button>
-          )}
-          <p></p>
-          {data.status && <p>{data.status}</p>}
-          <p></p>
-          <Form>
-            <div className="mb-3">
-              <Form.Check
-                onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                  this.setState({ propagate: evt.target.checked })
-                }
-                defaultChecked={this.state.propagate}
-                id="propagation-checkbox"
-                type="checkbox"
-                label="Propagate annotations?"
-              />
-            </div>
-          </Form>
-          <p></p>
-          <ButtonGroup>
-            {data.prevDoc && (
-              <Button
-                variant="outline-primary"
-                onClick={() =>
-                  this.buttonPush(this.props.dataset, data.prevDoc)
-                }
-              >
-                <IoIosArrowBack /> Previous
-              </Button>
-            )}
-            {data.nextDoc && (
-              <Button
-                variant="outline-primary"
-                onClick={() =>
-                  this.buttonPush(this.props.dataset, this.props.data.nextDoc)
-                }
-              >
-                Next <IoIosArrowForward />
-              </Button>
-            )}
-          </ButtonGroup>
-          <p></p>
-          <ButtonGroup>
-            <Link to={`${this.props.uplink}`}>
-              <Button variant="outline-secondary">Back to all docs...</Button>
-            </Link>
-          </ButtonGroup>
-        </Col>
-      </Row>
+      <div>
+        <div className="annotate-header">
+          <Row>
+            <Col>
+              <div className="doc-title">{docid}</div>
+            </Col>
+          </Row>
+          <Row className="align-items-baseline">
+            <Col md={12}>
+              <Form className="mb-3 form-inline">
+                {this.state.isSaved && data.isAnnotated && (
+                  <Button variant="outline-success">
+                    <>
+                      <IoMdCheckmarkCircleOutline /> Saved
+                    </>
+                  </Button>
+                )}
+
+                {(!this.state.isSaved || !data.isAnnotated) && (
+                  <Button
+                    variant="outline-danger"
+                    onClick={() => this.sendLabels()}
+                  >
+                    <>
+                      <IoIosSave /> Save
+                    </>
+                  </Button>
+                )}
+                <Form.Check
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    this.setState({ propagate: evt.target.checked })
+                  }
+                  defaultChecked={this.state.propagate}
+                  id="propagation-checkbox"
+                  type="checkbox"
+                  label="Propagate annotations?"
+                  className="pl-3 pr-3"
+                />
+                <Button
+                  variant="outline-primary"
+                  onClick={this.mergeDefaultAnnotations}
+                >
+                  <>
+                    <IoMdCopy /> Merge default annotations
+                  </>
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </div>
+        <Row className="document">
+          <Col md={11}>
+            <Card>
+              <Card.Body>
+                {data.words &&
+                  data.labelset &&
+                  data.words.map((sent: string[], sent_index: number) => (
+                    <Sentence
+                      key={sent_index}
+                      index={sent_index}
+                      sent={sent}
+                      labels={data.labels[sent_index]}
+                      default_labels={data.default_labels[sent_index]}
+                      space_markers={data.space_markers[sent_index]}
+                      labelset={data.labelset}
+                      setFocus={(ind: number) => this.setFocus(ind)}
+                      isActive={sent_index === this.state.activeSent}
+                      set_label={(lab: string, first: number, last: number) =>
+                        this.setLabel(lab, first, last, sent_index)
+                      }
+                    />
+                  ))}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
@@ -276,10 +319,11 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   dataset: string;
   docid: string;
   uplink: string;
-  setLabels: any;
-  saveDocument: any;
-  loadDocument: any;
-  loadStatus: any;
+  setLabels: Function;
+  clearDocument: Function;
+  saveDocument: Function;
+  loadDocument: Function;
+  loadStatus: Function;
 }
 
 interface MatchParams {}
@@ -294,7 +338,8 @@ type State = {
 // TODO: fix this any...
 function mapState(state: any) {
   const { data } = state;
-  return { data };
+  const docid = data.currDoc;
+  return { data, docid };
 }
 
 const actionCreators = {
@@ -302,6 +347,7 @@ const actionCreators = {
   loadDocument: dataActions.loadDocument,
   loadStatus: dataActions.loadStatus,
   setLabels: dataActions.setLabels,
+  clearDocument: dataActions.clearDocument,
 };
 
 const connectedAnnotate = connect(

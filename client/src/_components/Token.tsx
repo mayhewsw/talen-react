@@ -1,6 +1,7 @@
 import React from "react";
 import { Popover, Overlay } from "react-bootstrap";
 import LabelButton from "./LabelButton";
+import { connect } from "react-redux";
 
 class Token extends React.Component<TokProps> {
   private myRef = React.createRef<any>();
@@ -51,7 +52,29 @@ class Token extends React.Component<TokProps> {
 
   render() {
     const tag = this.props.label.split("-").pop() || "O";
+    const default_tag = this.props.default_label.split("-").pop() || "O";
+
+    // Decide if we are going to show the main or default label
+    // The default label is a starter: perhaps from an ML system
+    let display_default;
+    if (tag === "O") {
+      if (default_tag === "O") {
+        display_default = false;
+      } else {
+        display_default = true;
+      }
+    } else {
+      display_default = false;
+    }
+
+    const tag_class = display_default ? default_tag : tag;
+    // The 44 at the end is transparency in the RGBA space.
+    const background =
+      this.props.labelset[tag_class] + (display_default ? "44" : "");
+    const default_background = this.props.labelset[default_tag] + "44";
+
     let labellist = Object.keys(this.props.labelset).sort();
+    // TODO: What's going on here?
     const oindex = labellist.indexOf("O");
     labellist.splice(oindex, 1);
     labellist.push("O");
@@ -67,9 +90,18 @@ class Token extends React.Component<TokProps> {
 
     var spacer_list = ["spacer", "nocopy"];
     var spacer_style = { background: "transparent" };
+
+    // it's important that this block (default) come before the other one.
+    if (
+      this.props.default_label !== "O" &&
+      this.props.next_token_is_default_entity
+    ) {
+      spacer_style.background = default_background;
+      spacer_list.push("label");
+    }
+
     if (this.props.label !== "O" && this.props.next_token_is_entity) {
-      //spacer_list.push(tag || "");
-      spacer_style.background = this.props.labelset[tag];
+      spacer_style.background = background;
       spacer_list.push("label");
     }
 
@@ -79,20 +111,44 @@ class Token extends React.Component<TokProps> {
     ) {
       spacer_list.push("highlighted");
     }
+
     const class_list = [
       "token",
       "nocopy",
       this.props.selected,
-      tag,
-      this.props.label === "O" ? null : "label",
+      tag_class,
+      display_default ? "default-label" : "label",
     ];
 
-    if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
-      class_list.push("labelsingle");
-    } else if (this.props.label[0] === "B") {
-      class_list.push("labelstart");
-    } else if (this.props.label !== "O" && !this.props.next_token_is_entity) {
-      class_list.push("labelend");
+    // truth table for the above double ternary:
+    // label, default_label
+    // O O -> null
+    // O PER -> default_label
+    // PER O -> label
+    // PER PER -> label
+
+    if (display_default) {
+      if (
+        !this.props.next_token_is_default_entity &&
+        this.props.default_label[0] === "B"
+      ) {
+        class_list.push("labelsingle");
+      } else if (this.props.default_label[0] === "B") {
+        class_list.push("labelstart");
+      } else if (
+        this.props.default_label !== "O" &&
+        !this.props.next_token_is_default_entity
+      ) {
+        class_list.push("labelend");
+      }
+    } else {
+      if (!this.props.next_token_is_entity && this.props.label[0] === "B") {
+        class_list.push("labelsingle");
+      } else if (this.props.label[0] === "B") {
+        class_list.push("labelstart");
+      } else if (this.props.label !== "O" && !this.props.next_token_is_entity) {
+        class_list.push("labelend");
+      }
     }
 
     return (
@@ -102,15 +158,20 @@ class Token extends React.Component<TokProps> {
           onMouseDown={(evt) => this.handleDown(evt)}
           onMouseUp={(evt) => this.handleUp(evt)}
           onMouseOver={(evt) => this.handleOver(evt)}
-          style={{ background: this.props.labelset[tag] }}
+          style={{
+            background: background,
+            color: this.props.wordsColor,
+          }}
           ref={this.myRef}
         >
           {this.props.form}
         </span>
         {/*  this whitespace is needed to get correct line breaks! */}
-        <span className={spacer_list.join(" ")} style={spacer_style}>
-          {" "}
-        </span>
+        {this.props.space_after && (
+          <span className={spacer_list.join(" ")} style={spacer_style}>
+            {" "}
+          </span>
+        )}
         <Overlay
           show={this.props.show_popover}
           target={this.myRef.current}
@@ -138,11 +199,19 @@ class Token extends React.Component<TokProps> {
   }
 }
 
-export default Token;
+// TODO: make this STATE
+function mapState(state: any) {
+  const { data } = state;
+  const { wordsColor } = data;
+  return { wordsColor };
+}
 
 type TokProps = {
+  wordsColor: string;
   form: string;
+  space_after: boolean;
   label: string;
+  default_label: string;
   labelset: { [key: string]: string };
   selected: string;
   mousedown: any;
@@ -150,5 +219,11 @@ type TokProps = {
   show_popover: boolean;
   set_label: any;
   next_token_is_entity: boolean;
+  next_token_is_default_entity: boolean;
   display_phrase: string;
 };
+
+const actionCreators = {};
+
+const connectedToken = connect(mapState, actionCreators)(Token);
+export { connectedToken as Token };

@@ -1,0 +1,2 @@
+# don't include the mongo:// in the beginning. this is automatically inferred in the config
+mongo_stub_url: talen-cluster.ieagz.mongodb.net

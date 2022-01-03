@@ -1,54 +1,84 @@
 import {
   DataTypes,
+  DocumentTypes,
   DataState,
   GETDATASETS_SUCCESS,
   GETDOCS_SUCCESS,
-  LOADSTATUS,
   LOADDOC_SUCCESS,
   SETLABELS,
+  CLEARDOC,
+  SETCURRDOC,
+  SAVEDOC_SUCCESS,
 } from "../_utils/types";
 
 const initialState: DataState = {
-  items: [],
-  prevDoc: "",
-  nextDoc: "",
-  status: "",
   words: [[]],
   labels: [[]],
+  default_labels: [[]],
+  space_markers: [[]],
   labelset: [],
   path: "",
   isAnnotated: false,
+  suggestions: [],
+  datasetName: "",
+  currDoc: "",
+  documentList: [],
+  annotatedDocumentSet: [],
+  datasetIDs: [],
+  wordsColor: "black",
+  datasetStats: [],
 };
 
-export function data(state = initialState, action: DataTypes): DataState {
+export function data(
+  state = initialState,
+  action: DataTypes | DocumentTypes
+): DataState {
   switch (action.type) {
     case GETDATASETS_SUCCESS:
-      return { ...state, items: action.data };
+      return {
+        ...state,
+        datasetIDs: action.data["datasetIDs"],
+        datasetStats: action.data["datasetStats"],
+        documentList: [],
+        datasetName: "",
+        annotatedDocumentSet: [],
+      };
     case GETDOCS_SUCCESS:
       return {
         ...state,
-        items: action.data,
-      };
-    case LOADSTATUS:
-      var curr_ind = action.data["documentIDs"].indexOf(action.docId);
-      var prevDoc = action.data["documentIDs"][curr_ind - 1];
-      var nextDoc = action.data["documentIDs"][curr_ind + 1];
-      return {
-        ...state,
-        prevDoc: prevDoc,
-        nextDoc: nextDoc,
-        status: `On document ${curr_ind + 1} out of ${
-          action.data["documentIDs"].length
-        }.`,
+        datasetName: action.data["datasetID"],
+        documentList: action.data["documentIDs"],
+        annotatedDocumentSet: action.data["annotatedDocumentIDs"],
+        currDoc: action.data["documentIDs"][0],
       };
     case LOADDOC_SUCCESS:
       return {
         ...state,
         words: action.data["sentences"],
         labels: action.data["labels"],
+        default_labels: action.data["default_labels"],
+        space_markers: action.data["space_markers"],
         labelset: action.data["labelset"],
         path: action.data["path"],
         isAnnotated: action.data["isAnnotated"],
+        suggestions: action.data["suggestions"],
+        wordsColor: "black",
+      };
+    case SAVEDOC_SUCCESS:
+      return {
+        ...state,
+        annotatedDocumentSet: [...state.annotatedDocumentSet, action.docid],
+      };
+    case SETCURRDOC:
+      console.log(action);
+      return {
+        ...state,
+        currDoc: action.docId,
+      };
+    case CLEARDOC:
+      return {
+        ...state,
+        wordsColor: "silver",
       };
     case SETLABELS:
       return {

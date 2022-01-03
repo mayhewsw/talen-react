@@ -1,15 +1,18 @@
 import React from "react";
-import Token from "./Token";
+import { Token } from "./Token";
 import { Badge } from "react-bootstrap";
 
 class Sentence extends React.Component<SentProps, State> {
   constructor(props: any) {
     super(props);
 
+    // FIXME: why does the Sentence have it's own state??
     this.state = {
       color: "white",
       words: [[]],
       labels: [[]],
+      default_labels: [[]],
+      space_markers: [[]],
       path: "",
       mouseIsDown: false,
       selected_range: [-1, -1],
@@ -117,12 +120,19 @@ class Sentence extends React.Component<SentProps, State> {
           <Token
             key={index}
             form={tok}
+            space_after={this.props.space_markers[index]}
             label={this.props.labels[index]}
+            default_label={this.props.default_labels[index]}
             labelset={this.props.labelset}
             next_token_is_entity={
               index === this.props.sent.length - 1
                 ? false
                 : this.props.labels[index + 1][0] === "I"
+            }
+            next_token_is_default_entity={
+              index === this.props.sent.length - 1
+                ? false
+                : this.props.default_labels[index + 1][0] === "I"
             }
             selected={this.selected_keyword(index)}
             mousedown={() => this.tokenDown(index)}
@@ -147,6 +157,8 @@ type State = {
   color: string;
   words: Array<Array<string>>;
   labels: Array<Array<string>>;
+  default_labels: Array<Array<string>>;
+  space_markers: Array<Array<boolean>>;
   path: string;
   selected_range: Array<number>;
   mouseIsDown: boolean;
@@ -160,6 +172,8 @@ type SentProps = {
   index: number;
   sent: string[];
   labels: string[];
+  default_labels: string[];
+  space_markers: boolean[];
   labelset: { [key: string]: string };
   setFocus: any;
   isActive: boolean;

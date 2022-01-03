@@ -2,6 +2,7 @@ import { authHeader } from "../_helpers";
 
 export const dataService = {
   getDatasets,
+  getDatasetStats,
   saveDocument,
   loadDocument,
   getDocuments,
@@ -17,6 +18,22 @@ function getDatasets() {
     .then(handleResponse)
     .then((data) => {
       return data;
+    });
+}
+
+function getDatasetStats(dataset) {
+  const requestOptions = {
+    method: "GET",
+    headers: authHeader(),
+  };
+
+  return fetch(
+    `${process.env.REACT_APP_URL}/datasetstats?dataset=${dataset}`,
+    requestOptions
+  )
+    .then(handleResponse)
+    .then((stats) => {
+      return stats;
     });
 }
 

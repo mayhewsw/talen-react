@@ -10,15 +10,21 @@ export interface AuthState {
 }
 
 export interface DataState {
-  items: any[];
-  prevDoc?: any;
-  nextDoc?: any;
-  status?: string;
+  datasetName: string;
+  currDoc: string;
+  documentList: string[];
+  annotatedDocumentSet: string[];
   words: string[][];
   labels: string[][];
+  space_markers: boolean[][];
+  default_labels: string[][];
   labelset: any;
   path: string;
   isAnnotated: boolean;
+  suggestions: any[];
+  datasetIDs: string[];
+  wordsColor: string;
+  datasetStats: any[];
 }
 
 export interface UtilState {
@@ -41,7 +47,6 @@ export interface State {
 }
 
 export const LOAD_DOCUMENT = "LOAD_DOCUMENT";
-export const SAVE_DOCUMENT = "SAVE_DOCUMENT";
 export const CHANGE_FORM = "CHANGE_FORM";
 export const SET_AUTH = "SET_AUTH";
 export const SENDING_REQUEST = "SENDING_REQUEST";
@@ -63,7 +68,9 @@ export const GETALL_SUCCESS = "DATA_GETALL_SUCCESS";
 export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
 export const GETDATASETS_SUCCESS = "GETDATASETS_SUCCESS";
 export const GETDOCS_SUCCESS = "GETDOCS_SUCCESS";
+export const SETCURRDOC = "SETCURRDOC";
 export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
+export const CLEARDOC = "CLEARDOC";
 export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
 export const LOADSTATUS = "LOADSTATUS";
 export const SETLABELS = "SETLABELS";
@@ -81,8 +88,9 @@ interface LoadDocumentAction {
   docid: string;
   dataset: string;
 }
+
 interface SaveDocumentAction {
-  type: typeof SAVE_DOCUMENT;
+  type: typeof SAVEDOC_SUCCESS;
   docid: string;
   dataset: string;
 }
@@ -106,12 +114,19 @@ interface ClearAction {
 
 interface GetDatasetsAction {
   type: typeof GETDATASETS_SUCCESS;
-  data: any[];
+  data: {
+    datasetIDs: string[];
+    datasetStats: any[];
+  };
 }
 
 interface GetDocsAction {
   type: typeof GETDOCS_SUCCESS;
-  data: any[];
+  data: {
+    documentIDs: string[];
+    annotatedDocumentIDs: [];
+    datasetID: string;
+  };
 }
 
 interface RegisterRequestAction {
@@ -140,10 +155,22 @@ interface LoadDocsAction {
   data: {
     sentences: string[][];
     labels: string[][];
+    default_labels: string[][];
+    space_markers: boolean[][];
     path: string;
     isAnnotated: boolean;
     labelset: any;
+    suggestions: any[];
   };
+}
+
+interface SetCurrDocAction {
+  type: typeof SETCURRDOC;
+  docId: string;
+}
+
+interface ClearDocAction {
+  type: typeof CLEARDOC;
 }
 
 interface SetLabelsAction {
@@ -184,7 +211,9 @@ export type DataTypes =
   | GetDocsAction
   | LoadStatusAction
   | LoadDocsAction
-  | SetLabelsAction;
+  | SetLabelsAction
+  | ClearDocAction
+  | SetCurrDocAction;
 export type UtilTypes = ChangeFormAction;
 export type MessageTypes = SuccessAction | ErrorAction | ClearAction;
 export type DocumentTypes =

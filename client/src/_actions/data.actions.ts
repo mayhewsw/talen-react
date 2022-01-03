@@ -6,6 +6,8 @@ import {
   SETLABELS,
   SAVEDOC_SUCCESS,
   MessageTypes,
+  SETCURRDOC,
+  CLEARDOC,
 } from "../_utils/types";
 
 import { dataService } from "../_services";
@@ -20,6 +22,8 @@ export const dataActions = {
   getDocuments,
   loadStatus,
   setLabels,
+  clearDocument,
+  setCurrDocument,
 };
 
 function redirectToLogin(dispatch: Dispatch<MessageTypes>, error_text: string) {
@@ -86,10 +90,20 @@ function getDocuments(dataset: string) {
   }
 }
 
+function setCurrDocument(docId: string) {
+  return { type: SETCURRDOC, docId };
+}
+
 function setLabels(newLabels: any[]) {
   return {
     type: SETLABELS,
     newLabels,
+  };
+}
+
+function clearDocument() {
+  return {
+    type: CLEARDOC,
   };
 }
 
@@ -111,10 +125,12 @@ function loadDocument(dataset: string, docid: string) {
 }
 
 function saveDocument(data: any) {
+  const docid = data["docid"];
+  const datasetid = data["datasetid"];
   return (dispatch: Dispatch<any>) => {
     dataService.saveDocument(data).then(
-      (data: any) => {
-        dispatch(success(data));
+      (status: string) => {
+        dispatch(success(status, datasetid, docid));
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
@@ -122,7 +138,7 @@ function saveDocument(data: any) {
     );
   };
 
-  function success(data: any) {
-    return { type: SAVEDOC_SUCCESS, data };
+  function success(status: any, datasetid: string, docid: string) {
+    return { type: SAVEDOC_SUCCESS, datasetid, docid };
   }
 }

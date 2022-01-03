@@ -28,7 +28,6 @@ $ cd server
 $ python -m venv cool-environment-name  # virtual env optional but strongly recommended
 $ source cool-environment-name/bin/activate
 $ pip install -r requirements.txt
-$ python init_db.py   # this creates the user database
 cd ..
 ```
 
@@ -44,7 +43,7 @@ $ cd ..
 
 ```bash
 $ cd server
-$ python app.py
+$ export ENV=dev && python app.py
 ```
 
 This will default to port 8080, but you can change this by setting the `$PORT` variable.
@@ -65,7 +64,7 @@ $ npm run build
 ```
 
 This will create a folder called `client/build` containing static files.
-Then, with the backend server running, visit, `localhost:8080/index.html`.
+Then, with the backend server running, visit, `localhost:8080/`.
 
 ## Data
 
@@ -86,39 +85,26 @@ labelset from `config/base.yml`.
 
 One of the motivators for writing this software was to annotate Universal Dependencies with NER tags.
 
-To get going with annotation, do the following:
-
-```bash
-$ cd server
-$ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
-$ python scripts/conllu_to_docs.py UD_English-EWT/en_ewt-ud-train.conllu data/en_ewt-ud-train/
-```
-
-Create `UD_English.yml`:
-
-```
-name: UD_English-EWT-train
-path: data/en_ewt-ud-train
-reader: ud_reader.UDReader
-```
-
-And get going!
-
-
+To get going with annotation, see [this file](server/README.md).
 
 ## Dockerization
 
 To build:
 ```
-$ docker build -f Dockerfile -t sample:prod . 
+$ ./run_docker.sh build
 ```
 
 To run:
 ```
-$ docker run -it --rm -e "PORT=8080" -p 1337:8080 sample:prod
+$ ./run_docker.sh run
 ```
 
-Then visit `http://localhost:1337/index.html` in a browser.
+Then visit `http://localhost:1337` in a browser.
+
+## Managing users
+
+When running the app locally, it will add a default user with username "a" and password "a". When running in production,
+use the [`manage_users.py`](server/scripts/manage_users.py) script to add, update, or delete users.
 
 ## Citation
 
