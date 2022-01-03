@@ -120,13 +120,6 @@ class Token extends React.Component<TokProps> {
       display_default ? "default-label" : "label",
     ];
 
-    // truth table for the above double ternary:
-    // label, default_label
-    // O O -> null
-    // O PER -> default_label
-    // PER O -> label
-    // PER PER -> label
-
     if (display_default) {
       if (
         !this.props.next_token_is_default_entity &&

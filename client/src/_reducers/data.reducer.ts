@@ -70,7 +70,6 @@ export function data(
         annotatedDocumentSet: [...state.annotatedDocumentSet, action.docid],
       };
     case SETCURRDOC:
-      console.log(action);
       return {
         ...state,
         currDoc: action.docId,
