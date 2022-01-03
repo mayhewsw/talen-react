@@ -171,8 +171,9 @@ class Annotate extends React.Component<MatchProps, State> {
     this.props.loadDocument(dataset, docId);
   }
 
-  // FIXME: this can probably be removed
-  buttonPush(dataset: string, newDoc: string) {
+  // This function determines if the given document has any unsaved labels.
+  // TODO: use this in the proper context
+  currentDocHasUnsavedLabels(): boolean {
     const labels = this.props.data.labels;
     let hasLabel = false;
     for (let i = 0; i < labels.length; i++) {
@@ -186,23 +187,10 @@ class Annotate extends React.Component<MatchProps, State> {
       }
     }
 
-    let confirmed = true;
-    if (hasLabel && !this.state.isSaved) {
-      confirmed = window.confirm(
-        "There are unsaved labels! Press OK to discard labels, and cancel to stay on this page."
-      );
-    }
-
-    if (confirmed) {
-      this.props.clearDocument();
-      var url = `/dataset/${dataset}/${newDoc}`;
-      this.loadAll(dataset, newDoc);
-      history.push(process.env.PUBLIC_URL + url);
-    }
+    return hasLabel && !this.state.isSaved;
   }
 
   mergeDefaultAnnotations() {
-    // FIXME: this will overwrite labels! Probably should check with user first...
     const df = this.props.data.default_labels;
     const mine = this.props.data.labels;
     const merged = mine.map((sent: string[], sent_index: number) => {
@@ -212,19 +200,12 @@ class Annotate extends React.Component<MatchProps, State> {
         return new_label;
       });
     });
-    console.log(merged);
-    console.log("mergin");
     this.props.setLabels(merged);
     this.setState({ isSaved: false });
   }
 
   render() {
     const { data, docid } = this.props;
-
-    // TODO: consider adding nextdoc, prevdoc back in.
-    // const doc_index = data.documentList.indexOf(docid);
-    // const nextDoc = data.documentList[doc_index + 1];
-    // const prevDoc = data.documentList[doc_index - 1];
 
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.

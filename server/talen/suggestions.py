@@ -1,3 +1,6 @@
+# This was created a while ago in an attempt to make annotation omre efficient.
+# I haven't worked to make it fully fit in, so it's vestigial at this point.
+
 import os
 import threading
 from collections import defaultdict

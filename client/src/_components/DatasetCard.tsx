@@ -10,7 +10,6 @@ class DatasetCard extends React.Component<Props> {
             this.props.datasetStats.numFiles
         )
       : 0;
-    console.log(this.props);
     return (
       <Card style={{ width: "18rem" }} className="m-2">
         <Card.Body>
