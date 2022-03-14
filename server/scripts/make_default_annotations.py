@@ -1,4 +1,9 @@
 # this will read all documents from mongo, annotate the doc, and write back again.
+# In order to use it, you will need to install spacy and a spacy model
+#
+# $ pip install spacy
+# $ python -m spacy download en_core_web_md
+#
 
 from typing import List
 from conllu import parse_incr
@@ -45,7 +50,6 @@ def make_default_annotations(dataset_name: str, environment: str) -> None:
     mongo_dal = MongoDAL(config.mongo_url)
     
     # consider using en_core_web_trf for better accuracy
-    # python -m spacy download en_core_web_md
     nlp = spacy.load("en_core_web_md", exclude=["tokenizer", "tagger", "parser", "lemmatizer"])
 
     document_list = mongo_dal.get_document_list(dataset_name)
@@ -91,7 +95,7 @@ def make_default_annotations(dataset_name: str, environment: str) -> None:
 if __name__ == "__main__":
      
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset-name", help="This is often the name of the file without the .conllu ending", type=str)
+    parser.add_argument("--dataset-name", help="This is often the name of the file without the .conllu ending", required=True, type=str)
     parser.add_argument("--environment", help="Which environment to use", choices=["dev", "test", "prod"], default="dev")
 
     args = parser.parse_args()
