@@ -18,7 +18,7 @@ class HomePage extends React.Component<MatchProps> {
       <MainPanel>
         <div className="col-md-12">
           <Jumbotron>
-            <h1>Hello, {user.username}!</h1>
+            <h1>Hello, {user.username}! Welcome!</h1>
             <p>
               Welcome to TALEN. Choose a dataset below to get started
               annotating!
