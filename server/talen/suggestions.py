@@ -7,7 +7,7 @@ from collections import defaultdict
 from typing import Dict, List
 
 from logger import get_logger
-from util import getPhrases
+from util import get_phrases
 from views import get_reader
 
 from config import Config
@@ -94,7 +94,7 @@ class RuleSuggestionEngine(SuggestionEngine):
             for sent, sent_labels in zip(doc["sentences"], doc["labels"]):
                 if set(sent_labels) == {"O"}:
                     continue
-                phrases = getPhrases(sent, sent_labels)
+                phrases = get_phrases(sent, sent_labels)
                 for phrase in phrases:
                     word, _, tag = phrase
                     if word not in new_tag_rules:

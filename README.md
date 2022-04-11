@@ -106,6 +106,10 @@ Then visit `http://localhost:1337` in a browser.
 When running the app locally, it will add a default user with username "a" and password "a". When running in production,
 use the [`manage_users.py`](server/scripts/manage_users.py) script to add, update, or delete users.
 
+## Deploying to Google Cloud
+
+The repo has an Action defined in [/.github/workflows/cloud-run.yml]() that deploys to Google Cloud Run when merging to master. Notice that `MONGO_USERNAME` and `MONGO_PASSWORD` variables are stored as secrets in Google Cloud.
+
 ## Citation
 
 If you use this in your research paper, please cite us!

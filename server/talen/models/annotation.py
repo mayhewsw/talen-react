@@ -14,7 +14,7 @@ class Annotation:
     end_span: int = attrib()
 
     def _make_id(self):
-        return f"{self.dataset_id}_{self.doc_id}_{self.start_span}-{self.end_span}"
+        return f"{self.user_id}_{self.dataset_id}_{self.doc_id}_{self.start_span}-{self.end_span}"
 
     def serialize(self) -> Dict[any, any]:
         d = asdict(self)

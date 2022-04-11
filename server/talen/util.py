@@ -2,7 +2,7 @@ from typing import Dict, List
 from talen.models.document import Document
 from talen.models.annotation import Annotation
 
-def getPhrases(sent, labels):
+def get_phrases(sent, labels):
     phrases = []
     i = 0
     phrase = None
@@ -83,7 +83,6 @@ def get_annotations_from_client(original_doc: Document, client_doc: Dict[any, an
     TODO: make the client understand Document/Annotation model
     """
     annotations: List[Annotation] = []
-
 
     for sent_index, label_list in enumerate(client_doc["labels"]):
         # sentence is a list of words
