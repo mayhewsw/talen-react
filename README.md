@@ -4,6 +4,7 @@ This is a rewrite of [TALEN: a Tool for Annotation of Low-resource ENtities](htt
 
 This software was designed for annotating Named Entity Recognition (NER), but can be used for any token-level sequence annotation task.
 
+
 Check out a demo here: [mayhewsw.github.io/talen-react/](https://mayhewsw.github.io/talen-react/), or see a brief walkthrough of annotation [here](https://www.youtube.com/watch?v=LKj4b6m1hoo).
 
 ![Screenshot of web interface](/talen-screenshot.png?raw=true "Screenshot")
@@ -20,6 +21,13 @@ Check out a demo here: [mayhewsw.github.io/talen-react/](https://mayhewsw.github
 The code is separated into two folders: `client/`, which holds the frontend, and `server/`, which holds the backend.
 Each folder has it's own README file, with more details (probably too many).
 Installation and running will be done separately for each folder.
+
+To install MongoDB:
+
+```bash 
+$ brew update
+$ brew install mongodb
+```
 
 To install the backend:
 
@@ -40,6 +48,17 @@ $ cd ..
 ```
 
 ### Running
+
+First, make sure that MongoDB is running locally.
+
+```bash
+$ bash start_mongo.sh
+$ cd server
+$ python -m scripts.mongo_stats -e dev   # check that it worked.
+```
+
+You can also check this with `check_mongo.sh`, and stop it with `stop_mongo.sh`. (These commands assume that you 
+are on a Mac, and have Homebrew installed. Instructions will be different on Windows and Linux).
 
 ```bash
 $ cd server
@@ -68,7 +87,9 @@ Then, with the backend server running, visit, `localhost:8080/`.
 
 ## Data
 
-This repo contains some example datasets in `server/data/`, as well as corresponding dataset config files in `config/datasets/`.
+The primary method for storing data is in MongoDB.
+
+This repo also contains some example datasets in `server/data/`, as well as corresponding dataset config files in `config/datasets/`.
 
 ### Config Files
 
@@ -96,6 +117,7 @@ $ ./run_docker.sh build
 
 To run:
 ```
+$ export ENV=prod   # currently, you have to run on prod
 $ ./run_docker.sh run
 ```
 
@@ -105,6 +127,13 @@ Then visit `http://localhost:1337` in a browser.
 
 When running the app locally, it will add a default user with username "a" and password "a". When running in production,
 use the [`manage_users.py`](server/scripts/manage_users.py) script to add, update, or delete users.
+
+## Getting Interannotator Agreement
+
+Run:
+```
+$ python -m scripts.get_interannotator_agreement
+```
 
 ## Deploying to Google Cloud
 

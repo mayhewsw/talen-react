@@ -55,4 +55,10 @@ if __name__ == "__main__":
         user.set_password("a")
         app.mongo_dal.add_user(user)
 
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    # This only happens at development time
+    if app.mongo_dal.check_user("b", "b") == LoginStatus.USER_NOT_FOUND:
+        user = User("b", "user@user.com", None, True, False)
+        user.set_password("b")
+        app.mongo_dal.add_user(user)
+
+    app.run(debug=False, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

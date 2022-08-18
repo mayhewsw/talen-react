@@ -251,14 +251,14 @@ class Annotate extends React.Component<MatchProps, State> {
                   label="Propagate annotations?"
                   className="pl-3 pr-3"
                 />
-                <Button
+                {/* <Button
                   variant="outline-primary"
                   onClick={this.mergeDefaultAnnotations}
                 >
                   <>
                     <IoMdCopy /> Merge default annotations
                   </>
-                </Button>
+                </Button> */}
               </Form>
             </Col>
           </Row>

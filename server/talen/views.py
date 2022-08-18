@@ -107,7 +107,8 @@ def loaddoc():
         "O": "transparent",
         "PER": "#EADA48",
         "ORG": "#37C4E3",
-        "LOC": "#4AC300"
+        "LOC": "#4AC300",
+        "OTH": "#dc9e8c"
     }
 
     return jsonify(client_doc)

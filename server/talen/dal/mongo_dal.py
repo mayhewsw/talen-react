@@ -81,7 +81,7 @@ class MongoDAL():
         update an existing one if it does.
         """
         serialized_annotation = annotation.serialize()
-        self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
+        return self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
 
     def add_annotations(self, annotations: List[Annotation]) -> None:
         """
@@ -92,7 +92,9 @@ class MongoDAL():
             self.add_annotation(annotation)
 
     def delete_annotation(self, annotation: Annotation) -> None:
-        self.annotations.delete_one(annotation.serialize())    
+        serialized_annotation = annotation.serialize()
+        print(serialized_annotation)
+        return self.annotations.delete_one({"_id": serialized_annotation["_id"]})
 
     def get_annotations(self, dataset_id: str, doc_id: str, user_id: str) -> List[Annotation]:
         return [Annotation.deserialize(a) for a in self.annotations.find({"dataset_id": dataset_id, "doc_id": doc_id, "user_id" : user_id})]
@@ -102,6 +104,9 @@ class MongoDAL():
 
     def delete_annotations(self, dataset_id: str, doc_id: str, user_id: str) -> List[Annotation]:
         return self.annotations.delete_many({"dataset_id": dataset_id, "doc_id": doc_id, "user_id" : user_id})
+
+    def delete_user_annotations(self, dataset_id: str, user_id: str) -> List[Annotation]:
+        return self.annotations.delete_many({"dataset_id": dataset_id, "user_id": user_id})
 
     def get_annotated_doc_ids(self, dataset_id: str, user_id: str) -> List[str]:
         return self.annotations.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
