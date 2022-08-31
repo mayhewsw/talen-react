@@ -3,12 +3,7 @@ import { cloneDeep } from "lodash";
 import { Button, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
 import { withRouter } from "react-router-dom";
-import { history } from "../_helpers";
-import {
-  IoIosSave,
-  IoMdCheckmarkCircleOutline,
-  IoMdCopy,
-} from "react-icons/io";
+import { IoIosSave, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
@@ -93,9 +88,22 @@ class Annotate extends React.Component<MatchProps, State> {
       var phrase_start = tuple[1];
       var phrase_end = tuple[2];
 
+      var current_labels = this.props.data.labels[phrase_sent].slice(
+        phrase_start,
+        phrase_end + 1
+      );
+      var next_label = this.props.data.labels[phrase_sent][phrase_end + 1];
+
       // don't update something in the middle of an annotated entity
+      if (current_labels[0][0] === "I" && label !== "O") {
+        return;
+      }
+
+      // don't update something that is the prefix of an annotated entity
       if (
-        this.props.data.labels[phrase_sent][phrase_start][0] === "I" &&
+        current_labels[0][0] === "B" &&
+        next_label &&
+        next_label[0] === "I" &&
         label !== "O"
       ) {
         return;
@@ -301,7 +309,6 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   docid: string;
   uplink: string;
   setLabels: Function;
-  clearDocument: Function;
   saveDocument: Function;
   loadDocument: Function;
   loadStatus: Function;
@@ -328,7 +335,6 @@ const actionCreators = {
   loadDocument: dataActions.loadDocument,
   loadStatus: dataActions.loadStatus,
   setLabels: dataActions.setLabels,
-  clearDocument: dataActions.clearDocument,
 };
 
 const connectedAnnotate = connect(

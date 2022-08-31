@@ -23,7 +23,7 @@ const initialState: DataState = {
   datasetName: "",
   currDoc: "",
   documentList: [],
-  annotatedDocumentSet: [],
+  annotatedDocumentSet: new Set<string>(),
   datasetIDs: [],
   wordsColor: "black",
   datasetStats: [],
@@ -41,14 +41,16 @@ export function data(
         datasetStats: action.data["datasetStats"],
         documentList: [],
         datasetName: "",
-        annotatedDocumentSet: [],
+        annotatedDocumentSet: new Set<string>(),
       };
     case GETDOCS_SUCCESS:
       return {
         ...state,
         datasetName: action.data["datasetID"],
         documentList: action.data["documentIDs"],
-        annotatedDocumentSet: action.data["annotatedDocumentIDs"],
+        annotatedDocumentSet: new Set<string>(
+          action.data["annotatedDocumentIDs"]
+        ),
         currDoc: action.data["documentIDs"][0],
       };
     case LOADDOC_SUCCESS:
@@ -67,7 +69,7 @@ export function data(
     case SAVEDOC_SUCCESS:
       return {
         ...state,
-        annotatedDocumentSet: [...state.annotatedDocumentSet, action.docid],
+        annotatedDocumentSet: state.annotatedDocumentSet.add(action.docid), // does this work?
       };
     case SETCURRDOC:
       return {

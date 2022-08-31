@@ -13,7 +13,7 @@ export interface DataState {
   datasetName: string;
   currDoc: string;
   documentList: string[];
-  annotatedDocumentSet: string[];
+  annotatedDocumentSet: Set<string>;
   words: string[][];
   labels: string[][];
   space_markers: boolean[][];

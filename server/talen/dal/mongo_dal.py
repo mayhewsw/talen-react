@@ -93,7 +93,6 @@ class MongoDAL():
 
     def delete_annotation(self, annotation: Annotation) -> None:
         serialized_annotation = annotation.serialize()
-        print(serialized_annotation)
         return self.annotations.delete_one({"_id": serialized_annotation["_id"]})
 
     def get_annotations(self, dataset_id: str, doc_id: str, user_id: str) -> List[Annotation]:

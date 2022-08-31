@@ -2,7 +2,7 @@ from typing import List
 
 from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
-from talen.models.annotation import Annotation
+from talen.models.annotation import Annotation, Token
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 
@@ -140,7 +140,9 @@ def savedoc():
         mongo_dal.add_annotation(annotation) 
 
     # we also add a dummy annotation that marks that the document has been annotated!
-    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", original_doc.sentences[0][0:1], 0,1)
+    #original_doc.sentences[0][0:1]
+    dummy_token = Token(client_doc["docid"], "dummy", -1, False)
+    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", [dummy_token], -1,0)
     mongo_dal.add_annotation(dummy_annotation)
 
     return jsonify(200)

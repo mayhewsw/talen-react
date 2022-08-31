@@ -32,7 +32,7 @@ class DocumentList extends React.Component<Props> {
     const { currDoc } = data;
 
     const progress = Math.floor(
-      (100 * data.annotatedDocumentSet.length) / data.documentList.length
+      (100 * data.annotatedDocumentSet.size) / data.documentList.length
     );
 
     return (
@@ -45,7 +45,7 @@ class DocumentList extends React.Component<Props> {
               <h2 className="dataset-title">{data.datasetName}</h2>
               <p>
                 There are {data.documentList.length} documents. Of these,{" "}
-                {data.annotatedDocumentSet.length} have been annotated (marked
+                {data.annotatedDocumentSet.size} have been annotated (marked
                 with <IoMdCheckmarkCircleOutline />
                 ).
               </p>
@@ -78,14 +78,14 @@ class DocumentList extends React.Component<Props> {
                   </Badge>
                   <span
                     className={
-                      data.annotatedDocumentSet.indexOf(id) > -1
+                      data.annotatedDocumentSet.has(id)
                         ? "document-list-item-id document-list-item-id-annotated"
                         : "document-list-item-id"
                     }
                   >
                     {id}
                   </span>
-                  {data.annotatedDocumentSet.indexOf(id) > -1 && (
+                  {data.annotatedDocumentSet.has(id) && (
                     <IoMdCheckmarkCircleOutline className="check-mark" />
                   )}
                 </span>
