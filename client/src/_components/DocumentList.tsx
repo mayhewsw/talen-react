@@ -34,11 +34,14 @@ class DocumentList extends React.Component<Props> {
 
     if (e.key === "ArrowDown" && currDocIndex + 1 < data.documentList.length) {
       var nextid = data.documentList[currDocIndex + 1];
+      console.log(data.currDoc, nextid);
+
       this.props.clearDocument();
       this.props.setCurrDocument(nextid);
     }
     if (e.key === "ArrowUp" && currDocIndex > 0) {
       var previd = data.documentList[currDocIndex - 1];
+      console.log(data.currDoc, previd);
       this.props.clearDocument();
       this.props.setCurrDocument(previd);
     }

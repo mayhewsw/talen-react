@@ -215,8 +215,6 @@ class Annotate extends React.Component<MatchProps, State> {
   render() {
     const { data, docid } = this.props;
 
-    console.log(data.labels);
-
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
     // if mouse enters a token AND mouse down AND range is consecutive: add to range
