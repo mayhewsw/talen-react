@@ -92,16 +92,16 @@ def get_annotations_from_client(original_doc: Document, client_doc: Dict[any, an
         tag = None
 
         for token_index, label in enumerate(label_list):
-            if label.startswith("B-"):
-                start_span = token_index
-                inside_entity = True                
-                tag = label.split("-")[-1]
-            if inside_entity and label == "O":
-                # create an annotation if we 
+            if inside_entity and (label == "O" or label.startswith("B")):
                 end_span = token_index
                 annotation = Annotation(client_doc["dataset"], client_doc["docid"], sent_index, username, tag, original_doc.sentences[sent_index][start_span:end_span], start_span, end_span)
                 annotations.append(annotation)
                 inside_entity = False
+            
+            if label.startswith("B-"):
+                start_span = token_index
+                inside_entity = True                
+                tag = label.split("-")[-1]
 
         if inside_entity:
             end_span = len(label_list)

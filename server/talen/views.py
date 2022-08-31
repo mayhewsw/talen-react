@@ -126,8 +126,7 @@ def savedoc():
         "dataset": json_payload["dataset"],
         "isAnnotated": True,
     }
-    LOG.info("Have received doc!")
-
+    print(client_doc["labels"])
     mongo_dal: MongoDAL = current_app.mongo_dal
 
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])

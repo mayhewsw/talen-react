@@ -41,6 +41,16 @@ def user():
     return user
 
 @pytest.fixture
+def initial_annotation() -> Annotation:
+    doc_name = "doc1"
+    document = make_document(doc_name)
+    sent_id = 0
+    start_span = 0
+    end_span = 1
+    label = "LOCATION"
+    return Annotation("dataset1", doc_name, sent_id, "coolUser", label, document.sentences[sent_id][start_span:end_span], start_span, end_span)
+
+@pytest.fixture
 def annotation() -> Annotation:
     doc_name = "doc1"
     document = make_document(doc_name)

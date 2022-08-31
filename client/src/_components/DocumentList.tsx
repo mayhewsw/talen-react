@@ -9,7 +9,14 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 // This shows you all the documents in a given dataset.
 
 class DocumentList extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props);
+    // Bind these functions so the s-key save shortcut works
+    this.handleKey = this.handleKey.bind(this);
+  }
+
   componentDidMount() {
+    document.addEventListener("keydown", this.handleKey);
     const { dataset_id, data } = this.props;
     if (data.documentList.length === 0) {
       this.props.getDocuments(dataset_id);
@@ -20,10 +27,30 @@ class DocumentList extends React.Component<Props> {
     }
   }
 
+  handleKey(e: any) {
+    const { data } = this.props;
+
+    var currDocIndex = data.documentList.indexOf(data.currDoc);
+
+    if (e.key === "ArrowDown" && currDocIndex + 1 < data.documentList.length) {
+      var nextid = data.documentList[currDocIndex + 1];
+      this.props.clearDocument();
+      this.props.setCurrDocument(nextid);
+    }
+    if (e.key === "ArrowUp" && currDocIndex > 0) {
+      var previd = data.documentList[currDocIndex - 1];
+      this.props.clearDocument();
+      this.props.setCurrDocument(previd);
+    }
+  }
+
   handleDocumentClick(id: string) {
     // color all words grey in case it takes a second to load the doc
-    this.props.clearDocument();
-    this.props.setCurrDocument(id);
+    // but only if we aren't clicking on the current document
+    if (this.props.data.currDoc !== id) {
+      this.props.clearDocument();
+      this.props.setCurrDocument(id);
+    }
   }
 
   render() {

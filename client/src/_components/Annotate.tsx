@@ -159,9 +159,9 @@ class Annotate extends React.Component<MatchProps, State> {
       this.sendLabels();
     }
 
-    if (e.key === "m") {
-      this.mergeDefaultAnnotations();
-    }
+    // if (e.key === "m") {
+    //   this.mergeDefaultAnnotations();
+    // }
 
     if (e.key === "0") {
       console.log("setting 0");
@@ -214,6 +214,8 @@ class Annotate extends React.Component<MatchProps, State> {
 
   render() {
     const { data, docid } = this.props;
+
+    console.log(data.labels);
 
     // logic for updating the range.
     // if mousedown on a token, that becomes start of the range.
