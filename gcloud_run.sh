@@ -1,0 +1,1 @@
+gcloud run deploy talen-react --source=. --region=us-east1
