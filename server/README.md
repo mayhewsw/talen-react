@@ -48,6 +48,15 @@ For example, if you wanted to download the English Universal Dependencies data a
 $ git clone https://github.com/UniversalDependencies/UD_English-EWT.git
 $ python -m scripts.conllu_to_mongo --input-file UD_English-EWT/en_ewt-ud-train.conllu --dataset-name en_ewt-ud-train --environment dev
 ```
+## Copying annotations
+If you want to copy annotations from the dev to the prod database, or vice versa, use the following:
+
+```
+$ cd server
+$ python -m scripts.copy_annotations --dataset-name en_ewt-ud-train --source dev --target prod --user-id stephen
+```
+
+This may be useful for annotating locally (to find bugs, or to annotate offline), and then copying to the cloud database.
 
 ## Creating Default Annotations
 
