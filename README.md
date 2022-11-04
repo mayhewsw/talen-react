@@ -152,4 +152,4 @@ If you use this in your research paper, please cite us!
 }
 ```
 
-Read the paper here: [http://cogcomp.org/papers/MayhewRo18.pdf](http://cogcomp.org/papers/MayhewRo18.pdf)
+You can read the paper here: [http://cogcomp.org/papers/MayhewRo18.pdf](http://cogcomp.org/papers/MayhewRo18.pdf)
