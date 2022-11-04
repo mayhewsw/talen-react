@@ -28,6 +28,7 @@ class Sentence extends React.Component<SentProps, State> {
 
   showPopoverFunc(index: number) {
     return (
+      !this.props.isReadOnly &&
       this.props.isActive &&
       !this.state.mouseIsDown &&
       index === this.state.selected_range[1]
@@ -178,6 +179,7 @@ type SentProps = {
   setFocus: any;
   isActive: boolean;
   set_label: any;
+  isReadOnly: boolean;
 };
 
 export default Sentence;

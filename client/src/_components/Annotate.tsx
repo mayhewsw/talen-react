@@ -54,6 +54,10 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   setLabel(label: string, first: number, last: number, sent_index: number) {
+    if (this.props.readOnly) {
+      return;
+    }
+
     this.setState({ isSaved: false });
 
     // then we switch them!
@@ -231,34 +235,39 @@ class Annotate extends React.Component<MatchProps, State> {
           <Row className="align-items-baseline">
             <Col md={12}>
               <Form className="mb-3 form-inline">
-                {this.state.isSaved && data.isAnnotated && (
-                  <Button variant="outline-success">
-                    <>
-                      <IoMdCheckmarkCircleOutline /> Saved
-                    </>
-                  </Button>
-                )}
+                {!this.props.readOnly &&
+                  this.state.isSaved &&
+                  data.isAnnotated && (
+                    <Button variant="outline-success">
+                      <>
+                        <IoMdCheckmarkCircleOutline /> Saved
+                      </>
+                    </Button>
+                  )}
 
-                {(!this.state.isSaved || !data.isAnnotated) && (
-                  <Button
-                    variant="outline-danger"
-                    onClick={() => this.sendLabels()}
-                  >
-                    <>
-                      <IoIosSave /> Save
-                    </>
-                  </Button>
+                {!this.props.readOnly &&
+                  (!this.state.isSaved || !data.isAnnotated) && (
+                    <Button
+                      variant="outline-danger"
+                      onClick={() => this.sendLabels()}
+                    >
+                      <>
+                        <IoIosSave /> Save
+                      </>
+                    </Button>
+                  )}
+                {!this.props.readOnly && (
+                  <Form.Check
+                    onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                      this.setState({ propagate: evt.target.checked })
+                    }
+                    defaultChecked={this.state.propagate}
+                    id="propagation-checkbox"
+                    type="checkbox"
+                    label="Propagate annotations?"
+                    className="pl-3 pr-3"
+                  />
                 )}
-                <Form.Check
-                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
-                    this.setState({ propagate: evt.target.checked })
-                  }
-                  defaultChecked={this.state.propagate}
-                  id="propagation-checkbox"
-                  type="checkbox"
-                  label="Propagate annotations?"
-                  className="pl-3 pr-3"
-                />
                 {/* <Button
                   variant="outline-primary"
                   onClick={this.mergeDefaultAnnotations}
@@ -291,6 +300,7 @@ class Annotate extends React.Component<MatchProps, State> {
                       set_label={(lab: string, first: number, last: number) =>
                         this.setLabel(lab, first, last, sent_index)
                       }
+                      isReadOnly={this.props.readOnly}
                     />
                   ))}
               </Card.Body>
@@ -308,6 +318,7 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   dataset: string;
   docid: string;
   uplink: string;
+  readOnly: boolean;
   setLabels: Function;
   saveDocument: Function;
   loadDocument: Function;
@@ -325,9 +336,11 @@ type State = {
 
 // TODO: fix this any...
 function mapState(state: any) {
-  const { data } = state;
+  const { data, authentication } = state;
   const docid = data.currDoc;
-  return { data, docid };
+  const readOnly = authentication.user.readOnly;
+  console.log(state);
+  return { data, docid, readOnly };
 }
 
 const actionCreators = {

@@ -28,7 +28,9 @@ export const userActions = {
 
 function login(username: string, password: string) {
   return (dispatch: any) => {
-    dispatch(request({ username: username, access_token: "?" }));
+    dispatch(
+      request({ username: username, access_token: "?", readOnly: false })
+    );
 
     userService.login(username, password).then(
       (user) => {

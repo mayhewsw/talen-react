@@ -1,6 +1,7 @@
 export interface User {
   username: string;
   access_token: string;
+  readOnly: boolean;
 }
 
 export interface AuthState {

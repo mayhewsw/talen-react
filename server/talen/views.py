@@ -5,7 +5,7 @@ from flask_jwt import current_identity, jwt_required
 from talen.models.annotation import Annotation, Token
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
-
+from talen.models.user import User
 from talen.util import get_annotations_from_client, make_client_doc
 
 LOG = get_logger()
@@ -28,10 +28,13 @@ def datasetlist():
     LOG.info(mongo_dal.url)
     dataset_ids = mongo_dal.get_dataset_list()
     dataset_stats = []
+    username = current_identity.id
+    if username == "guest":
+        username = "stephen"
     for dataset_id in dataset_ids:
         # get some stats...
         fnames = mongo_dal.get_document_list(dataset_id)
-        annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
+        annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, username)
         dataset_stats.append({
             "numFiles": len(fnames),
             "numAnnotated" : len(annotated_fnames)
@@ -49,12 +52,15 @@ def datasetlist():
 @jwt_required()
 def loaddataset():
     dataset_id = request.args.get("dataset")
+    username = current_identity.id
+    if username == "guest":
+        username = "stephen"
 
     mongo_dal: MongoDAL = current_app.mongo_dal
 
     # TODO: it's wasteful to grab the whole document, then just get the name
     fnames = mongo_dal.get_document_list(dataset_id)
-    annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
+    annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, username)
 
     dataset = {
         "documentIDs": fnames,
@@ -68,12 +74,16 @@ def loaddataset():
 @jwt_required()
 def datasetstats():
     dataset_id = request.args.get("dataset")
+    username = current_identity.id
+
+    if username == "guest":
+        username = "stephen"
 
     mongo_dal: MongoDAL = current_app.mongo_dal
 
     # TODO: it's wasteful to grab the whole document, then just get the name
     files = [d.name for d in mongo_dal.get_document_list(dataset_id)]
-    annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, current_identity.id)
+    annotated_files = mongo_dal.get_annotated_doc_ids(dataset_id, username)
 
     dataset = {
         "numDocuments": len(files),
@@ -90,6 +100,9 @@ def loaddoc():
     docid = request.args.get("docid")
     dataset = request.args.get("dataset")
     username = current_identity.id
+
+    if username == "guest":
+        username = "stephen"
 
     mongo_dal: MongoDAL = current_app.mongo_dal
 
@@ -117,6 +130,13 @@ def loaddoc():
 @bp.route("/savedoc", methods=["POST"])
 @jwt_required()
 def savedoc():
+    mongo_dal: MongoDAL = current_app.mongo_dal
+    user: User = mongo_dal.load_user(current_identity.id)
+
+    if user.readonly: 
+        # forbidden
+        return jsonify(403)
+
     json_payload = request.get_json()
     # TODO: important that the doc that comes back is the same as the doc up above
     client_doc = {
@@ -127,7 +147,7 @@ def savedoc():
         "isAnnotated": True,
     }
     print(client_doc["labels"])
-    mongo_dal: MongoDAL = current_app.mongo_dal
+    
 
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
     new_annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)

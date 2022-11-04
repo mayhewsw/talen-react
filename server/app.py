@@ -37,6 +37,7 @@ def _default_auth_response_handler(access_token, identity):
         {
             "access_token": access_token.decode("utf-8"),
             "username": identity.id,
+            "readOnly": identity.readonly,
         }
     )
 

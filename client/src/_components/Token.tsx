@@ -26,7 +26,6 @@ class Token extends React.Component<TokProps> {
 
     if (evt.button === 2) {
       // don't allow right click to open a menu
-      console.log("right click down");
       //return
     }
 
@@ -39,7 +38,6 @@ class Token extends React.Component<TokProps> {
   handleUp(evt: any) {
     if (evt.button === 2) {
       // don't allow right click to open a menu
-      console.log("right click up");
       this.props.set_label("O");
       return;
     }

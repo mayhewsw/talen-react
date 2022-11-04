@@ -13,6 +13,7 @@ class LoginPage extends React.Component<Props, State> {
     this.props.logout();
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleGuestSubmit = this.handleGuestSubmit.bind(this);
   }
 
   handleSubmit(e: any) {
@@ -22,13 +23,20 @@ class LoginPage extends React.Component<Props, State> {
     login(formState.username, formState.password);
   }
 
+  handleGuestSubmit(e: any) {
+    e.preventDefault();
+
+    const { login } = this.props;
+    login("guest", "guest");
+  }
+
   render() {
     return (
       <MainPanel hideLoginButton={true}>
-        <div className="col-md-6 col-md-offset-3">
+        <div className="col-md-4 offset-md-4">
           <h2>Login</h2>
 
-          <form name="form" onSubmit={this.handleSubmit}>
+          <form name="form">
             <Input
               name="username"
               label="Username"
@@ -42,7 +50,15 @@ class LoginPage extends React.Component<Props, State> {
               model="password"
             ></Input>
             <div className="form-group">
-              <button className="btn btn-primary">Login</button>
+              <button className="btn btn-primary" onClick={this.handleSubmit}>
+                Login
+              </button>
+              <button
+                className="btn btn-secondary ml-3"
+                onClick={this.handleGuestSubmit}
+              >
+                Login as Guest
+              </button>
               <div className="mt-3" style={{ color: "#444" }}>
                 <i>Contact the site owner for login credentials.</i>
               </div>

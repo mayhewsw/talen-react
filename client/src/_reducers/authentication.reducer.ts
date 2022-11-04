@@ -21,6 +21,7 @@ const emptyState = {
   user: {
     username: "",
     access_token: "",
+    readOnly: true,
   },
 };
 

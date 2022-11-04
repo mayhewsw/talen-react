@@ -41,7 +41,10 @@ class MainPanel extends React.Component<MatchProps> {
                   <Navbar.Collapse className="justify-content-end">
                     {this.props.userName ? (
                       <>
-                        <Navbar.Text className="px-3">{`Signed in as: ${this.props.userName}`}</Navbar.Text>
+                        <Navbar.Text className="px-3">
+                          {`Signed in as: ${this.props.userName}`}
+                          {this.props.readOnly && ` (Read-only)`}
+                        </Navbar.Text>
                         <Link to="/login">Logout</Link>
                       </>
                     ) : (
@@ -65,6 +68,7 @@ class MainPanel extends React.Component<MatchProps> {
 
 interface MatchProps extends RouteComponentProps<MatchParams> {
   userName: string;
+  readOnly: boolean;
   hideLoginButton?: boolean;
 }
 
@@ -77,6 +81,7 @@ const mapStateToProps = (state: State) => ({
   // TODO: this is not working!
   // loggedIn: state.authentication.loggedIn,
   userName: state.authentication.user.username,
+  readOnly: state.authentication.user.readOnly,
 });
 
 const mapDispatchToProps = (dispatch: Function) => ({});

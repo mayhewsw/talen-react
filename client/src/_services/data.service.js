@@ -54,8 +54,6 @@ function getDocuments(dataset) {
 }
 
 function saveDocument(data) {
-  console.log("in service");
-  console.log(data);
   const requestOptions = {
     headers: { ...authHeader(), "Content-Type": "application/json" },
     body: JSON.stringify(data),
