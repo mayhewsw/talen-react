@@ -146,20 +146,17 @@ def savedoc():
         "dataset": json_payload["dataset"],
         "isAnnotated": True,
     }
-    print(client_doc["labels"])
-    
 
+    # we have to get this because we need Token objects, and the client doesn't have enough info to create them    
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
     new_annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
 
     # simple: just delete all annotations from this document and user.
     mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], current_identity.id)
-
-    for annotation in new_annotations:
-        mongo_dal.add_annotation(annotation) 
+    mongo_dal.add_new_annotations(new_annotations)
 
     # we also add a dummy annotation that marks that the document has been annotated!
-    #original_doc.sentences[0][0:1]
+    # since we delete all annotations, we need to do this every time
     dummy_token = Token(client_doc["docid"], "dummy", -1, False)
     dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", [dummy_token], -1,0)
     mongo_dal.add_annotation(dummy_annotation)

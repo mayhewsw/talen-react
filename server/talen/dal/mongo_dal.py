@@ -83,13 +83,13 @@ class MongoDAL():
         serialized_annotation = annotation.serialize()
         return self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
 
-    def add_annotations(self, annotations: List[Annotation]) -> None:
+    def add_new_annotations(self, annotations: List[Annotation]) -> None:
         """
-        This just calls add_annotation several times. We do this because update_many 
-        doesn't work as expected.
+        This adds annotations as though they are new. It's up to the user to make sure that annotations
+        like these don't exist in the db. This will throw an exception if not!
         """
-        for annotation in annotations:
-            self.add_annotation(annotation)
+        serialized_annotations = [annotation.serialize() for annotation in annotations]
+        self.annotations.insert_many(serialized_annotations)
 
     def delete_annotation(self, annotation: Annotation) -> None:
         serialized_annotation = annotation.serialize()

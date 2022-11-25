@@ -88,8 +88,8 @@ def make_default_annotations(dataset_name: str, environment: str) -> None:
                     default_annotations.append(Annotation(dataset_name, document_name, sent_ind, DEFAULT_ANNOTATION_USERNAME, label, anno_tokens, start_span, end_span))
       
         if len(default_annotations) > 0:
-            # FIXME: will this complain if it's already happened?
-            mongo_dal.add_annotations(default_annotations)
+            for annotation in default_annotations:
+                mongo_dal.add_annotation(annotation)
 
 
 if __name__ == "__main__":

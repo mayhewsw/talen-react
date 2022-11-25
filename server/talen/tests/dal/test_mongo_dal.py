@@ -36,7 +36,7 @@ def test_get_user(mongo_dal, user):
     # this should fail b/c no user
     mongo_dal.check_user("noMan", "who_cares") == LoginStatus.USER_NOT_FOUND
     
-def test_annotation(mongo_dal: MongoDAL, annotation):
+def test_annotation(mongo_dal: MongoDAL, initial_annotation, annotation, final_span_annotation):
     mongo_dal.add_annotation(annotation)
 
     annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
@@ -50,6 +50,22 @@ def test_annotation(mongo_dal: MongoDAL, annotation):
     annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
     assert len(annotations) == 1
     assert annotations[0].label == "ORG"
+
+    # start from a clean slate
+    mongo_dal.delete_annotations("dataset1", "doc1", "coolUser")
+
+    # Test add_new_annotations
+    # Modify it back again
+    annotation.label = "PERSON"
+    input_annotations = [initial_annotation, annotation, final_span_annotation]
+    mongo_dal.add_new_annotations(input_annotations)
+    annotations = mongo_dal.get_annotations("dataset1", "doc1", "coolUser")
+    assert len(annotations) == 3
+    sorted_annotations = sorted(annotations, key=lambda a: a.start_span)
+    assert sorted_annotations[0] == initial_annotation
+    assert sorted_annotations[1] == annotation
+    assert sorted_annotations[2] == final_span_annotation
+
 
 def test_delete_annotation(mongo_dal: MongoDAL, annotation):
     mongo_dal.add_annotation(annotation)
