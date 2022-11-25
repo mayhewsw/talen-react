@@ -99,15 +99,16 @@ function handleResponse(response) {
   return response.text().then((text) => {
     const data = text && JSON.parse(text);
     if (!response.ok) {
+      const error_message = (data && data.message) || response.statusText;
       if (response.status === 401) {
         // auto logout if 401 response returned from api
         logout();
         // This is unsupported in Typescript?
         //location.reload(true);
+        error_message = "Username or password are incorrect.";
       }
 
-      const error = (data && data.message) || response.statusText;
-      return Promise.reject(error);
+      return Promise.reject(error_message);
     }
 
     return data;
