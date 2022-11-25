@@ -87,7 +87,6 @@ class Annotate extends React.Component<MatchProps, State> {
     var newLabels = cloneDeep(this.props.data.labels);
 
     phrase_locations.forEach((tuple) => {
-      //console.log(tuple);
       var phrase_sent = tuple[0];
       var phrase_start = tuple[1];
       var phrase_end = tuple[2];
@@ -339,7 +338,6 @@ function mapState(state: any) {
   const { data, authentication } = state;
   const docid = data.currDoc;
   const readOnly = authentication.user.readOnly;
-  console.log(state);
   return { data, docid, readOnly };
 }
 

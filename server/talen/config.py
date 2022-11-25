@@ -23,7 +23,7 @@ class Config(object):
     SECRET_KEY = os.environ.get("SECRET_KEY") or b'_5#y2L"F4Qhhh8z\n\xec]/'
     SESSION_TYPE = "filesystem"
     JWT_AUTH_URL_RULE = "/users/authenticate"
-    JWT_EXPIRATION_DELTA = timedelta(seconds=3000)  # 1 minute, for testing.
+    JWT_EXPIRATION_DELTA = timedelta(seconds=3000)  # set to 10 seconds for testing.
 
     def load_config_file(self, fname: str) -> Dict[str, str]:
         """

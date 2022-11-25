@@ -19,6 +19,12 @@ function getDatasets() {
     .then((data) => {
       return data;
     });
+  // we deliberately do NOT catch errors here because there's one more .then() in data.actions.ts.
+
+  // when there's only one function in .then(), that is the onResolved function
+  // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then
+  // the onRejected handler is automatically injected as a thrower function: (x) => { throw x; }
+  // when we reject, that is automatically thrown, and the promise chain is broken.
 }
 
 function getDatasetStats(dataset) {
@@ -84,14 +90,12 @@ function loadDocument(dataset, docid) {
 }
 
 function handleResponse(response) {
-  return response.text().then((text) => {
-    const data = text && JSON.parse(text);
-    if (!response.ok) {
-      console.log("there is error!");
-      const error = (data && data.message) || response.statusText;
-      return Promise.reject(error);
-    }
+  if (!response.ok) {
+    console.log("fetch error! status code: " + response.status);
+    return Promise.reject(response);
+  }
 
-    return data;
+  return response.text().then((text) => {
+    return text && JSON.parse(text);
   });
 }

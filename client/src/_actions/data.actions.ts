@@ -26,15 +26,15 @@ export const dataActions = {
   setCurrDocument,
 };
 
-function redirectToLogin(dispatch: Dispatch<MessageTypes>, error_text: string) {
-  // Who decides on this text? Wouldn't it be better if we used an authorization code? 401
-  if (error_text === "UNAUTHORIZED") {
+function redirectToLogin(dispatch: Dispatch<MessageTypes>, error: Response) {
+  // 401 is status code for unauthorized
+  if (error.status === 401) {
     dispatch(alertActions.error("Logged out! Redirecting to login page..."));
     setTimeout(() => {
       history.push(process.env.PUBLIC_URL + "/login");
     }, 500);
   } else {
-    dispatch(alertActions.error(error_text.toString()));
+    dispatch(alertActions.error(error.statusText));
   }
 }
 
