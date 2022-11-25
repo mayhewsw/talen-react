@@ -1,6 +1,6 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { connect } from "react-redux";
-import { ListGroup, ProgressBar } from "react-bootstrap";
+import { ListGroup, ProgressBar, Form } from "react-bootstrap";
 import { dataActions } from "../_actions";
 import { Badge } from "react-bootstrap";
 
@@ -8,9 +8,12 @@ import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 
 // This shows you all the documents in a given dataset.
 
-class DocumentList extends React.Component<Props> {
+class DocumentList extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    this.state = {
+      showOnlyAssigned: false,
+    };
     // Bind these functions so the s-key save shortcut works
     this.handleKey = this.handleKey.bind(this);
   }
@@ -62,7 +65,10 @@ class DocumentList extends React.Component<Props> {
     const { currDoc } = data;
 
     const progress = Math.floor(
-      (100 * data.annotatedDocumentSet.size) / data.documentList.length
+      (100 * data.annotatedDocumentSet.size) /
+        (this.state.showOnlyAssigned
+          ? data.assignedDocumentSet.size
+          : data.documentList.length)
     );
 
     return (
@@ -80,6 +86,22 @@ class DocumentList extends React.Component<Props> {
                 ).
               </p>
               <div className="mb-3">
+                {data &&
+                  data.assignedDocumentSet &&
+                  data.assignedDocumentSet.size > 0 && (
+                    <Form.Check
+                      onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                        this.setState({ showOnlyAssigned: evt.target.checked })
+                      }
+                      defaultChecked={this.state.showOnlyAssigned}
+                      id="assigned-checkbox"
+                      type="checkbox"
+                      label="Show only assigned?"
+                      className=""
+                    />
+                  )}
+              </div>
+              <div className="mb-3">
                 <ProgressBar
                   variant="success"
                   now={progress}
@@ -91,36 +113,40 @@ class DocumentList extends React.Component<Props> {
         <ListGroup variant="flush" className="document-list">
           {data &&
             data.documentList &&
-            data.documentList.map((id: string, index: number) => (
-              <ListGroup.Item
-                action
-                key={index}
-                onClick={() => this.handleDocumentClick(id)}
-                variant={id === currDoc ? "primary" : undefined}
-              >
-                <span className="document-list-item">
-                  <Badge
-                    className="sentence-badge"
-                    key={"badge-" + index}
-                    variant={id === currDoc ? "primary" : "light"}
+            data.documentList.map(
+              (id: string, index: number) =>
+                (!this.state.showOnlyAssigned ||
+                  data.assignedDocumentSet.has(id)) && (
+                  <ListGroup.Item
+                    action
+                    key={index}
+                    onClick={() => this.handleDocumentClick(id)}
+                    variant={id === currDoc ? "primary" : undefined}
                   >
-                    {index + 1}
-                  </Badge>
-                  <span
-                    className={
-                      data.annotatedDocumentSet.has(id)
-                        ? "document-list-item-id document-list-item-id-annotated"
-                        : "document-list-item-id"
-                    }
-                  >
-                    {id}
-                  </span>
-                  {data.annotatedDocumentSet.has(id) && (
-                    <IoMdCheckmarkCircleOutline className="check-mark" />
-                  )}
-                </span>
-              </ListGroup.Item>
-            ))}
+                    <span className="document-list-item">
+                      <Badge
+                        className="sentence-badge"
+                        key={"badge-" + index}
+                        variant={id === currDoc ? "primary" : "light"}
+                      >
+                        {index + 1}
+                      </Badge>
+                      <span
+                        className={
+                          data.annotatedDocumentSet.has(id)
+                            ? "document-list-item-id document-list-item-id-annotated"
+                            : "document-list-item-id"
+                        }
+                      >
+                        {id}
+                      </span>
+                      {data.annotatedDocumentSet.has(id) && (
+                        <IoMdCheckmarkCircleOutline className="check-mark" />
+                      )}
+                    </span>
+                  </ListGroup.Item>
+                )
+            )}
         </ListGroup>
       </div>
     );
@@ -134,6 +160,11 @@ type Props = {
   setCurrDocument: Function;
   data: any;
   dataset_id: string;
+};
+
+// TODO: move this state into the main state?
+type State = {
+  showOnlyAssigned: boolean;
 };
 
 // TODO: make this STATE
