@@ -1,6 +1,7 @@
 from typing import List
 from pymongo import MongoClient
 from talen.models.annotation import Annotation
+from talen.models.assignment import Assignment
 from talen.models.user import LoginStatus
 from talen.models.document import Document
 from talen.models.user import User
@@ -23,6 +24,7 @@ class MongoDAL():
         self.logins = db.logins
         self.datasets = db.datasets
         self.annotations = db.annotations
+        self.assignments = db.assignments
 
     def add_document(self, document: Document) -> None:
         self.datasets.insert_one(document.serialize())
@@ -35,7 +37,7 @@ class MongoDAL():
         # parse this into a document object
         return Document.deserialize(response) if response else None
 
-    def get_document_list(self, dataset_id: str) -> List[Document]:
+    def get_document_list(self, dataset_id: str) -> List[str]:
         """
         This just gets document names for a given dataset
         """
@@ -110,3 +112,18 @@ class MongoDAL():
     def get_annotated_doc_ids(self, dataset_id: str, user_id: str) -> List[str]:
         return self.annotations.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
         
+    def get_assigned_doc_ids(self, dataset_id: str, user_id: str) -> List[Assignment]:
+        return self.assignments.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
+
+    def add_assignments(self, dataset_id: str, user_id: str, doc_ids: List[str]) -> None:
+        """
+        This takes care of creating the assignment object.
+
+        Note that this will fail if assignments already exist.
+        """
+        assignments = [Assignment(dataset_id, doc_id, user_id) for doc_id in doc_ids]
+        serialized_assignments = [assignment.serialize() for assignment in assignments]
+        self.assignments.insert_many(serialized_assignments)
+
+    def delete_all_assignments(self, dataset_id: str, user_id: str) -> List[str]:
+        return self.assignments.delete_many({"dataset_id": dataset_id, "user_id" : user_id})

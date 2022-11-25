@@ -61,10 +61,12 @@ def loaddataset():
     # TODO: it's wasteful to grab the whole document, then just get the name
     fnames = mongo_dal.get_document_list(dataset_id)
     annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, username)
+    assigned_fnames = mongo_dal.get_assigned_doc_ids(dataset_id, username)
 
     dataset = {
         "documentIDs": fnames,
         "annotatedDocumentIDs": annotated_fnames,
+        "assignedDocumentIDs": assigned_fnames,
         "datasetID": dataset_id,
     }
 

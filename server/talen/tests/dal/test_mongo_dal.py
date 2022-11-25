@@ -98,3 +98,15 @@ def test_get_annotated_doc_ids(mongo_dal: MongoDAL, document, annotation):
     # make sure that a different dataset gets no docs
     annotated_doc_ids = mongo_dal.get_annotated_doc_ids("dataset1billion", "coolUser")
     assert annotated_doc_ids == []
+
+
+def test_assignment(mongo_dal: MongoDAL):
+    assignments = mongo_dal.get_assigned_doc_ids("dataset1", "coolUser")
+    assert len(assignments) == 0
+
+    assigned_doc_ids = ["doc1", "doc45", "dumbDoc", "emptyDoc", "looooooongDoc"]
+    mongo_dal.add_assignments("dataset1", "coolUser", assigned_doc_ids)
+
+    assignments = mongo_dal.get_assigned_doc_ids("dataset1", "coolUser")
+    assert sorted(assignments) == sorted(assigned_doc_ids)
+    

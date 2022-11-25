@@ -15,6 +15,7 @@ export interface DataState {
   currDoc: string;
   documentList: string[];
   annotatedDocumentSet: Set<string>;
+  assignedDocumentSet: Set<string>;
   words: string[][];
   labels: string[][];
   space_markers: boolean[][];
@@ -127,6 +128,7 @@ interface GetDocsAction {
   data: {
     documentIDs: string[];
     annotatedDocumentIDs: [];
+    assignedDocumentIDs: [];
     datasetID: string;
   };
 }

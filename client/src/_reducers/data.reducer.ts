@@ -25,6 +25,7 @@ const initialState: DataState = {
   currDoc: "",
   documentList: [],
   annotatedDocumentSet: new Set<string>(),
+  assignedDocumentSet: new Set<string>(),
   datasetIDs: [],
   wordsColor: "black",
   datasetStats: [],
@@ -43,6 +44,7 @@ export function data(
         documentList: [],
         datasetName: "",
         annotatedDocumentSet: new Set<string>(),
+        assignedDocumentSet: new Set<string>(),
       };
     case GETDOCS_SUCCESS:
       return {
@@ -51,6 +53,9 @@ export function data(
         documentList: action.data["documentIDs"],
         annotatedDocumentSet: new Set<string>(
           action.data["annotatedDocumentIDs"]
+        ),
+        assignedDocumentSet: new Set<string>(
+          action.data["assignedDocumentIDs"]
         ),
         currDoc: action.data["documentIDs"][0],
       };
