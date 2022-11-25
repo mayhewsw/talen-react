@@ -22,6 +22,7 @@ export interface DataState {
   labelset: any;
   path: string;
   isAnnotated: boolean;
+  isSaved: boolean;
   suggestions: any[];
   datasetIDs: string[];
   wordsColor: string;

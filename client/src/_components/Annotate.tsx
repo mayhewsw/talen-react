@@ -14,7 +14,7 @@ class Annotate extends React.Component<MatchProps, State> {
     // FIXME: why does this have it's own state??
     this.state = {
       activeSent: -1,
-      isSaved: true,
+      isSavedOld: true,
       propagate: true,
     };
     // Bind these functions so the s-key save shortcut works
@@ -58,7 +58,7 @@ class Annotate extends React.Component<MatchProps, State> {
       return;
     }
 
-    this.setState({ isSaved: false });
+    this.setState({ isSavedOld: false });
 
     // then we switch them!
     if (first > last) {
@@ -139,11 +139,11 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   sendLabels() {
-    if (this.state.isSaved && this.props.data.isAnnotated) {
+    if (this.props.isSaved && this.props.data.isAnnotated) {
       console.log("no need to resave...");
       return;
     }
-    this.setState({ isSaved: true });
+    this.setState({ isSavedOld: true });
     var data = {
       docid: this.props.docid,
       dataset: this.props.dataset,
@@ -198,7 +198,7 @@ class Annotate extends React.Component<MatchProps, State> {
       }
     }
 
-    return hasLabel && !this.state.isSaved;
+    return hasLabel && !this.props.isSaved;
   }
 
   mergeDefaultAnnotations() {
@@ -212,7 +212,7 @@ class Annotate extends React.Component<MatchProps, State> {
       });
     });
     this.props.setLabels(merged);
-    this.setState({ isSaved: false });
+    this.setState({ isSavedOld: false });
   }
 
   render() {
@@ -235,7 +235,7 @@ class Annotate extends React.Component<MatchProps, State> {
             <Col md={12}>
               <Form className="mb-3 form-inline">
                 {!this.props.readOnly &&
-                  this.state.isSaved &&
+                  this.props.isSaved &&
                   data.isAnnotated && (
                     <Button variant="outline-success">
                       <>
@@ -245,7 +245,7 @@ class Annotate extends React.Component<MatchProps, State> {
                   )}
 
                 {!this.props.readOnly &&
-                  (!this.state.isSaved || !data.isAnnotated) && (
+                  (!this.props.isSaved || !data.isAnnotated) && (
                     <Button
                       variant="outline-danger"
                       onClick={() => this.sendLabels()}
@@ -318,6 +318,7 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   docid: string;
   uplink: string;
   readOnly: boolean;
+  isSaved: boolean;
   setLabels: Function;
   saveDocument: Function;
   loadDocument: Function;
@@ -328,7 +329,7 @@ interface MatchParams {}
 
 // TODO: move this state into the main state?
 type State = {
-  isSaved: boolean;
+  isSavedOld: boolean;
   activeSent: number;
   propagate: boolean;
 };
@@ -338,7 +339,8 @@ function mapState(state: any) {
   const { data, authentication } = state;
   const docid = data.currDoc;
   const readOnly = authentication.user.readOnly;
-  return { data, docid, readOnly };
+  const isSaved = data.isSaved;
+  return { data, docid, readOnly, isSaved };
 }
 
 const actionCreators = {

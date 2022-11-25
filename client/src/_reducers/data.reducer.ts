@@ -19,6 +19,7 @@ const initialState: DataState = {
   labelset: [],
   path: "",
   isAnnotated: false,
+  isSaved: false,
   suggestions: [],
   datasetName: "",
   currDoc: "",
@@ -70,6 +71,7 @@ export function data(
       return {
         ...state,
         annotatedDocumentSet: state.annotatedDocumentSet.add(action.docid), // does this work?
+        isSaved: true,
       };
     case SETCURRDOC:
       return {
@@ -85,6 +87,7 @@ export function data(
       return {
         ...state,
         labels: action.newLabels,
+        isSaved: false,
       };
     default:
       return state;
