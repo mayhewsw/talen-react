@@ -64,12 +64,21 @@ class DocumentList extends React.Component<Props, State> {
 
     const { currDoc } = data;
 
-    const progress = Math.floor(
-      (100 * data.annotatedDocumentSet.size) /
-        (this.state.showOnlyAssigned
-          ? data.assignedDocumentSet.size
-          : data.documentList.length)
-    );
+    var progress;
+    if (this.state.showOnlyAssigned) {
+      const intersection = new Set(
+        Array.from(data.annotatedDocumentSet).filter((x) =>
+          data.assignedDocumentSet.has(x)
+        )
+      );
+      progress = Math.floor(
+        (100 * intersection.size) / data.assignedDocumentSet.size
+      );
+    } else {
+      progress = Math.floor(
+        (100 * data.annotatedDocumentSet.size) / data.documentList.length
+      );
+    }
 
     return (
       <div className="document-list-panel">

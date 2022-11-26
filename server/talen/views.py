@@ -153,9 +153,11 @@ def savedoc():
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
     new_annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
 
-    # simple: just delete all annotations from this document and user.
-    mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], current_identity.id)
-    mongo_dal.add_new_annotations(new_annotations)
+    if len(new_annotations) > 0:
+        # simple: just delete all annotations from this document and user.
+        mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], current_identity.id)
+        print(len(new_annotations))
+        mongo_dal.add_new_annotations(new_annotations)
 
     # we also add a dummy annotation that marks that the document has been annotated!
     # since we delete all annotations, we need to do this every time
