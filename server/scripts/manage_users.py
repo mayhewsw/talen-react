@@ -13,11 +13,8 @@ def add_user(mongo_dal: MongoDAL, user: User):
         print("User with that username already exists in the db")
 
 def update_user(mongo_dal: MongoDAL, user: User):
-    old_user = mongo_dal.load_user(user.id)
-    # TODO: finish this stub
-    # delete it?
-    # add back in the new one.
-    # seems dumb, but oh well.
+    delete_user(mongo_dal, user.id)
+    add_user(mongo_dal, user)
     
 def delete_user(mongo_dal: MongoDAL, username: str):
     user = mongo_dal.load_user(username)

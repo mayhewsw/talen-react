@@ -28,8 +28,8 @@ def write_to_mongo(path_to_udfile: str, dataset_name: str, environment: str) -> 
 if __name__ == "__main__":
      
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-file", help="This should have a .conllu ending", type=str)
-    parser.add_argument("--dataset-name", help="This is often the name of the file without the .conllu ending", type=str)
+    parser.add_argument("--input-file", help="This should have a .conllu ending", type=str, required=True)
+    parser.add_argument("--dataset-name", help="This is often the name of the file without the .conllu ending", type=str, required=True)
     parser.add_argument("--environment", help="Which environment to use", choices=["dev", "prod"], default="dev")
 
     args = parser.parse_args()
