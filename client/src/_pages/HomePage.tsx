@@ -26,7 +26,7 @@ class HomePage extends React.Component<MatchProps> {
           </Jumbotron>
           <h3>Dataset List:</h3>
           {data && data.datasetIDs && (
-            <div className="dataset-card-row d-flex justify-content-flex-start">
+            <div className="dataset-card-row d-flex justify-content-flex-start flex-wrap">
               {data.datasetIDs.map((id: string, index: number) => (
                 <DatasetCard
                   key={index}
