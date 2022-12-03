@@ -121,6 +121,16 @@ $ ./run_docker.sh run
 
 Then visit `http://localhost:1337` in a browser.
 
+## Downloading to BIO format
+
+Run:
+```
+$ python -m scripts.download_data_to_bio --environment prod --dataset-name sv_pud-ud-test
+```
+
+Replace `sv_pud-ud-test` with any dataset you choose. This will download to a single file, and only 
+needs read-only privileges on the Mongo DB.  
+
 ## Managing users
 
 When running the app locally, it will add a default user with username "a" and password "a". When running in production,

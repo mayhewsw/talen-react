@@ -1,17 +1,14 @@
+"""
+Use this file to copy anntoations from different Mongo DBs. For example, copying from dev to prod.
+"""
+
 from typing import List
 from talen.dal.mongo_dal import MongoDAL
-from talen.models.document import Document
-from talen.models.token import Token
-from talen.data_readers.ud_reader import UDReader
 from talen.config import Config
 import argparse
-from pymongo.errors import DuplicateKeyError
-import tqdm
 import sys
 
 def copy_annotations(dataset_name: str, src_environment: str, tgt_environment: str, user_id: str) -> None:
-    """
-    """
 
     src_config = Config(src_environment)
     src_mongo_dal = MongoDAL(src_config.mongo_url)

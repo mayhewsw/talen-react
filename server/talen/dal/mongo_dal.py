@@ -1,5 +1,5 @@
 from typing import List
-from pymongo import MongoClient
+from pymongo import MongoClient, TEXT
 from talen.models.annotation import Annotation
 from talen.models.assignment import Assignment
 from talen.models.user import LoginStatus
@@ -101,7 +101,16 @@ class MongoDAL():
         return [Annotation.deserialize(a) for a in self.annotations.find({"dataset_id": dataset_id, "doc_id": doc_id, "user_id" : user_id})]
 
     def get_all_annotations(self, dataset_id: str, user_id: str) -> List[Annotation]:
+        """
+        This gets all user annotations
+        """
         return [Annotation.deserialize(a) for a in self.annotations.find({"dataset_id": dataset_id, "user_id" : user_id})]
+
+    def get_all_annotations_for_dataset(self, dataset_id: str) -> List[Annotation]:
+        """
+        This doesn't separate by user
+        """
+        return [Annotation.deserialize(a) for a in self.annotations.find({"dataset_id": dataset_id})]
 
     def delete_annotations(self, dataset_id: str, doc_id: str, user_id: str) -> List[Annotation]:
         return self.annotations.delete_many({"dataset_id": dataset_id, "doc_id": doc_id, "user_id" : user_id})
@@ -111,7 +120,7 @@ class MongoDAL():
 
     def get_annotated_doc_ids(self, dataset_id: str, user_id: str) -> List[str]:
         return self.annotations.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
-        
+
     def get_assigned_doc_ids(self, dataset_id: str, user_id: str) -> List[Assignment]:
         return self.assignments.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
 
@@ -127,3 +136,10 @@ class MongoDAL():
 
     def delete_all_assignments(self, dataset_id: str, user_id: str) -> List[str]:
         return self.assignments.delete_many({"dataset_id": dataset_id, "user_id" : user_id})
+
+    def search(self, text):
+        return self.datasets.find({"$text": {"$search": text}})
+
+    def create_index(self):
+
+        self.datasets.create_index([ ("sentences.text", TEXT) ])
