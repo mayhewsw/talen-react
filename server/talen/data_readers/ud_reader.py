@@ -57,4 +57,18 @@ class UDReader:
             # Consider yielding here
             documents.append(document)
 
+        if docid == None and len(documents) == 1:
+            batch_size = 30
+            print(f"Warning: dataset doesn't specify documents, splitting into batches of {batch_size} sentences.")
+
+            all_sentences = documents[0].sentences
+            new_documents = []
+            for i in range(0, len(all_sentences), batch_size):
+                docid = f"batch-{i//batch_size:04}"
+                batch_sentences = all_sentences[i:i+batch_size]
+                document = Document(docid, dataset_name, batch_sentences)
+                new_documents.append(document)
+                
+            documents = new_documents
+
         return documents

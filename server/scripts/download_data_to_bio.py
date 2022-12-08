@@ -9,6 +9,7 @@ def download_data(dataset_id: str, environment: str) -> None:
     config = Config(environment)
     mongo_dal = MongoDAL(config.mongo_url)
     documents = mongo_dal.get_all_documents(dataset_id)
+    documents = sorted(documents, key=lambda d: d.name)
 
     if len(documents) == 0:
         datasets = mongo_dal.get_dataset_list()
@@ -66,7 +67,7 @@ def download_data(dataset_id: str, environment: str) -> None:
                 # filter to only use the most frequent document annotator
                 sent_annotations = [annotation for annotation in sent_annotations if annotation.user_id == most_frequent_doc_annotator]
                 
-                labels: List[str] = ["O"] * len(sentence)
+                labels: List[str] = [f"O\t-\t-"] * len(sentence)
                 for annotation in sent_annotations:
                     start = annotation.start_span
                     end = annotation.end_span

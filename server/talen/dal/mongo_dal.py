@@ -29,6 +29,9 @@ class MongoDAL():
     def add_document(self, document: Document) -> None:
         self.datasets.insert_one(document.serialize())
 
+    def delete_document(self, doc_id: str) -> None:
+        self.datasets.delete_one({"_id": doc_id})  
+
     def add_documents(self, documents: List[Document]) -> None:
         self.datasets.insert_many([document.serialize() for document in documents])
 
