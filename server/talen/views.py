@@ -7,6 +7,7 @@ from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 from talen.models.user import User
 from talen.util import get_annotations_from_client, make_client_doc
+from collections import defaultdict
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
@@ -21,27 +22,30 @@ def protected():
     return current_identity
 
 @bp.route("/datasetlist")
-@jwt_required()
 def datasetlist():
     LOG.info("Requesting datasets")
     mongo_dal: MongoDAL = current_app.mongo_dal
     LOG.info(mongo_dal.url)
     dataset_ids = mongo_dal.get_dataset_list()
-    dataset_stats = []
-    username = current_identity.id
-    if username == "guest":
-        username = "stephen"
+    dataset_stats = {}
+    dataset_dict = defaultdict(list)
     for dataset_id in dataset_ids:
         # get some stats...
         fnames = mongo_dal.get_document_list(dataset_id)
-        annotated_fnames = mongo_dal.get_annotated_doc_ids(dataset_id, username)
-        dataset_stats.append({
+        annotated_fnames = mongo_dal.get_all_annotated_doc_ids(dataset_id)
+        annotators = mongo_dal.get_all_annotators(dataset_id)
+        dataset_stats[dataset_id] = {
             "numFiles": len(fnames),
-            "numAnnotated" : len(annotated_fnames)
-            # TODO: include number of annotators?
-        })
+            "numAnnotated" : len(annotated_fnames),
+            "annotators" : annotators
+        }
+        # these lok like en_ewt-ud-dev. we don't care about ud and dev
+        parent_dataset, _, _ = dataset_id.split("-")
+        dataset_dict[parent_dataset].append(dataset_id)
 
+    
     response = {
+        "datasetDict": dataset_dict,
         "datasetIDs": dataset_ids,
         "datasetStats" : dataset_stats
     }

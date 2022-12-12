@@ -25,6 +25,7 @@ export interface DataState {
   isAnnotated: boolean;
   isSaved: boolean;
   suggestions: any[];
+  datasetDict: any;
   datasetIDs: string[];
   wordsColor: string;
   datasetStats: any[];
@@ -119,6 +120,7 @@ interface GetDatasetsAction {
   type: typeof GETDATASETS_SUCCESS;
   data: {
     datasetIDs: string[];
+    datasetDict: any;
     datasetStats: any[];
   };
 }

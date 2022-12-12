@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import { connect } from "react-redux";
 import { MainPanel, DatasetCard } from "../_components";
 import { dataActions } from "../_actions";
-import { Jumbotron } from "react-bootstrap";
 
 // this page shows a list of datasets. If you click on a dataset,
 // that takes you to a DatasetPage.
@@ -13,29 +12,29 @@ class HomePage extends React.Component<MatchProps> {
   }
 
   render() {
-    const { user, data } = this.props;
+    const { data } = this.props;
+
     return (
       <MainPanel>
         <div className="col-md-12">
-          <Jumbotron>
-            <h1>Hello, {user.username}! Welcome!</h1>
-            <p>
-              Welcome to TALEN. Choose a dataset below to get started
-              annotating!
-            </p>
-          </Jumbotron>
-          <h3>Dataset List:</h3>
-          {data && data.datasetIDs && (
-            <div className="dataset-card-row d-flex justify-content-flex-start flex-wrap">
-              {data.datasetIDs.map((id: string, index: number) => (
-                <DatasetCard
-                  key={index}
-                  datasetStats={data.datasetStats[index]}
-                  id={id}
-                />
-              ))}
-            </div>
-          )}
+          {data &&
+            data.datasetDict &&
+            Object.keys(data.datasetDict).map((id: string, index: number) => (
+              <div key={index}>
+                <h3>{id}</h3>
+                <div className="dataset-card-row d-flex justify-content-flex-start flex-wrap">
+                  {data.datasetDict[id]
+                    .sort()
+                    .map((split_id: string, split_index: number) => (
+                      <DatasetCard
+                        key={split_index}
+                        datasetStats={data.datasetStats[split_id]}
+                        id={split_id}
+                      />
+                    ))}
+                </div>
+              </div>
+            ))}
         </div>
       </MainPanel>
     );

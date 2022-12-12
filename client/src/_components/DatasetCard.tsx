@@ -21,6 +21,9 @@ class DatasetCard extends React.Component<Props> {
               <ul>
                 <li>Num Files: {this.props.datasetStats.numFiles}</li>
                 <li>Num Annotated: {this.props.datasetStats.numAnnotated}</li>
+                <li>
+                  Annotators: {this.props.datasetStats.annotators.join(", ")}
+                </li>
               </ul>
               <div className="mb-3">
                 <ProgressBar

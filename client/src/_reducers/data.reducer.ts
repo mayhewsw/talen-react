@@ -27,6 +27,7 @@ const initialState: DataState = {
   annotatedDocumentSet: new Set<string>(),
   assignedDocumentSet: new Set<string>(),
   datasetIDs: [],
+  datasetDict: {},
   wordsColor: "black",
   datasetStats: [],
 };
@@ -40,6 +41,7 @@ export function data(
       return {
         ...state,
         datasetIDs: action.data["datasetIDs"],
+        datasetDict: action.data["datasetDict"],
         datasetStats: action.data["datasetStats"],
         documentList: [],
         datasetName: "",
