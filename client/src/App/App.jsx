@@ -27,9 +27,9 @@ class App extends React.Component {
         )}
 
         <Switch>
-          <PrivateRoute exact path="/" component={HomePage} />
+          <Route exact path="/" component={HomePage} />
           <PrivateRoute exact path="/dataset/:id" component={NewAnnotatePage} />
-          <Route path="/login" component={LoginPage} />
+          <Route exact path="/login" component={LoginPage} />
           <Redirect from="*" to="/" />
         </Switch>
       </Router>

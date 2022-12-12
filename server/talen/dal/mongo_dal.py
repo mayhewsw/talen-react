@@ -124,6 +124,12 @@ class MongoDAL():
     def get_annotated_doc_ids(self, dataset_id: str, user_id: str) -> List[str]:
         return self.annotations.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
 
+    def get_all_annotated_doc_ids(self, dataset_id: str) -> List[str]:
+        return self.annotations.distinct("doc_id", {"dataset_id": dataset_id})
+
+    def get_all_annotators(self, dataset_id: str) -> List[str]:
+        return self.annotations.distinct("user_id", {"dataset_id": dataset_id})
+
     def get_assigned_doc_ids(self, dataset_id: str, user_id: str) -> List[Assignment]:
         return self.assignments.distinct("doc_id", {"dataset_id": dataset_id, "user_id": user_id})
 

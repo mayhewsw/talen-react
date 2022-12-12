@@ -11,7 +11,6 @@ export const dataService = {
 function getDatasets() {
   const requestOptions = {
     method: "GET",
-    headers: authHeader(),
   };
 
   return fetch(`${process.env.REACT_APP_URL}/datasetlist`, requestOptions)
