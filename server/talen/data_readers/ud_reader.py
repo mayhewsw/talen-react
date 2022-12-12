@@ -5,6 +5,7 @@ from talen.models.token import Token
 
 
 class UDReader:
+    DEFAULT_SENTS_PER_DOC = 30
 
     @staticmethod
     def read_docs(path_to_udfile: str, dataset_name: str) -> List[Document]:
@@ -58,7 +59,7 @@ class UDReader:
             documents.append(document)
 
         if docid == None and len(documents) == 1:
-            batch_size = 30
+            batch_size = UDReader.DEFAULT_SENTS_PER_DOC
             print(f"Warning: dataset doesn't specify documents, splitting into batches of {batch_size} sentences.")
 
             all_sentences = documents[0].sentences
