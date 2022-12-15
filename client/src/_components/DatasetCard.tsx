@@ -22,7 +22,7 @@ class DatasetCard extends React.Component<Props> {
                 <li>Num Files: {this.props.datasetStats.numFiles}</li>
                 <li>Num Annotated: {this.props.datasetStats.numAnnotated}</li>
                 <li>
-                  Annotators: {this.props.datasetStats.annotators.join(", ")}
+                  Num Annotators: {this.props.datasetStats.annotators.length}
                 </li>
               </ul>
               <div className="mb-3">
