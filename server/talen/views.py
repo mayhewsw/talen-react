@@ -25,28 +25,21 @@ def protected():
 def datasetlist():
     LOG.info("Requesting datasets")
     mongo_dal: MongoDAL = current_app.mongo_dal
-    LOG.info(mongo_dal.url)
-    dataset_ids = mongo_dal.get_dataset_list()
-    dataset_stats = {}
     dataset_dict = defaultdict(list)
+    dataset_stats = mongo_dal.get_stats()
+    dataset_ids = sorted(list(dataset_stats.keys()))
+
     for dataset_id in dataset_ids:
-        # get some stats...
-        fnames = mongo_dal.get_document_list(dataset_id)
-        annotated_fnames = mongo_dal.get_all_annotated_doc_ids(dataset_id)
-        annotators = mongo_dal.get_all_annotators(dataset_id)
-        dataset_stats[dataset_id] = {
-            "numFiles": len(fnames),
-            "numAnnotated" : len(annotated_fnames),
-            "annotators" : annotators
-        }
-        # these lok like en_ewt-ud-dev. we don't care about ud and dev
         parent_dataset, _, _ = dataset_id.split("-")
         dataset_dict[parent_dataset].append(dataset_id)
 
-    
     response = {
+        # dataset_dict looks like: {"en_ewt" : ["en_ewt-ud-dev", "en_ewt-ud-test"], ...}
         "datasetDict": dataset_dict,
+        # dataset_ids looks like: ["en_ewt-ud-dev", ...]
+        # why do we have this...?
         "datasetIDs": dataset_ids,
+        # dataset_stats looks like: {"en_ewt-ud-dev": {"numFiles": 9, "numAnnotated": 4, "annotators": ["a", "b"]}, ...}
         "datasetStats" : dataset_stats
     }
     return jsonify(response)
@@ -114,7 +107,7 @@ def loaddoc():
 
     document = mongo_dal.get_document(docid, dataset)
     annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, username)
-    default_annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, "default_anno")
+    default_annotations: List[Annotation] = []  #mongo_dal.get_annotations(dataset, docid, "default_anno")
 
     client_doc = make_client_doc(document, annotations, default_annotations)
     # this works because of the dummy annotation we add in savedoc()

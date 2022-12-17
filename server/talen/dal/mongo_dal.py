@@ -40,11 +40,13 @@ class MongoDAL():
         # parse this into a document object
         return Document.deserialize(response) if response else None
 
-    def get_document_list(self, dataset_id: str) -> List[str]:
+    def get_document_list(self, dataset_id: str = None) -> List[str]:
         """
         This just gets document names for a given dataset
         """
-        return sorted(self.datasets.distinct("name", {"dataset_id": dataset_id}))
+        if dataset_id:
+            return sorted(self.datasets.distinct("name", {"dataset_id": dataset_id}))
+        return sorted(self.datasets.distinct("name"))
 
     def get_all_documents(self, dataset_id: str) -> List[Document]:
         """
@@ -152,3 +154,53 @@ class MongoDAL():
     def create_index(self):
 
         self.datasets.create_index([ ("sentences.text", TEXT) ])
+
+    def get_stats(self):
+
+        res = self.datasets.aggregate( [
+            {
+                '$group': {
+                    '_id': '$dataset_id', 
+                    'numFiles': {
+                        '$count': {}
+                    }
+                }
+            }
+        ] )
+
+        out_dict = {}
+        for r in res:
+            out_dict[r["_id"]] = {
+                "numFiles": r["numFiles"],
+                # need to initialize these values
+                "numAnnotated": 0,
+                "annotators": [] 
+            }
+
+        res = self.annotations.aggregate( [
+            {
+                    '$group': {
+                        '_id': '$dataset_id', 
+                        'unique_annotated_docs': {
+                            '$addToSet': '$doc_id'
+                        }, 
+                        'unique_annotators': {
+                            '$addToSet': '$user_id'
+                        }
+                    }
+                }, {
+                    '$project': {
+                        'numAnnotated': {
+                            '$size': '$unique_annotated_docs'
+                        }, 
+                        'annotators': '$unique_annotators'
+                    }
+                }
+        ] )
+
+        for r in res:
+            out_dict[r["_id"]]["numAnnotated"] = r["numAnnotated"]
+            out_dict[r["_id"]]["annotators"] = r["annotators"]
+        
+        return out_dict
+
