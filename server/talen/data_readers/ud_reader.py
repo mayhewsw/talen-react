@@ -8,16 +8,19 @@ class UDReader:
     DEFAULT_SENTS_PER_DOC = 30
 
     @staticmethod
-    def read_docs(path_to_udfile: str, dataset_name: str) -> List[Document]:
+    def read_docs(path_to_udfile: str, dataset_name: str, ignore_docs: bool = False) -> List[Document]:
         sentences = []
         docid = None
         documents: List[Document] = []
+
+        if ignore_docs:
+            print("WARNING: ignore-docs is true!")
 
         with open(path_to_udfile, "r", encoding="utf-8") as data_file:
 
             for sentence in parse_incr(data_file):
                 md = sentence.metadata
-                if "newdoc id" in md:
+                if not ignore_docs and "newdoc id" in md:
                     # upload the last one
                     if docid is not None:
                         document = Document(docid, dataset_name, sentences)
@@ -60,7 +63,8 @@ class UDReader:
 
         if docid == None and len(documents) == 1:
             batch_size = UDReader.DEFAULT_SENTS_PER_DOC
-            print(f"Warning: dataset doesn't specify documents, splitting into batches of {batch_size} sentences.")
+            if not ignore_docs:
+                print(f"Warning: dataset doesn't specify documents, splitting into batches of {batch_size} sentences.")
 
             all_sentences = documents[0].sentences
             new_documents = []

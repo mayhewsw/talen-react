@@ -9,6 +9,8 @@ import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
 
 class Annotate extends React.Component<MatchProps, State> {
+  interval: any;
+
   constructor(props: MatchProps) {
     super(props);
     // FIXME: why does this have it's own state??
@@ -27,6 +29,12 @@ class Annotate extends React.Component<MatchProps, State> {
   componentDidMount() {
     document.addEventListener("keydown", this.handleKey);
     this.loadAll(this.props.dataset, this.props.docid);
+    // Auto-save every 10 seconds. We can change this interval if necessary.
+    this.interval = setInterval(() => this.sendLabels(), 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   componentDidUpdate(prevProps: MatchProps) {
