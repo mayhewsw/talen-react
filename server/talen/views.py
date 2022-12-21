@@ -30,7 +30,7 @@ def datasetlist():
     dataset_ids = sorted(list(dataset_stats.keys()))
 
     for dataset_id in dataset_ids:
-        parent_dataset, _, _ = dataset_id.split("-")
+        parent_dataset = dataset_id.split("-")[0]
         dataset_dict[parent_dataset].append(dataset_id)
 
     response = {
