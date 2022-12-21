@@ -287,7 +287,7 @@ class Annotate extends React.Component<MatchProps, State> {
             </Col>
           </Row>
         </div>
-        <Row className="document">
+        <Row className="document extra-bottom-pad">
           <Col md={11}>
             <Card>
               <Card.Body>
