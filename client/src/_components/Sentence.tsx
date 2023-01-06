@@ -89,9 +89,9 @@ class Sentence extends React.Component<SentProps, State> {
       return "highlightsingle";
     }
     if (i === first) {
-      return "highlightstart";
+      return this.props.direction === "ltr" ? "highlightstart" : "highlightend";
     } else if (i === last) {
-      return "highlightend";
+      return this.props.direction === "ltr" ? "highlightend" : "highlightstart";
     } else if (i > first && i < last) {
       return "highlighted";
     }
@@ -117,38 +117,40 @@ class Sentence extends React.Component<SentProps, State> {
         >
           {this.props.index}
         </Badge>
-        {this.props.sent.map((tok, index) => (
-          <Token
-            key={index}
-            form={tok}
-            space_after={this.props.space_markers[index]}
-            label={this.props.labels[index]}
-            default_label={this.props.default_labels[index]}
-            labelset={this.props.labelset}
-            next_token_is_entity={
-              index === this.props.sent.length - 1
-                ? false
-                : this.props.labels[index + 1][0] === "I"
-            }
-            next_token_is_default_entity={
-              index === this.props.sent.length - 1
-                ? false
-                : this.props.default_labels[index + 1][0] === "I"
-            }
-            selected={this.selected_keyword(index)}
-            mousedown={() => this.tokenDown(index)}
-            mouseup={() => this.tokenUp(index)}
-            show_popover={this.showPopoverFunc(index)}
-            display_phrase={highlighted_phrase}
-            set_label={(label: string) =>
-              this.props.set_label(
-                label,
-                this.state.selected_range[0],
-                this.state.selected_range[1]
-              )
-            }
-          />
-        ))}
+        <span dir={this.props.direction}>
+          {this.props.sent.map((tok, index) => (
+            <Token
+              key={index}
+              form={tok}
+              space_after={this.props.space_markers[index]}
+              label={this.props.labels[index]}
+              default_label={this.props.default_labels[index]}
+              labelset={this.props.labelset}
+              next_token_is_entity={
+                index === this.props.sent.length - 1
+                  ? false
+                  : this.props.labels[index + 1][0] === "I"
+              }
+              next_token_is_default_entity={
+                index === this.props.sent.length - 1
+                  ? false
+                  : this.props.default_labels[index + 1][0] === "I"
+              }
+              selected={this.selected_keyword(index)}
+              mousedown={() => this.tokenDown(index)}
+              mouseup={() => this.tokenUp(index)}
+              show_popover={this.showPopoverFunc(index)}
+              display_phrase={highlighted_phrase}
+              set_label={(label: string) =>
+                this.props.set_label(
+                  label,
+                  this.state.selected_range[0],
+                  this.state.selected_range[1]
+                )
+              }
+            />
+          ))}
+        </span>
       </div>
     );
   }
@@ -180,6 +182,7 @@ type SentProps = {
   isActive: boolean;
   set_label: any;
   isReadOnly: boolean;
+  direction: string;
 };
 
 export default Sentence;

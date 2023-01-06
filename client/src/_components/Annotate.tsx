@@ -24,13 +24,33 @@ class Annotate extends React.Component<MatchProps, State> {
     this.sendLabels = this.sendLabels.bind(this);
     this.setLabel = this.setLabel.bind(this);
     this.mergeDefaultAnnotations = this.mergeDefaultAnnotations.bind(this);
+    this.saveIfLabels = this.saveIfLabels.bind(this);
   }
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKey);
     this.loadAll(this.props.dataset, this.props.docid);
     // Auto-save every 10 seconds. We can change this interval if necessary.
-    this.interval = setInterval(() => this.sendLabels(), 10000);
+    this.interval = setInterval(this.saveIfLabels, 10000);
+  }
+
+  saveIfLabels() {
+    if (this.props && this.props.data) {
+      // check if nested list is all O
+      const all_labels_O = this.props.data.labels.reduce(
+        (prev: boolean, curr: string[]) => {
+          const sentResult = curr.reduce(
+            (p: boolean, c: string) => p && c === "O",
+            true
+          );
+          return prev && sentResult;
+        },
+        true
+      );
+      if (!all_labels_O) {
+        this.sendLabels();
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -308,6 +328,9 @@ class Annotate extends React.Component<MatchProps, State> {
                         this.setLabel(lab, first, last, sent_index)
                       }
                       isReadOnly={this.props.readOnly}
+                      direction={
+                        this.props.dataset.startsWith("he") ? "rtl" : "ltr"
+                      }
                     />
                   ))}
               </Card.Body>
