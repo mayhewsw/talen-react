@@ -24,5 +24,5 @@ PyYAML==5.4.1
 sentinels==1.0.0
 six==1.16.0
 toml==0.10.2
-Werkzeug==2.0.2
+Werkzeug==2.2.3
 tqdm==4.62.3
