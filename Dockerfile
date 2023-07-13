@@ -28,6 +28,8 @@ COPY --from=build /app/build ../client/build
 
 ENV MONGO_USERNAME $MONGO_USERNAME
 ENV MONGO_PASSWORD $MONGO_PASSWORD
+ENV GITHUB_USERNAME $GITHUB_USERNAME
+ENV GITHUB_PASSWORD $GITHUB_PASSWORD
 
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
