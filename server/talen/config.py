@@ -42,6 +42,9 @@ class Config(object):
 
         config_data = self.load_config_file(CONFIG_BASE_FILE)
 
+        self.github_username = os.environ.get("GITHUB_USERNAME")
+        self.github_token = os.environ.get("GITHUB_TOKEN")
+
         if environment:
             env_config = self.load_config_file(CONFIG_BASE_FILE.replace("base", environment)) or {}
 
