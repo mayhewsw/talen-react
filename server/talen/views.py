@@ -1,13 +1,18 @@
 from typing import List
+import os
+import shutil
 
+from git import Repo
 from flask import Blueprint, current_app, jsonify, request, redirect
 from flask_jwt import current_identity, jwt_required
+from talen.dal.github_dal import GithubDAL
 from talen.models.annotation import Annotation, Token
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 from talen.models.user import User
 from talen.util import get_annotations_from_client, make_client_doc
 from collections import defaultdict
+from talen.controller.file_downloader import download_data
 
 LOG = get_logger()
 bp = Blueprint("blueprint", __name__, template_folder="templates")
@@ -130,6 +135,7 @@ def loaddoc():
 @jwt_required()
 def savedoc():
     mongo_dal: MongoDAL = current_app.mongo_dal
+    github_dal: GithubDAL = current_app.github_dal
     user: User = mongo_dal.load_user(current_identity.id)
 
     if user.readonly: 
@@ -162,4 +168,25 @@ def savedoc():
     dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", [dummy_token], -1,0)
     mongo_dal.add_annotation(dummy_annotation)
 
+    return jsonify(200)
+
+@bp.route("/copy_to_github", methods=["POST"])
+# @jwt_required()
+def copy_to_github():
+    mongo_dal: MongoDAL = current_app.mongo_dal
+    github_dal: GithubDAL = current_app.github_dal
+    json_payload = request.get_json()
+
+    # # like: "UNER_English-EWT"
+    github_repo_name = json_payload["repo_name"]
+    # # like: "en_ewt-ud-dev"
+    dataset_key = json_payload["dataset_key"]
+
+    cloned_repo = github_dal.clone_repo(github_repo_name)
+
+    # TODO: also calculate statistics and push them to github at the same time!
+
+    # this downloads the file, and returns the filename
+    fname, stats_fname = download_data(dataset_key, mongo_dal)
+    github_dal.push_files([fname, stats_fname], cloned_repo)
     return jsonify(200)
