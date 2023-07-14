@@ -14,6 +14,8 @@ RUN export REACT_APP_URL=$REACT_APP_URL && npm run build
 # Install git and make sure it's on the path
 RUN apk update && apk add git
 
+# this is required for git python to work
+ENV GIT_PYTHON_REFRESH=quiet
 
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
