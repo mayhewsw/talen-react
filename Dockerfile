@@ -11,6 +11,10 @@ RUN npm install react-scripts@3.4.1 -g --silent
 COPY client/ .
 RUN export REACT_APP_URL=$REACT_APP_URL && npm run build
 
+# Install git and make sure it's on the path
+RUN apk update && apk add git
+
+
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
 FROM python:3.9-slim
