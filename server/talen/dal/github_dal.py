@@ -10,7 +10,7 @@ class GithubDAL():
     
     def __init__(self, config: Config) -> None:
         self.username = config.github_username
-        self.password = config.github_token
+        self.password = config.github_password
 
     def clone_repo(self, repo_name: str) -> Repo:
         """
