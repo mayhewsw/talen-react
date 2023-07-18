@@ -85,10 +85,10 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
                     start = annotation.start_span
                     end = annotation.end_span
                     label = annotation.label
-                    annotation_counter[label] += 1
                     # Filter out the OTH and O labels
-                    if label in ["O", "B-OTH", "I-OTH", "B-O", "I-O"]:
+                    if label in ["O", "OTH"]:
                         continue
+                    annotation_counter[label] += 1
                     annotator_id = annotation.user_id
                     if annotator_id == "emil":
                         annotator_id = "EmilStenstrom"
