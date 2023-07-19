@@ -2,6 +2,7 @@ export interface User {
   username: string;
   access_token: string;
   readOnly: boolean;
+  admin: boolean;
 }
 
 export interface AuthState {
@@ -76,6 +77,7 @@ export const SETCURRDOC = "SETCURRDOC";
 export const LOADDOC_SUCCESS = "LOADDOC_SUCCESS";
 export const CLEARDOC = "CLEARDOC";
 export const SAVEDOC_SUCCESS = "SAVEDOC_SUCCESS";
+export const SAVETOGITHUB_SUCCESS = "SAVETOGITHUB_SUCCESS";
 export const LOADSTATUS = "LOADSTATUS";
 export const SETLABELS = "SETLABELS";
 export const DELETE_REQUEST = "DATA_DELETE_REQUEST";

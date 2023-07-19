@@ -6,6 +6,7 @@ export const dataService = {
   saveDocument,
   loadDocument,
   getDocuments,
+  saveToGithub,
 };
 
 function getDatasets() {
@@ -82,6 +83,20 @@ function loadDocument(dataset, docid) {
     `${process.env.REACT_APP_URL}/loaddoc?docid=${docid}&dataset=${dataset}`,
     requestOptions
   )
+    .then(handleResponse)
+    .then((data) => {
+      return data;
+    });
+}
+
+function saveToGithub(data) {
+  const requestOptions = {
+    headers: { ...authHeader(), "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+    method: "POST",
+  };
+
+  return fetch(`${process.env.REACT_APP_URL}/copy_to_github`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       return data;

@@ -12,7 +12,7 @@ class HomePage extends React.Component<MatchProps> {
   }
 
   render() {
-    const { data } = this.props;
+    const { user, data } = this.props;
 
     return (
       <MainPanel>
@@ -29,7 +29,9 @@ class HomePage extends React.Component<MatchProps> {
                       <DatasetCard
                         key={split_index}
                         datasetStats={data.datasetStats[split_id]}
-                        id={split_id}
+                        isAdmin={user && user.admin}
+                        dataset_id={id}
+                        split_id={split_id}
                       />
                     ))}
                 </div>

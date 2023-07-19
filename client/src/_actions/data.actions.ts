@@ -5,6 +5,7 @@ import {
   LOADDOC_SUCCESS,
   SETLABELS,
   SAVEDOC_SUCCESS,
+  SAVETOGITHUB_SUCCESS,
   MessageTypes,
   SETCURRDOC,
   CLEARDOC,
@@ -24,6 +25,7 @@ export const dataActions = {
   setLabels,
   clearDocument,
   setCurrDocument,
+  saveToGithub,
 };
 
 function redirectToLogin(dispatch: Dispatch<MessageTypes>, error: Response) {
@@ -140,5 +142,24 @@ function saveDocument(data: any) {
 
   function success(status: any, datasetid: string, docid: string) {
     return { type: SAVEDOC_SUCCESS, datasetid, docid };
+  }
+}
+
+function saveToGithub(data: any) {
+  console.log("saveToGithub");
+  return (dispatch: Dispatch<any>) => {
+    dataService.saveToGithub(data).then(
+      (status: string) => {
+        console.log("success");
+        dispatch(success(status));
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
+  };
+
+  function success(status: any) {
+    return { type: SAVETOGITHUB_SUCCESS };
   }
 }
