@@ -105,7 +105,7 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
                 out.write("\n")
 
     # compute pairwise f1
-    pairwise_f1 = get_interannotator_agreement(annotations, dataset_id)
+    pairwise_f1 = get_interannotator_agreement(mongo_dal, dataset_id)
 
     data_stats = {
         "dataset_id": dataset_id,
