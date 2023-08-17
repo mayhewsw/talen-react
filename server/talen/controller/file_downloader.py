@@ -4,6 +4,8 @@ from talen.models.annotation import Annotation
 from collections import defaultdict, Counter
 from talen.logger import get_logger
 import json
+from talen.scores import get_interannotator_agreement
+
 
 LOG = get_logger()
 
@@ -19,7 +21,6 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
         LOG.error(f"Dataset {dataset_id} may not exist. See these choices: {datasets}")
         return None
     
-
     annotations = mongo_dal.get_all_annotations_for_dataset(dataset_id)
     annotated_doc_ids = set([annotation.doc_id for annotation in annotations])
 
@@ -103,6 +104,8 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
                     out.write(f"{tok_id+1}\t{token.text}\t{label}\n")
                 out.write("\n")
 
+    # compute pairwise f1
+    pairwise_f1 = get_interannotator_agreement(annotations, dataset_id)
 
     data_stats = {
         "dataset_id": dataset_id,
@@ -114,7 +117,8 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
         "num_docs_with_multiple_annotators": num_docs_with_annotator_overlap,
         "num_sentences" : num_sentences,
         "num_tokens": num_tokens,
-        "label_distribution": dict(annotation_counter)
+        "label_distribution": dict(annotation_counter),
+        "pairwise_f1": pairwise_f1,
     }
 
     # write data_stats to file

@@ -1,56 +1,77 @@
-from typing import Dict, Set, List, Tuple
+from typing import Dict, Set, List, Tuple, Any
 from talen.dal.mongo_dal import MongoDAL
-from talen.config import Config
 from talen.models.annotation import Annotation
 
-def get_interannotator_agreement(environment: str) -> None:
-    config = Config(environment)
-    print(config.mongo_url)
-    mongo_dal = MongoDAL(config.mongo_url)
-
-    datasets = mongo_dal.get_dataset_list()
-    print(f"there are {len(datasets)} datasets: {datasets}")
+def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[Any, Any]:
 
     users = mongo_dal.get_users()
-
-    print(f"Users: {users}")
-    dataset_id = "en_pud-ud-test" #datasets[-1]
     annotations_by_user = {user_id: flatten_and_separate_by_label(mongo_dal.get_all_annotations(dataset_id, user_id)) for user_id in users}
+    # this is users who have annotated at least one document
+    non_empty_users = [user for user in users if len(annotations_by_user[user]) > 0]
+        # if there is only one annotator, there is no interannotator agreement
+    if len(non_empty_users) < 2:
+        return {}
+
     annotated_docs_by_user = {user_id: set(mongo_dal.get_annotated_doc_ids(dataset_id, user_id)) for user_id in users}
 
-    non_empty_users = [user for user in users if len(annotations_by_user[user]) > 0]
-    # TODO: filter out empty lists.
+    seen_pairs = set()
+    scores = {}
 
     for reference_user in non_empty_users:
-        print(f"ref: {reference_user}")
         other_users = [user_id for user_id in non_empty_users if user_id != reference_user]
         reference_annotations = annotations_by_user[reference_user]
 
         for other_user in other_users:
-            print(f"  other: {other_user}")
+            # order doesn't matter here, it's a set
+            seen_pair = frozenset([reference_user, other_user])
+            # we want to check if we've already seen this pair, but we don't care about the order
+            if seen_pair in seen_pairs:
+                continue
+            seen_pairs.add(seen_pair)
+            pair_scores = {}
+
             other_annotations = annotations_by_user[other_user]
 
             # only include the set of documents that both annotators have done!
             common_annotated_docs = annotated_docs_by_user[reference_user].intersection(annotated_docs_by_user[other_user])
-            print(f"  common annotated docs: {len(common_annotated_docs)}")
+            pair_scores["num_common_annotated_docs"] = len(common_annotated_docs)
 
             # filter annotations to only include those documents
             # each annotation looks like: f"{annotation.doc_id}_{annotation.sent_id}_{annotation.start_span}-{annotation.end_span}"
             filtered_reference_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in reference_annotations.items()}
             filtered_other_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in other_annotations.items()}
+            ref_labels = sorted(filtered_reference_annotations.keys())
 
             if filtered_reference_annotations.keys() != filtered_other_annotations.keys():
                 print("    Warning! label mismatch! Can't get agreement for user")
                 print(f"    reference: {filtered_reference_annotations.keys()}")
                 print(f"    other: {filtered_other_annotations.keys()}")
                 continue
-            ref_labels = sorted(filtered_reference_annotations.keys())
 
+            # associate seen pair with {label: {precision, recall, f1}}
+            # scores format should be: 
+            # {frozenset({user1, user2}): {label1: {precision, recall, f1}, label2: {precision, recall, f1}}}
             for label in ref_labels:
-                if label == "O": continue
+                if label == "O" or label == "OTH": continue
                 precision, recall, f1 = get_f1(filtered_reference_annotations[label], filtered_other_annotations[label])
-                print(f"    {label} {precision} {recall} {f1}")
-        print()
+                pair_scores[label] = {"precision": precision, "recall": recall, "f1": f1}
+
+            # when reporting scores, we want to report in a fixed order.
+            ref_other = f"ref:{reference_user}, pred:{other_user}"
+            scores[ref_other] = pair_scores
+
+    # also calculate the average scores for each label
+    label_scores = {}
+    for label in ref_labels:
+        if label == "O" or label == "OTH": continue
+        label_scores[label] = {}
+        label_scores[label]["precision"] = sum([scores[seen_pair][label]["precision"] for seen_pair in scores]) / len(scores)
+        label_scores[label]["recall"] = sum([scores[seen_pair][label]["recall"] for seen_pair in scores]) / len(scores)
+        label_scores[label]["f1"] = sum([scores[seen_pair][label]["f1"] for seen_pair in scores]) / len(scores)
+    
+    scores["average"] = label_scores
+
+    return scores
 
             
 def flatten_and_separate_by_label(annotations: List[Annotation]) -> Dict[str, Set[str]]:
