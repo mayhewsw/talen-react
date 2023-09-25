@@ -44,17 +44,13 @@ function getDatasets() {
   return (dispatch: Dispatch<any>) => {
     dataService.getDatasets().then(
       (data: any[]) => {
-        dispatch(success(data));
+        dispatch({ type: GETDATASETS_SUCCESS, data });
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
-
-  function success(data: any[]) {
-    return { type: GETDATASETS_SUCCESS, data };
-  }
 }
 
 // this is super weird right? why load documents just to get a status...
@@ -62,34 +58,26 @@ function loadStatus(dataset: string, docId: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
       (data: any) => {
-        dispatch(success(data));
+        dispatch({ type: LOADSTATUS, data, docId });
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
-
-  function success(data: any) {
-    return { type: LOADSTATUS, data, docId };
-  }
 }
 
 function getDocuments(dataset: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.getDocuments(dataset).then(
       (data: any) => {
-        dispatch(success(data));
+        dispatch({ type: GETDOCS_SUCCESS, data });
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
-
-  function success(data: any[]) {
-    return { type: GETDOCS_SUCCESS, data };
-  }
 }
 
 function setCurrDocument(docId: string) {
@@ -113,17 +101,13 @@ function loadDocument(dataset: string, docid: string) {
   return (dispatch: Dispatch<any>) => {
     dataService.loadDocument(dataset, docid).then(
       (data: any) => {
-        dispatch(success(data));
+        dispatch({ type: LOADDOC_SUCCESS, data });
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
-
-  function success(data: any) {
-    return { type: LOADDOC_SUCCESS, data };
-  }
 }
 
 function saveDocument(data: any) {
@@ -132,34 +116,24 @@ function saveDocument(data: any) {
   return (dispatch: Dispatch<any>) => {
     dataService.saveDocument(data).then(
       (status: string) => {
-        dispatch(success(status, datasetid, docid));
+        dispatch({ type: SAVEDOC_SUCCESS, datasetid, docid });
       },
       (error: any) => {
         redirectToLogin(dispatch, error);
       }
     );
   };
-
-  function success(status: any, datasetid: string, docid: string) {
-    return { type: SAVEDOC_SUCCESS, datasetid, docid };
-  }
 }
 
 function saveToGithub(data: any) {
-  console.log("saveToGithub");
   return (dispatch: Dispatch<any>) => {
     dataService.saveToGithub(data).then(
       (status: string) => {
-        console.log("success");
-        dispatch(success(status));
+        dispatch({ type: SAVETOGITHUB_SUCCESS });
       },
       (error: any) => {
         console.log(error);
       }
     );
   };
-
-  function success(status: any) {
-    return { type: SAVETOGITHUB_SUCCESS };
-  }
 }
