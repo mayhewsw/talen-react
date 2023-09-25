@@ -40,13 +40,18 @@ def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[A
             # each annotation looks like: f"{annotation.doc_id}_{annotation.sent_id}_{annotation.start_span}-{annotation.end_span}"
             filtered_reference_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in reference_annotations.items()}
             filtered_other_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in other_annotations.items()}
-            ref_labels = sorted(filtered_reference_annotations.keys())
+
+            # remove "OTH" from these dicts
+            filtered_reference_annotations.pop("OTH", None)
+            filtered_other_annotations.pop("OTH", None)
 
             if filtered_reference_annotations.keys() != filtered_other_annotations.keys():
                 print("    Warning! label mismatch! Can't get agreement for user")
                 print(f"    reference: {filtered_reference_annotations.keys()}")
                 print(f"    other: {filtered_other_annotations.keys()}")
                 continue
+
+            ref_labels = sorted(filtered_reference_annotations.keys())
 
             # associate seen pair with {label: {precision, recall, f1}}
             # scores format should be: 
