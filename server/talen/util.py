@@ -44,7 +44,10 @@ def make_labels_lists_from_annotations(annotations: List[Annotation], document: 
         anno_sent = labels[annotation.sent_id]
         for i in range(annotation.start_span, annotation.end_span):
             prefix = "B-" if i == annotation.start_span else "I-"
-            anno_sent[i] = f"{prefix}{annotation.label}"
+            if i >= len(anno_sent):
+                print(f"WARNING: annotation out of bounds: {annotation}, {i}, {len(anno_sent)}")
+            else:
+                anno_sent[i] = f"{prefix}{annotation.label}"
 
     return labels
 
@@ -54,6 +57,9 @@ def make_client_doc(document: Document, annotations: List[Annotation], default_a
     This creates a document that the client knows how to read. 
     TODO: make the client understand Document/Annotation model
     """
+    if document is None:
+        return None
+
     blank_labels = []
     raw_sentences = []
     space_markers = []

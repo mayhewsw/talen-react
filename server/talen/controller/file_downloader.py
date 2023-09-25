@@ -96,7 +96,10 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
                     xlabel = "-"
                     for i in range(start, end):
                         prefix = "B-" if i == start else "I-"
-                        labels[i] = f"{prefix}{label}\t{xlabel}\t{annotator_id}"
+                        if i >= len(labels):
+                            LOG.warn(f"Warning: annotation out of bounds: {annotation}, {i}, {len(labels)}")
+                        else:
+                            labels[i] = f"{prefix}{label}\t{xlabel}\t{annotator_id}"
 
                 
                 for tok_id, tok_label in enumerate(zip(sentence, labels)):

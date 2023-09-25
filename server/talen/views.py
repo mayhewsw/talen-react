@@ -10,6 +10,7 @@ from talen.models.annotation import Annotation, Token
 from talen.dal.mongo_dal import MongoDAL
 from talen.logger import get_logger
 from talen.models.user import User
+from talen.models.user import LoginStatus
 from talen.util import get_annotations_from_client, make_client_doc
 from collections import defaultdict
 from talen.controller.file_downloader import download_data
@@ -25,6 +26,20 @@ def hello():
 @jwt_required()
 def protected():
     return current_identity
+
+@bp.route("/users/register")
+def register():
+    username = request.args.get("username")
+    email = request.args.get("email")
+    password_hash = request.args.get("password_hash")
+    mongo_dal: MongoDAL = current_app.mongo_dal
+    # check user first
+    if mongo_dal.check_user(username, password_hash) == LoginStatus.SUCCESS:
+        # return a bad request
+        return jsonify(400)
+    user = User(username, email, password_hash, False, False)
+    mongo_dal.add_user(user)
+    return jsonify(200)
 
 @bp.route("/datasetlist")
 def datasetlist():
@@ -115,6 +130,10 @@ def loaddoc():
     default_annotations: List[Annotation] = []  #mongo_dal.get_annotations(dataset, docid, "default_anno")
 
     client_doc = make_client_doc(document, annotations, default_annotations)
+    if document is None or client_doc is None:
+        LOG.warn(f"Document or client doc is None, {docid}, {dataset}")
+        return jsonify(404)
+
     # this works because of the dummy annotation we add in savedoc()
     client_doc["isAnnotated"] = len(annotations) > 0
 
