@@ -2,16 +2,19 @@ from typing import Dict, Set, List, Tuple, Any
 from talen.dal.mongo_dal import MongoDAL
 from talen.models.annotation import Annotation
 
+SEP = "$$$"
+
+
 def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[Any, Any]:
 
     users = mongo_dal.get_users()
     annotations_by_user = {user_id: flatten_and_separate_by_label(mongo_dal.get_all_annotations(dataset_id, user_id)) for user_id in users}
     # this is users who have annotated at least one document
     non_empty_users = [user for user in users if len(annotations_by_user[user]) > 0]
-        # if there is only one annotator, there is no interannotator agreement
+    # if there is only one annotator, there is no interannotator agreement
     if len(non_empty_users) < 2:
         return {}
-
+    
     annotated_docs_by_user = {user_id: set(mongo_dal.get_annotated_doc_ids(dataset_id, user_id)) for user_id in users}
 
     seen_pairs = set()
@@ -38,8 +41,8 @@ def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[A
 
             # filter annotations to only include those documents
             # each annotation looks like: f"{annotation.doc_id}_{annotation.sent_id}_{annotation.start_span}-{annotation.end_span}"
-            filtered_reference_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in reference_annotations.items()}
-            filtered_other_annotations = {label: {annotation for annotation in annotations if annotation.split("_")[0] in common_annotated_docs} for label, annotations in other_annotations.items()}
+            filtered_reference_annotations = {label: {annotation for annotation in annotations if annotation.split(SEP)[0] in common_annotated_docs} for label, annotations in reference_annotations.items()}
+            filtered_other_annotations = {label: {annotation for annotation in annotations if annotation.split(SEP)[0] in common_annotated_docs} for label, annotations in other_annotations.items()}
 
             # remove "OTH" from these dicts
             filtered_reference_annotations.pop("OTH", None)
@@ -81,11 +84,12 @@ def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[A
             
 def flatten_and_separate_by_label(annotations: List[Annotation]) -> Dict[str, Set[str]]:
     d = {}
+
     for annotation in annotations:
         label = annotation.label
         if label not in d:
             d[label] = set()
-        d[label].add(f"{annotation.doc_id}_{annotation.sent_id}_{annotation.start_span}-{annotation.end_span}")
+        d[label].add(f"{annotation.doc_id}{SEP}{annotation.sent_id}{SEP}{annotation.start_span}-{annotation.end_span}")
     return d
 
 

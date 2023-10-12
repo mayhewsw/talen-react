@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--environment", "-e", help="Which environment to use", choices=["dev", "test", "prod"], default="dev")
-    parser.add_argument("--dataset_id", "-d", help="Which dataset to use", default=None)
+    parser.add_argument("--dataset_id", "-d", help="Which dataset to use (example: en_ewt-ud-dev)", default=None)
 
     args = parser.parse_args()
 
