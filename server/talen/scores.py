@@ -49,9 +49,9 @@ def get_interannotator_agreement(mongo_dal: MongoDAL, dataset_id: str) -> dict[A
             filtered_other_annotations.pop("OTH", None)
 
             if filtered_reference_annotations.keys() != filtered_other_annotations.keys():
-                print("    Warning! label mismatch! Can't get agreement for user")
-                print(f"    reference: {filtered_reference_annotations.keys()}")
-                print(f"    other: {filtered_other_annotations.keys()}")
+                print("    Warning! label mismatch! Can't get agreement for users")
+                print(f"    reference {reference_user}: {filtered_reference_annotations.keys()}")
+                print(f"    other {other_user}: {filtered_other_annotations.keys()}")
                 continue
 
             ref_labels = sorted(filtered_reference_annotations.keys())

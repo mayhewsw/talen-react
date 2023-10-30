@@ -64,10 +64,10 @@ def download_data(dataset_id: str, mongo_dal: MongoDAL) -> str:
             if len(doc_annotators) == 0:
                 LOG.warn(f"Warning, no annotators for this document!")
             else:       
+                most_frequent_doc_annotator = doc_annotators[0]
                 if len(doc_annotators) > 1:
                     LOG.warn(f"Warning: doc {doc_id} has multiple annotators: {doc_annotators}. Choosing: {most_frequent_doc_annotator}.")
                     num_docs_with_annotator_overlap += 1
-                most_frequent_doc_annotator = doc_annotators[0]
     
             for sent_id, sentence in enumerate(document.sentences):
                 num_sentences += 1
