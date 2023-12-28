@@ -32,7 +32,7 @@ function redirectToLogin(dispatch: Dispatch<MessageTypes>, error: Response) {
   // 401 is status code for unauthorized
   if (error.status === 401) {
     dispatch(alertActions.error("Logged out! Redirecting to login page..."));
-    // this is a weird way to call this, but it's what it requires, I think?
+    // this is a weird way to call this, but it's what it requires, I think?P
     userActions.logout()(dispatch);
     setTimeout(() => {
       history.push(process.env.PUBLIC_URL + "/");
