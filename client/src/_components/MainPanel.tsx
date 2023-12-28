@@ -3,6 +3,8 @@ import { Container, Navbar } from "react-bootstrap";
 import { State } from "../_utils/types";
 import { connect } from "react-redux";
 import { withRouter, Link, RouteComponentProps } from "react-router-dom";
+import LoginModal from "./LoginModal";
+import { userActions } from "../_actions";
 
 class MainPanel extends React.Component<MatchProps> {
   render() {
@@ -45,12 +47,17 @@ class MainPanel extends React.Component<MatchProps> {
                           {`Signed in as: ${this.props.userName}`}
                           {this.props.readOnly && ` (Read-only)`}
                         </Navbar.Text>
-                        <Link to="/login">Logout</Link>
+                        <button
+                          className="btn btn-dark ml-3"
+                          onClick={() => {
+                            this.props.logout();
+                          }}
+                        >
+                          Logout
+                        </button>
                       </>
                     ) : (
-                      <Navbar.Text>
-                        <Link to="/login">Login</Link>
-                      </Navbar.Text>
+                      <></>
                     )}
                   </Navbar.Collapse>
                 </>
@@ -58,6 +65,12 @@ class MainPanel extends React.Component<MatchProps> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
+        <LoginModal
+          show={this.props.userName ? false : true}
+          handleClick={() => {
+            console.log("haha");
+          }}
+        ></LoginModal>
         <Container fluid className="flex-column h-100 d-flex">
           {this.props.children}
         </Container>
@@ -70,6 +83,7 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   userName: string;
   readOnly: boolean;
   hideLoginButton?: boolean;
+  logout: any;
 }
 
 interface MatchParams {
@@ -84,9 +98,11 @@ const mapStateToProps = (state: State) => ({
   readOnly: state.authentication.user.readOnly,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const actionCreators = {
+  logout: userActions.logout,
+};
 
 const connectedMainPanel = withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(MainPanel)
+  connect(mapStateToProps, actionCreators)(MainPanel)
 );
 export { connectedMainPanel as MainPanel };
