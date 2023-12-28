@@ -4,9 +4,38 @@ import { State } from "../_utils/types";
 import { connect } from "react-redux";
 import { withRouter, Link, RouteComponentProps } from "react-router-dom";
 import LoginModal from "./LoginModal";
-import { userActions } from "../_actions";
+import { userActions, alertActions } from "../_actions";
+import { userService } from "../_services";
+import { history } from "../_helpers";
 
 class MainPanel extends React.Component<MatchProps> {
+  interval: any;
+
+  componentDidMount() {
+    // poll for auth status, every 10 seconds
+    this.interval = setInterval(this.checkAuthStatus, 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  checkAuthStatus = () => {
+    console.log("Checking auth status");
+
+    if (this.props.userName && userService.timeLeft() < 10) {
+      this.props.errorMessage(
+        "Your session is about to expire. Please save your work!"
+      );
+    }
+
+    if (this.props.userName && !userService.isLoggedIn()) {
+      console.log("Logging out");
+      this.props.clearMessage();
+      this.props.logout();
+    }
+  };
+
   render() {
     const docid = this.props.match.params.docid;
     const datasetid = this.props.match.params.id;
@@ -50,6 +79,7 @@ class MainPanel extends React.Component<MatchProps> {
                         <button
                           className="btn btn-dark ml-3"
                           onClick={() => {
+                            history.push(process.env.PUBLIC_URL + "/");
                             this.props.logout();
                           }}
                         >
@@ -65,12 +95,7 @@ class MainPanel extends React.Component<MatchProps> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <LoginModal
-          show={this.props.userName ? false : true}
-          handleClick={() => {
-            console.log("haha");
-          }}
-        ></LoginModal>
+        <LoginModal show={this.props.userName ? false : true}></LoginModal>
         <Container fluid className="flex-column h-100 d-flex">
           {this.props.children}
         </Container>
@@ -84,6 +109,8 @@ interface MatchProps extends RouteComponentProps<MatchParams> {
   readOnly: boolean;
   hideLoginButton?: boolean;
   logout: any;
+  errorMessage: any;
+  clearMessage: any;
 }
 
 interface MatchParams {
@@ -99,6 +126,8 @@ const mapStateToProps = (state: State) => ({
 });
 
 const actionCreators = {
+  errorMessage: alertActions.error,
+  clearMessage: alertActions.clear,
   logout: userActions.logout,
 };
 

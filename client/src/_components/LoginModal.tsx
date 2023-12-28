@@ -3,7 +3,6 @@ import { LoginForm } from "./LoginForm";
 
 interface IMyProps {
   show: boolean;
-  handleClick: any;
 }
 
 const LoginModal: React.FC<IMyProps> = (props: IMyProps) => {

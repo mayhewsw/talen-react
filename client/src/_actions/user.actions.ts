@@ -40,7 +40,7 @@ function login(username: string, password: string) {
     userService.login(username, password).then(
       (user) => {
         dispatch(success(user));
-        history.push(process.env.PUBLIC_URL + "/");
+        // history.push(process.env.PUBLIC_URL + "/");
       },
       (error) => {
         dispatch(failure(error.toString()));
