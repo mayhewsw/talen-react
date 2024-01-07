@@ -27,18 +27,25 @@ def hello():
 def protected():
     return current_identity
 
-@bp.route("/users/register")
+@bp.route("/users/register", methods=["POST"])
 def register():
-    username = request.args.get("username")
-    email = request.args.get("email")
-    password_hash = request.args.get("password_hash")
+    json_payload = request.get_json()
+    username = json_payload["username"]
+    email = json_payload["email"]
+    password = json_payload["password"]
+
     mongo_dal: MongoDAL = current_app.mongo_dal
     # check user first
-    if mongo_dal.check_user(username, password_hash) == LoginStatus.SUCCESS:
-        # return a bad request
+    if mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
+        # return a bad request?
         return jsonify(400)
+
+    password_hash = None
     user = User(username, email, password_hash, False, False)
+    print(username, email, password)
+    user.set_password(password)
     mongo_dal.add_user(user)
+
     return jsonify(200)
 
 @bp.route("/datasetlist")

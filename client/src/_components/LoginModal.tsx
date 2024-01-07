@@ -1,8 +1,10 @@
 import React from "react";
 import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
 
 interface IMyProps {
   show: boolean;
+  registering: boolean;
 }
 
 const LoginModal: React.FC<IMyProps> = (props: IMyProps) => {
@@ -12,7 +14,7 @@ const LoginModal: React.FC<IMyProps> = (props: IMyProps) => {
   return (
     <div className={showHideClassName}>
       <div className="mymodal-main">
-        <LoginForm />
+        {props.registering ? <RegisterForm /> : <LoginForm />}
       </div>
     </div>
   );

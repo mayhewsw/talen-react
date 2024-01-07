@@ -25,13 +25,13 @@ class HomePage extends React.Component<MatchProps> {
                 <div className="dataset-card-row d-flex justify-content-flex-start flex-wrap">
                   {data.datasetDict[id]
                     .sort()
-                    .map((split_id: string, split_index: number) => (
+                    .map((splitId: string, splitIndex: number) => (
                       <DatasetCard
-                        key={split_index}
-                        datasetStats={data.datasetStats[split_id]}
+                        key={splitIndex}
+                        datasetStats={data.datasetStats[splitId]}
                         isAdmin={user && user.admin}
-                        dataset_id={id}
-                        split_id={split_id}
+                        datasetId={id}
+                        splitId={splitId}
                       />
                     ))}
                 </div>

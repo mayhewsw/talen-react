@@ -1,0 +1,2 @@
+export MONGO_USERNAME="hosted_mongo_reader"
+export MONGO_PASSWORD="beQmBd1WqgbgT8VB"

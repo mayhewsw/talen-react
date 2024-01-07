@@ -1,3 +1,3 @@
 export * from "./HomePage";
-export * from "./RegisterPage";
+export * from "../_components/RegisterForm";
 export * from "./NewAnnotatePage";

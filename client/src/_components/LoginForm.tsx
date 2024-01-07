@@ -10,6 +10,7 @@ class LoginForm extends React.Component<Props, State> {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleGuestSubmit = this.handleGuestSubmit.bind(this);
+    this.handleRegister = this.handleRegister.bind(this);
   }
 
   handleSubmit(e: any) {
@@ -25,12 +26,16 @@ class LoginForm extends React.Component<Props, State> {
     this.props.login("guest", "guest");
   }
 
+  handleRegister(e: any) {
+    e.preventDefault();
+    this.props.toggleRegistering();
+    console.log("Registering");
+  }
+
   render() {
     return (
-      // <MainPanel hideLoginButton={true}>
       <div className="col-md-12">
         <h2>Login</h2>
-
         <form name="form">
           <Input
             name="username"
@@ -54,32 +59,38 @@ class LoginForm extends React.Component<Props, State> {
             >
               Login as Guest
             </button>
+            <button
+              className="btn btn-success ml-3"
+              onClick={this.handleRegister}
+            >
+              Register
+            </button>
             <div className="mt-3" style={{ color: "#444" }}>
               <i>Contact the site owner for login credentials.</i>
             </div>
           </div>
         </form>
       </div>
-      // </MainPanel>
     );
   }
 }
 
 type Props = {
   login: any;
+  toggleRegistering: any;
   formState: {
     [key: string]: number | string;
   };
 };
 
 function mapState(state: State) {
-  const { loggingIn } = state.authentication;
   const { formState } = state.util;
-  return { loggingIn, formState };
+  return { formState };
 }
 
 const actionCreators = {
   login: userActions.login,
+  toggleRegistering: userActions.toggleRegistering,
 };
 
 const connectedLoginForm = connect(mapState, actionCreators)(LoginForm);

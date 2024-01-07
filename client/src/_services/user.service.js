@@ -74,11 +74,11 @@ function getById(id) {
   );
 }
 
-function register(user) {
+function register(username, email, password) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
+    body: JSON.stringify({ username, email, password }),
   };
 
   return fetch(

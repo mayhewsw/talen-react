@@ -95,7 +95,10 @@ class MainPanel extends React.Component<MatchProps> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <LoginModal show={this.props.userName ? false : true}></LoginModal>
+        <LoginModal
+          show={this.props.userName ? false : true}
+          registering={!this.props.userName && this.props.registering}
+        ></LoginModal>
         <Container fluid className="flex-column h-100 d-flex">
           {this.props.children}
         </Container>
@@ -107,6 +110,7 @@ class MainPanel extends React.Component<MatchProps> {
 interface MatchProps extends RouteComponentProps<MatchParams> {
   userName: string;
   readOnly: boolean;
+  registering: boolean;
   hideLoginButton?: boolean;
   logout: any;
   errorMessage: any;
@@ -119,16 +123,16 @@ interface MatchParams {
 }
 
 const mapStateToProps = (state: State) => ({
-  // TODO: this is not working!
-  // loggedIn: state.authentication.loggedIn,
   userName: state.authentication.user.username,
   readOnly: state.authentication.user.readOnly,
+  registering: state.registration.registering,
 });
 
 const actionCreators = {
   errorMessage: alertActions.error,
   clearMessage: alertActions.clear,
   logout: userActions.logout,
+  toggleRegistering: userActions.toggleRegistering,
 };
 
 const connectedMainPanel = withRouter(
