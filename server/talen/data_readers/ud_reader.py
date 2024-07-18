@@ -6,6 +6,7 @@ from talen.models.token import Token
 
 class UDReader:
     DEFAULT_SENTS_PER_DOC = 30
+    SHOULD_USE_TRANSLIT = False
 
     @staticmethod
     def read_docs(path_to_udfile: str, dataset_name: str, ignore_docs: bool = False) -> List[Document]:
@@ -44,15 +45,15 @@ class UDReader:
                     
                     index = tok["id"]-1
                     # SpaceAfter is only in the misc if the value is "NO"
-                    #space_after = "misc" in tok and "SpaceAfter" not in tok["misc"]
+                    # space_after = "misc" in tok and "SpaceAfter" not in tok["misc"]
                     space_after = True
-                    if tok["misc"] and "SpaceAfter" in tok["misc"] and tok["misc"]["SpaceAfter"] == "No":
-                        space_after = False
+                    if UDReader.SHOULD_USE_TRANSLIT and tok["misc"] and "Translit" in tok["misc"]:
+                        form = tok["misc"]["Translit"]
 
                     # tok["misc"]["SpaceAfter"] --> False
                     # tok["misc"] is None --> True
 
-                    sentence_toks.append(Token(docid, tok["form"], index, space_after))
+                    sentence_toks.append(Token(docid, form, index, space_after))
                 sentences.append(sentence_toks)
 
         # means we haven't yet dealt with the last doc

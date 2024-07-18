@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { history } from "../_helpers";
 import { alertActions } from "../_actions";
 import { PrivateRoute } from "../_components";
-import { LoginPage, HomePage, NewAnnotatePage } from "../_pages";
+import { HomePage, NewAnnotatePage } from "../_pages";
 import "./App.css";
 
 class App extends React.Component {
@@ -29,7 +29,6 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <PrivateRoute exact path="/dataset/:id" component={NewAnnotatePage} />
-          <Route exact path="/login" component={LoginPage} />
           <Redirect from="*" to="/" />
         </Switch>
       </Router>

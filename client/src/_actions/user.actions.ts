@@ -1,6 +1,5 @@
 import { userService } from "../_services";
 import { alertActions } from ".";
-import { history } from "../_helpers";
 import {
   LOGIN_FAILURE,
   LOGIN_REQUEST,
@@ -22,6 +21,7 @@ export const userActions = {
   login,
   logout,
   register,
+  toggleRegistering,
   // getAll,
   // delete: _delete,
 };
@@ -40,7 +40,7 @@ function login(username: string, password: string) {
     userService.login(username, password).then(
       (user) => {
         dispatch(success(user));
-        history.push(process.env.PUBLIC_URL + "/");
+        // history.push(process.env.PUBLIC_URL + "/");
       },
       (error) => {
         dispatch(failure(error.toString()));
@@ -67,14 +67,22 @@ function logout() {
   };
 }
 
-function register(user: User) {
+function toggleRegistering(user: User) {
   return (dispatch: any) => {
     dispatch(request(user));
+  };
 
-    userService.register(user).then(
+  function request(user: User) {
+    return { type: REGISTER_REQUEST, user };
+  }
+}
+
+function register(username: string, email: string, password: string) {
+  return (dispatch: any) => {
+    userService.register(username, email, password).then(
       (user) => {
         dispatch(success(user));
-        history.push(process.env.PUBLIC_URL + "/login");
+        // history.push(process.env.PUBLIC_URL + "/login");
         dispatch(alertActions.success("Registration successful"));
       },
       (error) => {
@@ -84,9 +92,6 @@ function register(user: User) {
     );
   };
 
-  function request(user: User) {
-    return { type: REGISTER_REQUEST, user };
-  }
   function success(user: User) {
     return { type: REGISTER_SUCCESS, user };
   }

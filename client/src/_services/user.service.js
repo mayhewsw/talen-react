@@ -3,6 +3,8 @@ import { authHeader } from "../_helpers";
 export const userService = {
   login,
   logout,
+  isLoggedIn,
+  timeLeft,
   register,
   getAll,
   getById,
@@ -25,7 +27,6 @@ function login(username, password) {
     .then((user) => {
       // store user details and jwt token in local storage to keep user logged in between page refreshes
       localStorage.setItem("user", JSON.stringify(user));
-
       return user;
     });
 }
@@ -33,6 +34,22 @@ function login(username, password) {
 function logout() {
   // remove user from local storage to log user out
   localStorage.removeItem("user");
+}
+
+function timeLeft() {
+  // check for existence of "user" item first
+  if (!localStorage.getItem("user")) {
+    return -1;
+  }
+  // check if logged in and not expired
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.access_token;
+  const expiry = JSON.parse(atob(token.split(".")[1])).exp;
+  return expiry - Math.floor(new Date().getTime() / 1000);
+}
+
+function isLoggedIn() {
+  return timeLeft() > 0;
 }
 
 function getAll() {
@@ -57,11 +74,11 @@ function getById(id) {
   );
 }
 
-function register(user) {
+function register(username, email, password) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
+    body: JSON.stringify({ username, email, password }),
   };
 
   return fetch(

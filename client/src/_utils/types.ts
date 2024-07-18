@@ -11,6 +11,10 @@ export interface AuthState {
   user: User;
 }
 
+export interface RegisterState {
+  registering: boolean;
+}
+
 export interface DataState {
   datasetName: string;
   currDoc: string;
@@ -40,15 +44,10 @@ export interface UtilState {
 
 export interface State {
   authentication: AuthState;
-  // loggedIn: boolean;
-  // userName: string;
-  // dataset: string;
-
-  // currentlySending: boolean;
+  registration: RegisterState;
   util: UtilState;
   errorMessage: string;
   data: DataState;
-  // TODO: include AlertState here somehow?
 }
 
 export const LOAD_DOCUMENT = "LOAD_DOCUMENT";
@@ -209,11 +208,13 @@ export type RegistrationTypes =
   | RegisterRequestAction
   | RegisterSuccessAction
   | RegisterFailureAction;
+
 export type AuthTypes =
   | LoginRequestAction
   | LoginSuccessAction
   | LoginFailureAction
   | LogoutAction;
+
 export type DataTypes =
   | GetDatasetsAction
   | GetDocsAction
@@ -222,8 +223,11 @@ export type DataTypes =
   | SetLabelsAction
   | ClearDocAction
   | SetCurrDocAction;
+
 export type UtilTypes = ChangeFormAction;
+
 export type MessageTypes = SuccessAction | ErrorAction | ClearAction;
+
 export type DocumentTypes =
   | LoadDocumentAction
   | SaveDocumentAction

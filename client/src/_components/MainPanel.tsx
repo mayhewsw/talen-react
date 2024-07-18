@@ -3,8 +3,39 @@ import { Container, Navbar } from "react-bootstrap";
 import { State } from "../_utils/types";
 import { connect } from "react-redux";
 import { withRouter, Link, RouteComponentProps } from "react-router-dom";
+import LoginModal from "./LoginModal";
+import { userActions, alertActions } from "../_actions";
+import { userService } from "../_services";
+import { history } from "../_helpers";
 
 class MainPanel extends React.Component<MatchProps> {
+  interval: any;
+
+  componentDidMount() {
+    // poll for auth status, every 10 seconds
+    this.interval = setInterval(this.checkAuthStatus, 10000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  checkAuthStatus = () => {
+    console.log("Checking auth status");
+
+    if (this.props.userName && userService.timeLeft() < 10) {
+      this.props.errorMessage(
+        "Your session is about to expire. Please save your work!"
+      );
+    }
+
+    if (this.props.userName && !userService.isLoggedIn()) {
+      console.log("Logging out");
+      this.props.clearMessage();
+      this.props.logout();
+    }
+  };
+
   render() {
     const docid = this.props.match.params.docid;
     const datasetid = this.props.match.params.id;
@@ -45,12 +76,18 @@ class MainPanel extends React.Component<MatchProps> {
                           {`Signed in as: ${this.props.userName}`}
                           {this.props.readOnly && ` (Read-only)`}
                         </Navbar.Text>
-                        <Link to="/login">Logout</Link>
+                        <button
+                          className="btn btn-dark ml-3"
+                          onClick={() => {
+                            history.push(process.env.PUBLIC_URL + "/");
+                            this.props.logout();
+                          }}
+                        >
+                          Logout
+                        </button>
                       </>
                     ) : (
-                      <Navbar.Text>
-                        <Link to="/login">Login</Link>
-                      </Navbar.Text>
+                      <></>
                     )}
                   </Navbar.Collapse>
                 </>
@@ -58,6 +95,10 @@ class MainPanel extends React.Component<MatchProps> {
             </Navbar.Collapse>
           </Container>
         </Navbar>
+        <LoginModal
+          show={this.props.userName ? false : true}
+          registering={!this.props.userName && this.props.registering}
+        ></LoginModal>
         <Container fluid className="flex-column h-100 d-flex">
           {this.props.children}
         </Container>
@@ -69,7 +110,11 @@ class MainPanel extends React.Component<MatchProps> {
 interface MatchProps extends RouteComponentProps<MatchParams> {
   userName: string;
   readOnly: boolean;
+  registering: boolean;
   hideLoginButton?: boolean;
+  logout: any;
+  errorMessage: any;
+  clearMessage: any;
 }
 
 interface MatchParams {
@@ -78,15 +123,19 @@ interface MatchParams {
 }
 
 const mapStateToProps = (state: State) => ({
-  // TODO: this is not working!
-  // loggedIn: state.authentication.loggedIn,
   userName: state.authentication.user.username,
   readOnly: state.authentication.user.readOnly,
+  registering: state.registration.registering,
 });
 
-const mapDispatchToProps = (dispatch: Function) => ({});
+const actionCreators = {
+  errorMessage: alertActions.error,
+  clearMessage: alertActions.clear,
+  logout: userActions.logout,
+  toggleRegistering: userActions.toggleRegistering,
+};
 
 const connectedMainPanel = withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(MainPanel)
+  connect(mapStateToProps, actionCreators)(MainPanel)
 );
 export { connectedMainPanel as MainPanel };

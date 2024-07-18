@@ -5,14 +5,18 @@ import {
   RegistrationTypes,
 } from "../_utils/types";
 
-export function registration(state = {}, action: RegistrationTypes) {
+const initialState = {
+  registering: false,
+};
+
+export function registration(state = initialState, action: RegistrationTypes) {
   switch (action.type) {
     case REGISTER_REQUEST:
-      return { registering: true };
+      return { registering: !state.registering };
     case REGISTER_SUCCESS:
-      return {};
+      return { registering: false };
     case REGISTER_FAILURE:
-      return {};
+      return { registering: false };
     default:
       return state;
   }
