@@ -65,9 +65,6 @@ class LoginForm extends React.Component<Props, State> {
             >
               Register
             </button>
-            <div className="mt-3" style={{ color: "#444" }}>
-              <i>Contact the site owner for login credentials.</i>
-            </div>
           </div>
         </form>
       </div>
