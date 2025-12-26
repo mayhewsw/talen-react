@@ -19,11 +19,14 @@ BUILD_DIR = os.path.join(basedir, "../../client/build")
 class Config(object):
 
     # These are used by app.config. It requires upper case, class-level variables
-    # FIXME: why is SECRET_KEY explicitly written out here?
-    SECRET_KEY = os.environ.get("SECRET_KEY") or b'_5#y2L"F4Qhhh8z\n\xec]/'
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    if not SECRET_KEY:
+        LOG.error("SECRET_KEY environment variable is required for security. Please set it before running the application.")
+        sys.exit(-1)
+
+    JWT_SECRET_KEY = SECRET_KEY
     SESSION_TYPE = "filesystem"
-    JWT_AUTH_URL_RULE = "/users/authenticate"
-    JWT_EXPIRATION_DELTA = timedelta(hours=6)  # set to 10 seconds for testing.
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=6)  # set to 10 seconds for testing.
 
     def load_config_file(self, fname: str) -> Dict[str, str]:
         """

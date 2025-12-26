@@ -4,7 +4,7 @@ import shutil
 
 from git import Repo
 from flask import Blueprint, current_app, jsonify, request, redirect
-from flask_jwt import current_identity, jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, current_user
 from talen.dal.github_dal import GithubDAL
 from talen.models.annotation import Annotation, Token
 from talen.dal.mongo_dal import MongoDAL
@@ -12,6 +12,9 @@ from talen.logger import get_logger
 from talen.models.user import User
 from talen.models.user import LoginStatus
 from talen.util import get_annotations_from_client, make_client_doc
+from talen.schemas import (
+    UserAuthSchema, UserRegisterSchema, SaveDocSchema, CopyToGithubSchema, validate_request
+)
 from collections import defaultdict
 from talen.controller.file_downloader import download_data
 
@@ -22,31 +25,68 @@ bp = Blueprint("blueprint", __name__, template_folder="templates")
 def hello():
     return redirect("/index.html")
 
+@bp.route("/users/authenticate", methods=["POST"])
+def authenticate():
+    """Login endpoint that returns JWT token"""
+    json_payload = request.get_json()
+    if not json_payload:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    # Validate request data
+    validated_data, errors = validate_request(UserAuthSchema(), json_payload)
+    if errors:
+        return jsonify({"msg": "Validation error", "errors": errors}), 400
+
+    username = validated_data["username"]
+    password = validated_data["password"]
+
+    mongo_dal: MongoDAL = current_app.mongo_dal
+
+    if mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
+        user = mongo_dal.load_user(username)
+        access_token = create_access_token(identity=username)
+        return jsonify({
+            "access_token": access_token,
+            "username": user.id,
+            "readOnly": user.readonly,
+            "admin": user.admin
+        }), 200
+
+    return jsonify({"msg": "Invalid username or password"}), 401
+
 @bp.route("/users/me")
 @jwt_required()
 def protected():
-    return current_identity
+    return jsonify(current_user.serialize()), 200
 
 @bp.route("/users/register", methods=["POST"])
 def register():
     json_payload = request.get_json()
-    username = json_payload["username"]
-    email = json_payload["email"]
-    password = json_payload["password"]
+    if not json_payload:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    # Validate request data
+    validated_data, errors = validate_request(UserRegisterSchema(), json_payload)
+    if errors:
+        return jsonify({"msg": "Validation error", "errors": errors}), 400
+
+    username = validated_data["username"]
+    email = validated_data["email"]
+    password = validated_data["password"]
 
     mongo_dal: MongoDAL = current_app.mongo_dal
-    # check user first
+
+    # Check if user already exists
     if mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
-        # return a bad request?
-        return jsonify(400)
+        return jsonify({"msg": "User already exists"}), 400
 
     password_hash = None
     user = User(username, email, password_hash, False, False)
-    print(username, email, password)
+    LOG.info(f"Registering new user: {username}, {email}")
     user.set_password(password)
     mongo_dal.add_user(user)
 
-    return jsonify(200)
+    return jsonify({"msg": "User registered successfully"}), 201
 
 @bp.route("/datasetlist")
 def datasetlist():
@@ -76,7 +116,10 @@ def datasetlist():
 @jwt_required()
 def loaddataset():
     dataset_id = request.args.get("dataset")
-    username = current_identity.id
+    if not dataset_id:
+        return jsonify({"msg": "Missing dataset parameter"}), 400
+
+    username = get_jwt_identity()
     if username == "guest":
         username = "stephen"
 
@@ -94,14 +137,16 @@ def loaddataset():
         "datasetID": dataset_id,
     }
 
-    return jsonify(dataset)
+    return jsonify(dataset), 200
 
 @bp.route("/datasetstats")
 @jwt_required()
 def datasetstats():
     dataset_id = request.args.get("dataset")
-    username = current_identity.id
+    if not dataset_id:
+        return jsonify({"msg": "Missing dataset parameter"}), 400
 
+    username = get_jwt_identity()
     if username == "guest":
         username = "stephen"
 
@@ -117,7 +162,7 @@ def datasetstats():
         "datasetID": dataset_id,
     }
 
-    return jsonify(dataset)
+    return jsonify(dataset), 200
 
 
 @bp.route("/loaddoc")
@@ -125,8 +170,11 @@ def datasetstats():
 def loaddoc():
     docid = request.args.get("docid")
     dataset = request.args.get("dataset")
-    username = current_identity.id
 
+    if not docid or not dataset:
+        return jsonify({"msg": "Missing docid or dataset parameter"}), 400
+
+    username = get_jwt_identity()
     if username == "guest":
         username = "stephen"
 
@@ -139,7 +187,7 @@ def loaddoc():
     client_doc = make_client_doc(document, annotations, default_annotations)
     if document is None or client_doc is None:
         LOG.warn(f"Document or client doc is None, {docid}, {dataset}")
-        return jsonify(404)
+        return jsonify({"msg": "Document not found"}), 404
 
     # this works because of the dummy annotation we add in savedoc()
     client_doc["isAnnotated"] = len(annotations) > 0
@@ -154,7 +202,7 @@ def loaddoc():
         "OTH": "#dc9e8c"
     }
 
-    return jsonify(client_doc)
+    return jsonify(client_doc), 200
 
 
 @bp.route("/savedoc", methods=["POST"])
@@ -162,57 +210,75 @@ def loaddoc():
 def savedoc():
     mongo_dal: MongoDAL = current_app.mongo_dal
     github_dal: GithubDAL = current_app.github_dal
-    user: User = mongo_dal.load_user(current_identity.id)
+    username = get_jwt_identity()
+    user: User = mongo_dal.load_user(username)
 
-    if user.readonly: 
-        # forbidden
-        return jsonify(403)
+    if user.readonly:
+        return jsonify({"msg": "User is read-only"}), 403
 
     json_payload = request.get_json()
+    if not json_payload:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+
+    # Validate request data
+    validated_data, errors = validate_request(SaveDocSchema(), json_payload)
+    if errors:
+        return jsonify({"msg": "Validation error", "errors": errors}), 400
+
     # TODO: important that the doc that comes back is the same as the doc up above
     client_doc = {
-        "sentences": json_payload["sentences"],
-        "labels": json_payload["labels"],
-        "docid": json_payload["docid"],
-        "dataset": json_payload["dataset"],
+        "sentences": validated_data["sentences"],
+        "labels": validated_data["labels"],
+        "docid": validated_data["docid"],
+        "dataset": validated_data["dataset"],
         "isAnnotated": True,
     }
 
-    # we have to get this because we need Token objects, and the client doesn't have enough info to create them    
+    # we have to get this because we need Token objects, and the client doesn't have enough info to create them
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
-    new_annotations = get_annotations_from_client(original_doc, client_doc, current_identity.id)
+    new_annotations = get_annotations_from_client(original_doc, client_doc, username)
 
     if len(new_annotations) > 0:
         # simple: just delete all annotations from this document and user.
-        mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], current_identity.id)
-        print(len(new_annotations))
+        mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], username)
+        LOG.info(f"Saving {len(new_annotations)} annotations")
         mongo_dal.add_new_annotations(new_annotations)
 
     # we also add a dummy annotation that marks that the document has been annotated!
     # since we delete all annotations, we need to do this every time
     dummy_token = Token(client_doc["docid"], "dummy", -1, False)
-    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, current_identity.id, "O", [dummy_token], -1,0)
+    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, username, "O", [dummy_token], -1,0)
     mongo_dal.add_annotation(dummy_annotation)
 
-    return jsonify(200)
+    return jsonify({"msg": "Document saved successfully"}), 200
 
 @bp.route("/copy_to_github", methods=["POST"])
-# @jwt_required()
+@jwt_required()
 def copy_to_github():
     mongo_dal: MongoDAL = current_app.mongo_dal
     github_dal: GithubDAL = current_app.github_dal
     json_payload = request.get_json()
 
-    # # like: "UNER_English-EWT"
-    github_repo_name = json_payload["repo_name"]
-    # # like: "en_ewt-ud-dev"
-    dataset_key = json_payload["dataset_key"]
+    if not json_payload:
+        return jsonify({"msg": "Missing JSON in request"}), 400
 
-    cloned_repo = github_dal.clone_repo(github_repo_name)
+    # Validate request data
+    validated_data, errors = validate_request(CopyToGithubSchema(), json_payload)
+    if errors:
+        return jsonify({"msg": "Validation error", "errors": errors}), 400
 
-    # TODO: also calculate statistics and push them to github at the same time!
+    github_repo_name = validated_data["repo_name"]
+    dataset_key = validated_data["dataset_key"]
 
-    # this downloads the file, and returns the filename
-    fname, stats_fname = download_data(dataset_key, mongo_dal)
-    github_dal.push_files([fname, stats_fname], cloned_repo)
-    return jsonify(200)
+    try:
+        cloned_repo = github_dal.clone_repo(github_repo_name)
+
+        # TODO: also calculate statistics and push them to github at the same time!
+
+        # this downloads the file, and returns the filename
+        fname, stats_fname = download_data(dataset_key, mongo_dal)
+        github_dal.push_files([fname, stats_fname], cloned_repo)
+        return jsonify({"msg": "Successfully pushed to GitHub"}), 200
+    except Exception as e:
+        LOG.error(f"Error pushing to GitHub: {e}")
+        return jsonify({"msg": f"Error pushing to GitHub: {str(e)}"}), 500

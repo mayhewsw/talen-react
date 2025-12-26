@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_jwt import JWT
+from flask_jwt_extended import JWTManager, create_access_token
 from talen.dal.github_dal import GithubDAL
 from talen.dal.mongo_dal import MongoDAL
 from talen.models.user import LoginStatus
@@ -21,28 +21,12 @@ config = Config(os.environ.get("ENV") or "dev")
 app.mongo_dal = MongoDAL(config.mongo_url)
 app.github_dal = GithubDAL(config)
 
-def authenticate(username: str, password: str) -> User:
-    # TODO: what about failures?
-    # TODO: also, this is inefficient, checking twice
-    if app.mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
-        return app.mongo_dal.load_user(username)
+jwt = JWTManager(app)
 
-def identity(payload):
-    username = payload["identity"]
-    return app.mongo_dal.load_user(username)
-
-jwt = JWT(app, authenticate, identity)
-
-@jwt.auth_response_handler
-def _default_auth_response_handler(access_token, identity):
-    return jsonify(
-        {
-            "access_token": access_token.decode("utf-8"),
-            "username": identity.id,
-            "readOnly": identity.readonly,
-            "admin": identity.admin
-        }
-    )
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return app.mongo_dal.load_user(identity)
 
 CORS(app)
 
