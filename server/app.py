@@ -34,19 +34,9 @@ app.register_blueprint(bp, url_prefix="/")
 
 # This doesn't run with gunicorn, so we put dev options in here.
 if __name__ == "__main__":
-
     app.debug = True
 
-    # This only happens at development time
-    if app.mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:
-        user = User("a", "user@user.com", None, True, False)
-        user.set_password("a")
-        app.mongo_dal.add_user(user)
-
-    # This only happens at development time
-    if app.mongo_dal.check_user("b", "b") == LoginStatus.USER_NOT_FOUND:
-        user = User("b", "user@user.com", None, True, False)
-        user.set_password("b")
-        app.mongo_dal.add_user(user)
+    # Note: Test users should be created using scripts/init_dev_users.py
+    # Don't create users in production code
 
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

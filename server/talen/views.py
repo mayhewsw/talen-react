@@ -182,24 +182,24 @@ def loaddoc():
 
     document = mongo_dal.get_document(docid, dataset)
     annotations: List[Annotation] = mongo_dal.get_annotations(dataset, docid, username)
-    default_annotations: List[Annotation] = []  #mongo_dal.get_annotations(dataset, docid, "default_anno")
+    default_annotations: List[Annotation] = []
 
     client_doc = make_client_doc(document, annotations, default_annotations)
     if document is None or client_doc is None:
         LOG.warn(f"Document or client doc is None, {docid}, {dataset}")
         return jsonify({"msg": "Document not found"}), 404
 
-    # this works because of the dummy annotation we add in savedoc()
-    client_doc["isAnnotated"] = len(annotations) > 0
+    # Check if document has been reviewed/annotated by this user
+    client_doc["isAnnotated"] = mongo_dal.is_document_annotated(dataset, docid, username)
 
-    # FIXME: how do we associate labelsets with datasets?
-    # These have to be RGB!!!!
+    # TODO: Make labelsets configurable per dataset
+    # For now, using a default NER labelset with RGB colors
     client_doc["labelset"] = {
         "O": "transparent",
-        "PER": "#EADA48",
-        "ORG": "#37C4E3",
-        "LOC": "#4AC300",
-        "OTH": "#dc9e8c"
+        "PER": "#EADA48",  # Person - Yellow
+        "ORG": "#37C4E3",  # Organization - Blue
+        "LOC": "#4AC300",  # Location - Green
+        "OTH": "#dc9e8c"   # Other - Light brown
     }
 
     return jsonify(client_doc), 200
@@ -225,7 +225,6 @@ def savedoc():
     if errors:
         return jsonify({"msg": "Validation error", "errors": errors}), 400
 
-    # TODO: important that the doc that comes back is the same as the doc up above
     client_doc = {
         "sentences": validated_data["sentences"],
         "labels": validated_data["labels"],
@@ -234,21 +233,19 @@ def savedoc():
         "isAnnotated": True,
     }
 
-    # we have to get this because we need Token objects, and the client doesn't have enough info to create them
+    # Retrieve original document to get Token objects (client doesn't send complete token info)
     original_doc = mongo_dal.get_document(client_doc["docid"], client_doc["dataset"])
     new_annotations = get_annotations_from_client(original_doc, client_doc, username)
 
-    if len(new_annotations) > 0:
-        # simple: just delete all annotations from this document and user.
-        mongo_dal.delete_annotations(client_doc["dataset"], client_doc["docid"], username)
-        LOG.info(f"Saving {len(new_annotations)} annotations")
-        mongo_dal.add_new_annotations(new_annotations)
-
-    # we also add a dummy annotation that marks that the document has been annotated!
-    # since we delete all annotations, we need to do this every time
-    dummy_token = Token(client_doc["docid"], "dummy", -1, False)
-    dummy_annotation = Annotation(client_doc["dataset"], client_doc["docid"], 0, username, "O", [dummy_token], -1,0)
-    mongo_dal.add_annotation(dummy_annotation)
+    # Atomically replace all annotations for this document/user
+    # This handles delete + insert + status update as a single logical operation
+    LOG.info(f"Saving {len(new_annotations)} annotations for {client_doc['docid']}")
+    mongo_dal.replace_annotations(
+        client_doc["dataset"],
+        client_doc["docid"],
+        username,
+        new_annotations
+    )
 
     return jsonify({"msg": "Document saved successfully"}), 200
 
@@ -273,10 +270,10 @@ def copy_to_github():
     try:
         cloned_repo = github_dal.clone_repo(github_repo_name)
 
-        # TODO: also calculate statistics and push them to github at the same time!
-
-        # this downloads the file, and returns the filename
+        # Download annotations and statistics
         fname, stats_fname = download_data(dataset_key, mongo_dal)
+
+        # Push both files to GitHub
         github_dal.push_files([fname, stats_fname], cloned_repo)
         return jsonify({"msg": "Successfully pushed to GitHub"}), 200
     except Exception as e:
