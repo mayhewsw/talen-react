@@ -15,6 +15,9 @@ from talen.util import get_annotations_from_client, make_client_doc
 from talen.schemas import (
     UserAuthSchema, UserRegisterSchema, SaveDocSchema, CopyToGithubSchema, validate_request
 )
+from talen.services.user_service import UserService
+from talen.services.annotation_service import AnnotationService
+from talen.services.github_service import GitHubService
 from collections import defaultdict
 from talen.controller.file_downloader import download_data
 
@@ -37,22 +40,14 @@ def authenticate():
     if errors:
         return jsonify({"msg": "Validation error", "errors": errors}), 400
 
-    username = validated_data["username"]
-    password = validated_data["password"]
+    # Use service for authentication
+    user_service = UserService(current_app.mongo_dal)
+    result = user_service.authenticate(
+        validated_data["username"],
+        validated_data["password"]
+    )
 
-    mongo_dal: MongoDAL = current_app.mongo_dal
-
-    if mongo_dal.check_user(username, password) == LoginStatus.SUCCESS:
-        user = mongo_dal.load_user(username)
-        access_token = create_access_token(identity=username)
-        return jsonify({
-            "access_token": access_token,
-            "username": user.id,
-            "readOnly": user.readonly,
-            "admin": user.admin
-        }), 200
-
-    return jsonify({"msg": "Invalid username or password"}), 401
+    return jsonify(result), 200
 
 @bp.route("/users/me")
 @jwt_required()
