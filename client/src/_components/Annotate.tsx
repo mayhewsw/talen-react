@@ -1,5 +1,4 @@
 import React, { ChangeEvent } from "react";
-import { cloneDeep } from "lodash";
 import { Button, Row, Col, Card, Form } from "react-bootstrap";
 import Sentence from "./Sentence";
 import { withRouter } from "react-router-dom";
@@ -112,7 +111,7 @@ class Annotate extends React.Component<MatchProps, State> {
     }
 
     // I don't want to modify the state variable!
-    var newLabels = cloneDeep(this.props.data.labels);
+    var newLabels = JSON.parse(JSON.stringify(this.props.data.labels));
 
     phrase_locations.forEach((tuple) => {
       var phrase_sent = tuple[0];

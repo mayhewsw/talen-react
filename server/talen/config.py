@@ -21,7 +21,7 @@ class Config(object):
     # These are used by app.config. It requires upper case, class-level variables
     SECRET_KEY = os.environ.get("SECRET_KEY")
     if not SECRET_KEY:
-        LOG.error("SECRET_KEY environment variable is required for security. Please set it before running the application.")
+        LOG.error("SECRET_KEY environment variable is required for security. Please set it before running the application. If you are running locally, just run: `export SECRET_KEY=dummy`")
         sys.exit(-1)
 
     JWT_SECRET_KEY = SECRET_KEY
