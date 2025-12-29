@@ -52,8 +52,13 @@ class UDReader:
                     
                     index = tok["id"]-1
                     # SpaceAfter is only in the misc if the value is "NO"
-                    # space_after = "misc" in tok and "SpaceAfter" not in tok["misc"]
+                    print(tok["misc"])
                     space_after = True
+                    # unless it's in the misc and the value is "NO"
+                    
+                    space_after = not("misc" in tok and tok["misc"] and "SpaceAfter" in tok["misc"])
+
+
                     if UDReader.SHOULD_USE_TRANSLIT and tok["misc"] and "Translit" in tok["misc"]:
                         form = tok["misc"]["Translit"]
                     else:

@@ -91,15 +91,31 @@ class MongoDAL():
         update an existing one if it does.
         """
         serialized_annotation = annotation.serialize()
-        return self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
+        result = self.annotations.update_one({"_id": serialized_annotation["_id"]}, {"$set": serialized_annotation}, upsert=True)
+
+        # Mark document as annotated
+        self.mark_document_annotated(annotation.dataset_id, annotation.doc_id, annotation.user_id)
+
+        return result
 
     def add_new_annotations(self, annotations: List[Annotation]) -> None:
         """
         This adds annotations as though they are new. It's up to the user to make sure that annotations
         like these don't exist in the db. This will throw an exception if not!
         """
+        if not annotations:
+            return
+
         serialized_annotations = [annotation.serialize() for annotation in annotations]
         self.annotations.insert_many(serialized_annotations)
+
+        # Mark all documents as annotated (group by dataset_id, doc_id, user_id)
+        seen = set()
+        for annotation in annotations:
+            key = (annotation.dataset_id, annotation.doc_id, annotation.user_id)
+            if key not in seen:
+                self.mark_document_annotated(annotation.dataset_id, annotation.doc_id, annotation.user_id)
+                seen.add(key)
 
     def delete_annotation(self, annotation: Annotation) -> None:
         serialized_annotation = annotation.serialize()
