@@ -6,6 +6,7 @@ import { IoIosSave, IoMdCheckmarkCircleOutline } from "react-icons/io";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router-dom";
 import { dataActions } from "../_actions";
+import { withAuth, WithAuthProps } from "../contexts/withAuth";
 
 class Annotate extends React.Component<MatchProps, State> {
   interval: any;
@@ -81,7 +82,7 @@ class Annotate extends React.Component<MatchProps, State> {
   }
 
   setLabel(label: string, first: number, last: number, sent_index: number) {
-    if (this.props.readOnly) {
+    if (this.props.authUser?.readOnly) {
       return;
     }
 
@@ -261,7 +262,7 @@ class Annotate extends React.Component<MatchProps, State> {
           <Row className="align-items-baseline">
             <Col md={12}>
               <Form className="mb-3 form-inline">
-                {!this.props.readOnly &&
+                {!this.props.authUser?.readOnly &&
                   this.props.isSaved &&
                   data.isAnnotated && (
                     <Button variant="outline-success">
@@ -271,7 +272,7 @@ class Annotate extends React.Component<MatchProps, State> {
                     </Button>
                   )}
 
-                {!this.props.readOnly &&
+                {!this.props.authUser?.readOnly &&
                   (!this.props.isSaved || !data.isAnnotated) && (
                     <Button
                       variant="outline-danger"
@@ -282,7 +283,7 @@ class Annotate extends React.Component<MatchProps, State> {
                       </>
                     </Button>
                   )}
-                {!this.props.readOnly && (
+                {!this.props.authUser?.readOnly && (
                   <Form.Check
                     onChange={(evt: ChangeEvent<HTMLInputElement>) =>
                       this.setState({ propagate: evt.target.checked })
@@ -326,7 +327,7 @@ class Annotate extends React.Component<MatchProps, State> {
                       set_label={(lab: string, first: number, last: number) =>
                         this.setLabel(lab, first, last, sent_index)
                       }
-                      isReadOnly={this.props.readOnly}
+                      isReadOnly={this.props.authUser?.readOnly || false}
                       direction={
                         this.props.dataset.startsWith("he") ? "rtl" : "ltr"
                       }
@@ -342,12 +343,11 @@ class Annotate extends React.Component<MatchProps, State> {
 }
 
 // TODO: fix the any!!
-interface MatchProps extends RouteComponentProps<MatchParams> {
+interface MatchProps extends RouteComponentProps<MatchParams>, WithAuthProps {
   data: any;
   dataset: string;
   docid: string;
   uplink: string;
-  readOnly: boolean;
   isSaved: boolean;
   setLabels: Function;
   saveDocument: Function;
@@ -366,11 +366,10 @@ type State = {
 
 // TODO: fix this any...
 function mapState(state: any) {
-  const { data, authentication } = state;
+  const { data } = state;
   const docid = data.currDoc;
-  const readOnly = authentication.user.readOnly;
   const isSaved = data.isSaved;
-  return { data, docid, readOnly, isSaved };
+  return { data, docid, isSaved };
 }
 
 const actionCreators = {
@@ -380,8 +379,7 @@ const actionCreators = {
   setLabels: dataActions.setLabels,
 };
 
-const connectedAnnotate = connect(
-  mapState,
-  actionCreators
-)(withRouter(Annotate));
+const connectedAnnotate = withAuth(
+  connect(mapState, actionCreators)(withRouter(Annotate))
+);
 export { connectedAnnotate as Annotate };

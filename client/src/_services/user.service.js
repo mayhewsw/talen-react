@@ -20,7 +20,7 @@ function login(username, password) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/users/authenticate`,
+    `${process.env.REACT_APP_API_URL}/users/authenticate`,
     requestOptions
   )
     .then(handleResponse)
@@ -58,7 +58,7 @@ function getAll() {
     headers: authHeader(),
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/users`, requestOptions).then(
+  return fetch(`${process.env.REACT_APP_API_URL}/users`, requestOptions).then(
     handleResponse
   );
 }
@@ -69,9 +69,10 @@ function getById(id) {
     headers: authHeader(),
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/users/${id}`, requestOptions).then(
-    handleResponse
-  );
+  return fetch(
+    `${process.env.REACT_APP_API_URL}/users/${id}`,
+    requestOptions
+  ).then(handleResponse);
 }
 
 function register(username, email, password) {
@@ -82,7 +83,7 @@ function register(username, email, password) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/users/register`,
+    `${process.env.REACT_APP_API_URL}/users/register`,
     requestOptions
   ).then(handleResponse);
 }
@@ -95,7 +96,7 @@ function update(user) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/users/${user.id}`,
+    `${process.env.REACT_APP_API_URL}/users/${user.id}`,
     requestOptions
   ).then(handleResponse);
 }
@@ -107,9 +108,10 @@ function _delete(id) {
     headers: authHeader(),
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/users/${id}`, requestOptions).then(
-    handleResponse
-  );
+  return fetch(
+    `${process.env.REACT_APP_API_URL}/users/${id}`,
+    requestOptions
+  ).then(handleResponse);
 }
 
 function handleResponse(response) {

@@ -43,10 +43,8 @@ export interface UtilState {
 }
 
 export interface State {
-  authentication: AuthState;
-  registration: RegisterState;
   util: UtilState;
-  errorMessage: string;
+  alert: any;
   data: DataState;
 }
 
