@@ -19,10 +19,12 @@ class UserRegisterSchema(Schema):
 
 class SaveDocSchema(Schema):
     """Schema for saving document annotations"""
-    sentences = fields.List(fields.List(fields.Dict()), required=True)
-    labels = fields.List(fields.Dict(), required=True)
+    sentences = fields.List(fields.List(fields.Str()), required=True)
+    labels = fields.List(fields.List(fields.Str()), required=True)
     docid = fields.Str(required=True)
     dataset = fields.Str(required=True)
+    default_labels = fields.List(fields.List(fields.Str()), required=False)
+    path = fields.Str(required=False)
 
 
 class CopyToGithubSchema(Schema):

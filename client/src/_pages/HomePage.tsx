@@ -9,12 +9,11 @@ import { useAuth } from "../contexts/AuthContext";
 // that takes you to a DatasetPage.
 const HomePage: React.FC<MatchProps> = (props) => {
   const { user } = useAuth();
+  const { getDatasets, data } = props;
 
   React.useEffect(() => {
-    props.getDatasets();
-  }, [props]);
-
-  const { data } = props;
+    getDatasets();
+  }, [getDatasets]);
 
   return (
     <MainPanel>

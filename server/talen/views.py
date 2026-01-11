@@ -218,6 +218,8 @@ def savedoc():
     # Validate request data
     validated_data, errors = validate_request(SaveDocSchema(), json_payload)
     if errors:
+        LOG.error(f"Validation error in /savedoc: {errors}")
+        LOG.error(f"Request payload keys: {json_payload.keys() if json_payload else 'None'}")
         return jsonify({"msg": "Validation error", "errors": errors}), 400
 
     client_doc = {

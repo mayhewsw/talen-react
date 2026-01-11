@@ -13,75 +13,71 @@ Check out a demo here: [annotate.universalner.org](https://annotate.universalner
 
 - [npm](https://www.npmjs.com/get-npm)
 - python 3.6+
+- MongoDB 5.0+ (or use mongomock for testing)
 
 ### Installation
 
 The code is separated into two folders: `client/`, which holds the frontend, and `server/`, which holds the backend.
-Each folder has it's own README file, with more details (probably too many).
-Installation and running will be done separately for each folder.
+Each folder has its own README file with more details.
 
-To install MongoDB:
-
-```bash 
-$ brew update
-$ brew install mongodb
-```
-
-To install the backend:
+**Install MongoDB:**
 
 ```bash
-$ cd server
-$ python -m venv cool-environment-name  # virtual env optional but strongly recommended
-$ source cool-environment-name/bin/activate
-$ pip install -r requirements.txt
+brew update
+brew install mongodb-community@5.0
+brew services start mongodb-community@5.0
+```
+
+**Install the backend:**
+
+```bash
+cd server
+python -m venv venv  # virtual env optional but recommended
+source venv/bin/activate
+pip install -r requirements.txt
 cd ..
 ```
 
-To install the frontend:
+**Install the frontend:**
 
 ```bash
-$ cd client
-$ npm install
-$ cd ..
+cd client
+npm install
+cd ..
 ```
 
 ### Running
 
-First, make sure that MongoDB is running locally.
+**Start the backend server:**
 
 ```bash
-$ bash start_mongo.sh
-$ cd server
-$ python -m scripts.mongo_stats -e dev   # check that it worked.
+cd server
+python app.py
 ```
 
-You can also check this with `check_mongo.sh`, and stop it with `stop_mongo.sh`. (These commands assume that you 
-are on a Mac, and have Homebrew installed. Instructions will be different on Windows and Linux).
+The server runs on port 8080 by default. No environment variables are required for local development - SECRET_KEY and MongoDB connection are auto-configured.
+
+**Option 1: Development mode (hot reload)**
+
+Start the React dev server in a new terminal:
 
 ```bash
-$ cd server
-$ export ENV=dev && python app.py
+cd client
+npm start
 ```
 
-This will default to port 8080, but you can change this by setting the `$PORT` variable.
+Visit `http://localhost:3000` in your browser. The frontend will proxy API requests to the backend at `http://localhost:8080` (configured in `client/.env`).
 
-There are two options for viewing the frontend. If you want to modify it and have it
-reload automatically, start the node server (in a new terminal):
+**Option 2: Production build**
+
+Compile the React code into static files:
 
 ```bash
-$ cd client
-$ export REACT_APP_URL="http://localhost:8080" && npm run start
+cd client
+npm run build
 ```
 
-If you are ready to start annotating in earnest, compile the react code into static files and serve alongside the flask app. To do this, run (in `client/`):
-
-```bash
-$ cd client
-$ npm run build
-```
-
-This will create a folder called `client/build` containing static files.
-Then, with the backend server running, visit, `localhost:8080/`.
+This creates `client/build` containing static files. Then visit `http://localhost:8080/` with the backend server running.
 
 ## Data
 

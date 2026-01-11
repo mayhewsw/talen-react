@@ -178,9 +178,8 @@ type State = {
 
 // TODO: make this STATE
 function mapState(state: any) {
-  const { authentication, data } = state;
-  const { user } = authentication;
-  return { user, data };
+  const { data } = state;
+  return { data };
 }
 
 const actionCreators = {

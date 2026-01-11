@@ -69,9 +69,12 @@ function DatasetCard({ datasetId, splitId, datasetStats, isAdmin }: Props) {
     mr: "Marathi",
   };
 
-  const short_language = datasetId.split("_")[0];
-  const language = language_map[short_language];
-  const dataset_name = datasetId.split("_")[1].toUpperCase();
+  const parts = datasetId.split("_");
+  const short_language = parts[0] || "";
+  const language = language_map[short_language] || short_language;
+  const dataset_name = parts[1]
+    ? parts[1].toUpperCase()
+    : datasetId.toUpperCase();
 
   const progress = datasetStats
     ? Math.floor((100 * datasetStats.numAnnotated) / datasetStats.numFiles)

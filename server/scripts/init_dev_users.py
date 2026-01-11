@@ -27,7 +27,7 @@ def create_dev_users(mongo_dal: MongoDAL):
 
     # Test user 'a'
     if mongo_dal.check_user("a", "a") == LoginStatus.USER_NOT_FOUND:
-        user = User("a", "user_a@example.com", None, False, True)
+        user = User("a", "user_a@example.com", None, True, False)
         user.set_password("a")
         mongo_dal.add_user(user)
         LOG.info("Created test user 'a' (admin)")
@@ -44,6 +44,16 @@ def create_dev_users(mongo_dal: MongoDAL):
         users_created += 1
     else:
         LOG.info("Test user 'b' already exists")
+
+    # Guest user (read-only)
+    if mongo_dal.check_user("guest", "guest") == LoginStatus.USER_NOT_FOUND:
+        user = User("guest", "guest@example.com", None, False, True)
+        user.set_password("guest")
+        mongo_dal.add_user(user)
+        LOG.info("Created guest user (read-only)")
+        users_created += 1
+    else:
+        LOG.info("Guest user already exists")
 
     return users_created
 

@@ -39,7 +39,19 @@ PYTHONPATH=. pytest -s -k "test_annotation_serialization"
 
 ### Running the Development Server
 
-Start the Flask development server:
+**1. Initialize test users** (first time only):
+
+```bash
+cd server
+python scripts/init_dev_users.py
+```
+
+This creates three test users:
+- `a` / `a` (admin user)
+- `b` / `b` (regular user)
+- `guest` / `guest` (read-only user)
+
+**2. Start the Flask development server:**
 
 ```bash
 cd server
