@@ -43,10 +43,8 @@ export interface UtilState {
 }
 
 export interface State {
-  authentication: AuthState;
-  registration: RegisterState;
   util: UtilState;
-  errorMessage: string;
+  alert: any;
   data: DataState;
 }
 
@@ -60,13 +58,6 @@ export const SET_DATA = "SET_DATA";
 export const ALERT_SUCCESS = "ALERT_SUCCESS";
 export const ALERT_ERROR = "ALERT_ERROR";
 export const ALERT_CLEAR = "ALERT_CLEAR";
-export const REGISTER_REQUEST = "DATA_REGISTER_REQUEST";
-export const REGISTER_SUCCESS = "DATA_REGISTER_SUCCESS";
-export const REGISTER_FAILURE = "DATA_REGISTER_FAILURE";
-export const LOGIN_REQUEST = "DATA_LOGIN_REQUEST";
-export const LOGIN_SUCCESS = "DATA_LOGIN_SUCCESS";
-export const LOGIN_FAILURE = "DATA_LOGIN_FAILURE";
-export const LOGOUT = "DATA_LOGOUT";
 export const GETALL_REQUEST = "DATA_GETALL_REQUEST";
 export const GETALL_SUCCESS = "DATA_GETALL_SUCCESS";
 export const GETALL_FAILURE = "DATA_GETALL_FAILURE";
@@ -136,19 +127,6 @@ interface GetDocsAction {
   };
 }
 
-interface RegisterRequestAction {
-  type: typeof REGISTER_REQUEST;
-  registering: boolean;
-}
-
-interface RegisterSuccessAction {
-  type: typeof REGISTER_SUCCESS;
-}
-
-interface RegisterFailureAction {
-  type: typeof REGISTER_FAILURE;
-}
-
 interface LoadStatusAction {
   type: typeof LOADSTATUS;
   data: {
@@ -184,36 +162,6 @@ interface SetLabelsAction {
   type: typeof SETLABELS;
   newLabels: any[];
 }
-
-interface LoginRequestAction {
-  type: typeof LOGIN_REQUEST;
-  user: User;
-}
-
-interface LoginSuccessAction {
-  type: typeof LOGIN_SUCCESS;
-  user: User;
-}
-
-interface LoginFailureAction {
-  type: typeof LOGIN_FAILURE;
-  error: string;
-}
-
-interface LogoutAction {
-  type: typeof LOGOUT;
-}
-
-export type RegistrationTypes =
-  | RegisterRequestAction
-  | RegisterSuccessAction
-  | RegisterFailureAction;
-
-export type AuthTypes =
-  | LoginRequestAction
-  | LoginSuccessAction
-  | LoginFailureAction
-  | LogoutAction;
 
 export type DataTypes =
   | GetDatasetsAction

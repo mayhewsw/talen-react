@@ -1,1 +1,2 @@
-mongo_stub_url: test
+mongo_database_name: talen-test
+mongo_stub_url: test-localhost:27017

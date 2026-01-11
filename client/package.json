@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^4.36.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -14,10 +15,10 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-logger": "^3.0.8",
     "@types/redux-thunk": "^2.1.0",
-    "axios": "^0.21.2",
     "bootstrap": "^4.5.2",
-    "jquery": "^3.5.1",
-    "lodash": "^4.17.21",
+    "dot-prop": ">=5.1.1",
+    "elliptic": ">=6.5.4",
+    "minimist": ">=1.2.3",
     "react": "^16.13.1",
     "react-bootstrap": "^1.3.0",
     "react-dom": "^16.13.1",
@@ -30,12 +31,9 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.7",
-    "dot-prop": ">=5.1.1",
     "serialize-javascript": ">=3.1.0",
-    "elliptic": ">=6.5.4",
-    "yargs-parser": ">=13.1.2",
-    "minimist": ">=1.2.3"
+    "typescript": "^3.9.7",
+    "yargs-parser": ">=13.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -62,7 +60,6 @@
     ]
   },
   "devDependencies": {
-    "@types/lodash": "^4.14.159",
     "gh-pages": "^3.1.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
@@ -74,6 +71,6 @@
     }
   },
   "lint-staged": {
-    "*": "prettier --write"
+    "*.{js,jsx,ts,tsx,json,css,scss,md}": "prettier --write"
   }
 }

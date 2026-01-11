@@ -1,7 +1,11 @@
 import React from "react";
 
-const LoadingView = (props: any) => {
-  return props.currentlySending ? <div> Loading... </div> : null;
+interface LoadingViewProps {
+  currentlySending: boolean;
+}
+
+const LoadingView: React.FC<LoadingViewProps> = ({ currentlySending }) => {
+  return currentlySending ? <div> Loading... </div> : null;
 };
 
 export default LoadingView;

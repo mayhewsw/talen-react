@@ -4,10 +4,16 @@ import { Card, ProgressBar, Button } from "react-bootstrap";
 import { dataActions } from "../_actions";
 import { useSelector } from "react-redux";
 
+interface DatasetStats {
+  numFiles: number;
+  numAnnotated: number;
+  annotators: string[];
+}
+
 type Props = {
   datasetId: string;
   splitId: string;
-  datasetStats: any;
+  datasetStats: DatasetStats | null;
   isAdmin: boolean;
 };
 
@@ -29,7 +35,7 @@ function DatasetCard({ datasetId, splitId, datasetStats, isAdmin }: Props) {
 
   // const saveToGithub = dataActions.saveToGithub;
 
-  const language_map: any = {
+  const language_map: { [key: string]: string } = {
     en: "English",
     es: "Spanish",
     de: "German",
@@ -69,9 +75,12 @@ function DatasetCard({ datasetId, splitId, datasetStats, isAdmin }: Props) {
     mr: "Marathi",
   };
 
-  const short_language = datasetId.split("_")[0];
-  const language = language_map[short_language];
-  const dataset_name = datasetId.split("_")[1].toUpperCase();
+  const parts = datasetId.split("_");
+  const short_language = parts[0] || "";
+  const language = language_map[short_language] || short_language;
+  const dataset_name = parts[1]
+    ? parts[1].toUpperCase()
+    : datasetId.toUpperCase();
 
   const progress = datasetStats
     ? Math.floor((100 * datasetStats.numAnnotated) / datasetStats.numFiles)

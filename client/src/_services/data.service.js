@@ -14,7 +14,7 @@ function getDatasets() {
     method: "GET",
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/datasetlist`, requestOptions)
+  return fetch(`${process.env.REACT_APP_API_URL}/datasetlist`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       return data;
@@ -34,7 +34,7 @@ function getDatasetStats(dataset) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/datasetstats?dataset=${dataset}`,
+    `${process.env.REACT_APP_API_URL}/datasetstats?dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
@@ -50,7 +50,7 @@ function getDocuments(dataset) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/loaddataset?dataset=${dataset}`,
+    `${process.env.REACT_APP_API_URL}/loaddataset?dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
@@ -66,7 +66,7 @@ function saveDocument(data) {
     method: "POST",
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/savedoc`, requestOptions)
+  return fetch(`${process.env.REACT_APP_API_URL}/savedoc`, requestOptions)
     .then(handleResponse)
     .then((data) => {
       return data;
@@ -80,7 +80,7 @@ function loadDocument(dataset, docid) {
   };
 
   return fetch(
-    `${process.env.REACT_APP_URL}/loaddoc?docid=${docid}&dataset=${dataset}`,
+    `${process.env.REACT_APP_API_URL}/loaddoc?docid=${docid}&dataset=${dataset}`,
     requestOptions
   )
     .then(handleResponse)
@@ -96,7 +96,10 @@ function saveToGithub(data) {
     method: "POST",
   };
 
-  return fetch(`${process.env.REACT_APP_URL}/copy_to_github`, requestOptions)
+  return fetch(
+    `${process.env.REACT_APP_API_URL}/copy_to_github`,
+    requestOptions
+  )
     .then(handleResponse)
     .then((data) => {
       return data;

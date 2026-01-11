@@ -12,7 +12,7 @@ import {
 } from "../_utils/types";
 
 import { dataService } from "../_services";
-import { alertActions, userActions } from ".";
+import { alertActions } from ".";
 import { history } from "../_helpers";
 import { Dispatch } from "react";
 
@@ -32,8 +32,8 @@ function redirectToLogin(dispatch: Dispatch<MessageTypes>, error: Response) {
   // 401 is status code for unauthorized
   if (error.status === 401) {
     dispatch(alertActions.error("Logged out! Redirecting to login page..."));
-    // this is a weird way to call this, but it's what it requires, I think?
-    userActions.logout()(dispatch);
+    // Clear localStorage when 401 occurs
+    localStorage.removeItem("user");
     setTimeout(() => {
       history.push(process.env.PUBLIC_URL + "/");
     }, 500);

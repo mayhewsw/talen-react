@@ -26,7 +26,7 @@ def delete_dataset(mongo_dal: MongoDAL, dataset: str):
 if __name__ == "__main__":
      
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", "-d", help="Dataset", required=True, type=str)
+    parser.add_argument("--dataset", "-d", help="Dataset (looks like: es_pud-ud-test)", required=True, type=str)
     parser.add_argument("--environment", "-e", help="Which environment to use", choices=["dev", "prod"], default="dev")
 
     args = parser.parse_args()

@@ -17,13 +17,20 @@ class UDReader:
         if ignore_docs:
             print("WARNING: ignore-docs is true!")
 
-        with open(path_to_udfile, "r", encoding="utf-8") as data_file:
+        docids = set()
 
+        with open(path_to_udfile, "r", encoding="utf-8") as data_file:
+            current_sentence_id = 0
             for sentence in parse_incr(data_file):
                 md = sentence.metadata
                 if not ignore_docs and "newdoc id" in md:
                     # upload the last one
                     if docid is not None:
+                        if docid in docids:
+                            print(f"Warning: duplicate docid {docid}, updating to {docid}-{current_sentence_id}")
+                            # update the docid to include the global sentence number
+                            docid = f"{docid}-{current_sentence_id}"
+                        docids.add(docid)
                         document = Document(docid, dataset_name, sentences)
                         # Consider yielding here
                         documents.append(document)
@@ -44,20 +51,25 @@ class UDReader:
                         pass
                     
                     index = tok["id"]-1
-                    # SpaceAfter is only in the misc if the value is "NO"
-                    # space_after = "misc" in tok and "SpaceAfter" not in tok["misc"]
-                    space_after = True
+                    # SpaceAfter is only in the misc if the value is "NO"                    
+                    space_after = not("misc" in tok and tok["misc"] and "SpaceAfter" in tok["misc"])
+
                     if UDReader.SHOULD_USE_TRANSLIT and tok["misc"] and "Translit" in tok["misc"]:
                         form = tok["misc"]["Translit"]
-
-                    # tok["misc"]["SpaceAfter"] --> False
-                    # tok["misc"] is None --> True
+                    else:
+                        form = tok["form"]
 
                     sentence_toks.append(Token(docid, form, index, space_after))
                 sentences.append(sentence_toks)
+                current_sentence_id += 1
 
         # means we haven't yet dealt with the last doc
         if len(sentences) > 0:
+            if docid in docids:
+                print(f"Warning: duplicate docid {docid}, updating to {docid}-{current_sentence_id}")
+                # update the docid to include the global sentence number
+                docid = f"{docid}-{current_sentence_id}"
+            docids.add(docid)
             document = Document(docid, dataset_name, sentences)
             # Consider yielding here
             documents.append(document)

@@ -32,7 +32,23 @@ def document_list():
 
 @pytest.fixture
 def mongo_dal(config: Config):
-    return MongoDAL(config.mongo_url)
+    dal = MongoDAL(config.mongo_url)
+
+    # Clean up before test
+    dal.datasets.delete_many({})
+    dal.annotations.delete_many({})
+    dal.annotation_status.delete_many({})
+    dal.logins.delete_many({})
+    dal.assignments.delete_many({})
+
+    yield dal
+
+    # Clean up after test
+    dal.datasets.delete_many({})
+    dal.annotations.delete_many({})
+    dal.annotation_status.delete_many({})
+    dal.logins.delete_many({})
+    dal.assignments.delete_many({})
 
 @pytest.fixture
 def user():
