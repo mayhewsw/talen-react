@@ -12,13 +12,22 @@ import { connect } from "react-redux";
 import { dataActions } from "../_actions";
 import { useAuth } from "../contexts/AuthContext";
 
+interface SaveDocumentPayload {
+  docid: string;
+  dataset: string;
+  sentences: string[][];
+  labels: string[][];
+  default_labels: string[][];
+  path: string;
+}
+
 interface Props {
   data: {
     words: string[][];
     labels: string[][];
     default_labels: string[][];
     space_markers: boolean[][];
-    labelset: any;
+    labelset: { [key: string]: string };
     isAnnotated: boolean;
     path: string;
     currDoc: string;
@@ -28,7 +37,7 @@ interface Props {
   uplink: string;
   isSaved: boolean;
   setLabels: (labels: string[][]) => void;
-  saveDocument: (data: any) => void;
+  saveDocument: (data: SaveDocumentPayload) => void;
   loadDocument: (dataset: string, docId: string) => void;
   loadStatus: (dataset: string, docId: string) => void;
 }
@@ -356,7 +365,21 @@ const Annotate: React.FC<Props> = ({
   );
 };
 
-function mapState(state: any) {
+interface ReduxState {
+  data: {
+    words: string[][];
+    labels: string[][];
+    default_labels: string[][];
+    space_markers: boolean[][];
+    labelset: { [key: string]: string };
+    isAnnotated: boolean;
+    path: string;
+    currDoc: string;
+    isSaved: boolean;
+  };
+}
+
+function mapState(state: ReduxState) {
   const { data } = state;
   const docid = data.currDoc;
   const isSaved = data.isSaved;

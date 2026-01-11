@@ -18,7 +18,7 @@ interface Props {
     datasetName: string;
     annotatedDocumentSet: Set<string>;
     assignedDocumentSet: Set<string>;
-    words: any[];
+    words: string[][];
   };
   dataset_id: string;
 }
@@ -176,7 +176,18 @@ const DocumentList: React.FC<Props> = ({
   );
 };
 
-function mapState(state: any) {
+interface ReduxState {
+  data: {
+    documentList: string[];
+    currDoc: string;
+    datasetName: string;
+    annotatedDocumentSet: Set<string>;
+    assignedDocumentSet: Set<string>;
+    words: string[][];
+  };
+}
+
+function mapState(state: ReduxState) {
   const { data } = state;
   return { data };
 }

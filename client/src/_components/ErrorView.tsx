@@ -1,7 +1,11 @@
 import React from "react";
 
-const ErrorView = (props: any) => {
-  return props.message ? <div> {props.message} </div> : null;
+interface ErrorViewProps {
+  message?: string;
+}
+
+const ErrorView: React.FC<ErrorViewProps> = ({ message }) => {
+  return message ? <div> {message} </div> : null;
 };
 
 export default ErrorView;

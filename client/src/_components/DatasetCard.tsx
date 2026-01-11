@@ -4,10 +4,16 @@ import { Card, ProgressBar, Button } from "react-bootstrap";
 import { dataActions } from "../_actions";
 import { useSelector } from "react-redux";
 
+interface DatasetStats {
+  numFiles: number;
+  numAnnotated: number;
+  annotators: string[];
+}
+
 type Props = {
   datasetId: string;
   splitId: string;
-  datasetStats: any;
+  datasetStats: DatasetStats | null;
   isAdmin: boolean;
 };
 
@@ -29,7 +35,7 @@ function DatasetCard({ datasetId, splitId, datasetStats, isAdmin }: Props) {
 
   // const saveToGithub = dataActions.saveToGithub;
 
-  const language_map: any = {
+  const language_map: { [key: string]: string } = {
     en: "English",
     es: "Spanish",
     de: "German",
