@@ -1,25 +1,23 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 
-class LabelButton extends React.Component<Props> {
-  render() {
-    return (
-      <Button
-        onClick={() => this.props.onClick()}
-        bsPrefix="custom-btn"
-        className={["label-button", this.props.label].join(" ")}
-        style={{ background: this.props.color }}
-      >
-        {this.props.label}
-      </Button>
-    );
-  }
+interface LabelButtonProps {
+  label: string;
+  onClick: () => void;
+  color: string;
 }
 
-export default LabelButton;
-
-type Props = {
-  label: string;
-  onClick: Function;
-  color: string;
+const LabelButton: React.FC<LabelButtonProps> = ({ label, onClick, color }) => {
+  return (
+    <Button
+      onClick={onClick}
+      bsPrefix="custom-btn"
+      className={["label-button", label].join(" ")}
+      style={{ background: color }}
+    >
+      {label}
+    </Button>
+  );
 };
+
+export default LabelButton;
